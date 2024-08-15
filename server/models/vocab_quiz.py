@@ -24,6 +24,7 @@ class VocabQuizQuestion(db.Model):
     word_id = db.Column(db.Integer, db.ForeignKey('vocab_word.id'), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False)
     is_answered = db.Column(db.Boolean, nullable=False)
+    user_answer = db.Column(db.String, nullable=True)  
 
     word = db.relationship('VocabWord', backref=db.backref('quiz_questions', lazy=True))
 

@@ -10,17 +10,17 @@ const WordsPracticePage = () => {
     const [categoryName, setCategoryname] = useState(null);
 
     const chooseWordsList = (listChoice) => {
-        setChosenWordsList(listChoice);
         createQuiz(listChoice);
     };
 
-    const createQuiz = async (categoryId) => {
+    const createQuiz = async (listChoice) => {
         try {
-            const response = await axios.post('http://localhost:5000/quiz/create-vocab-quiz', {
+            const response = await axios.post('http://127.0.0.1:5000/quiz/create-vocab-quiz', {
                 user_id: 1,
-                category_id: categoryId
+                category_id: listChoice
             });
             setQuizId(response.data.quiz_id);
+            setChosenWordsList(listChoice);
         } catch (error) {
             console.error('Error creating quiz:', error);
         }

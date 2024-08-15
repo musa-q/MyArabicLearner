@@ -4,6 +4,7 @@ from ..utils import utils, quiz_utils
 from sqlalchemy.sql.expression import func
 from sqlalchemy import desc
 from datetime import datetime, timedelta
+import time
 
 quiz_bp = Blueprint('quiz', __name__)
 
@@ -30,33 +31,31 @@ def create_vocab_quiz():
     if not user or not category:
         return jsonify({'error': 'Invalid User ID or Category ID'}), 400
 
-    # current_time = datetime.now()
-    # previous_quiz = quiz_utils.get_current_quiz('VocabQuiz', user_id)
-    # if previous_quiz:
-    #     time_difference = current_time - previous_quiz.date_taken
-    #     if time_difference < timedelta(minutes=1):
-    #         return jsonify({'error': 'Cannot create quiz'}), 429
+    try:
+        words = VocabWord.query.filter_by(category_id=category_id).order_by(func.random()).limit(num_questions).all()
 
-    words = VocabWord.query.filter_by(category_id=category_id).order_by(func.random()).limit(num_questions).all()
+        if len(words) < num_questions:
+            num_questions = len(words)
 
-    if len(words) < num_questions:
-        num_questions = len(words)
+        quiz = VocabQuiz(user_id=user_id, category_id=category_id, score=0, total_questions=num_questions)
+        db.session.add(quiz)
+        db.session.flush()  # Ensure ID is available
 
-    quiz = VocabQuiz(user_id=user_id, category_id=category_id, score=0, total_questions=num_questions)
-    db.session.add(quiz)
-    db.session.flush()
+        for word in words:
+            question = VocabQuizQuestion(quiz_id=quiz.id, word_id=word.id, is_correct=False, is_answered=False)
+            db.session.add(question)
 
-    for word in words:
-        question = VocabQuizQuestion(quiz_id=quiz.id, word_id=word.id, is_correct=False, is_answered=False)
-        db.session.add(question)
+        db.session.commit()
 
-    db.session.commit()
+        return jsonify({
+            'message': 'Vocabulary quiz created successfully',
+            'quiz_id': quiz.id,
+            'num_questions': num_questions
+        }), 201
 
-    return jsonify({
-        'message': 'Vocabulary quiz created successfully',
-        'quiz_id': quiz.id,
-        'num_questions': num_questions
-    }), 201
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({'error': 'Database integrity error occurred'}), 500
 
 @quiz_bp.route('/create-verb-conjugation-quiz', methods=['POST'])
 def create_verb_conjugation_quiz():
@@ -234,11 +233,38 @@ def view_current_user_vocab_quizzes(user_id):
 def get_quiz_next_question(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
+    quiz_id = data.get('quiz_type', None)
+
+    def get_quiz():
+        print('num is ', num)
+        if quiz_id:    
+            quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
+        else:
+            quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
+        if quiz:
+            return quiz
+        else:
+            raise Exception("Quiz not found")
+
+    num = 1
+    quiz = utils.retry(
+        3,
+        lambda: get_quiz(),
+        lambda: True,
+        lambda: time.sleep(0.5)
+    )
+
+    if not quiz:
+        return jsonify({'question': None, 'all_answered': True, 'quiz_id': None}), 200
+    
     _, next_question = quiz_utils.get_next_question(quiz_type, user_id)
     hint = quiz_utils.get_quiz_answer(quiz_type, user_id)
+
     if not next_question:
-        return jsonify({'error': 'All questions answered'}), 500
-    return jsonify({'question': next_question, 'hint': hint}), 200
+        return jsonify({'question': None, 'all_answered': True}), 200
+
+    return jsonify({'question': next_question, 'hint': hint, 'all_answered': False}), 200
+
 
 @quiz_bp.route('/users/<int:user_id>/send-answer', methods=['POST'])
 def send_answer_from_client(user_id):
@@ -246,10 +272,32 @@ def send_answer_from_client(user_id):
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     user_answer = data.get('user_answer')
 
-    updated_answer, answerResponse = quiz_utils.answer_current_quiz_question(quiz_type, user_id, user_answer)
+    updated_answer, res = quiz_utils.answer_current_quiz_question(quiz_type, user_id, user_answer)
     if updated_answer == False:
         return jsonify({'error': 'Unable to send answer'}), 500
     if updated_answer == None:
         return jsonify({'error': 'All questions answered'}), 500
+    answer_response = res.is_correct
 
-    return jsonify({'answer_response': answerResponse}), 200
+    return jsonify({'answer_response': answer_response, 'question_id': res.id}), 200
+
+@quiz_bp.route('/users/<int:user_id>/check-quiz-finished', methods=['GET'])
+def check_quiz_finished(user_id):
+    data = request.get_json()
+    quiz_type = data.get('quiz_type', 'VocabQuiz')
+
+    quiz_finished_bool = quiz_utils.check_all_questions_answered(quiz_type, user_id)
+    return jsonify({'finished': quiz_finished_bool}), 200
+
+@quiz_bp.route('/users/<int:user_id>/get-results', methods=['POST'])
+def get_results(user_id):
+    data = request.get_json()
+    quiz_type = data.get('quiz_type', 'VocabQuiz')
+
+    if not quiz_utils.check_all_questions_answered(quiz_type, user_id):
+        return jsonify({'quiz_answered': False, 'results': None}), 409
+    
+    results_obj = quiz_utils.get_quiz_results(quiz_type, user_id)
+    return jsonify({'quiz_answered': True, 'results': results_obj}), 200
+    
+ 

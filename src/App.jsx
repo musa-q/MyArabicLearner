@@ -11,7 +11,7 @@ import Logger from './components/Logger';
 import { Helmet } from "react-helmet";
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState('start');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
@@ -44,7 +44,7 @@ const App = () => {
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
       <MyNavBar onNavigate={navigateToPage} />
-      <Logger userPage={currentPage} setPage={setCurrentPage} />
+      {/* <Logger userPage={currentPage} setPage={setCurrentPage} /> */}
       {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
       {currentPage === 'verbs' && <VerbsPage />}
       {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}

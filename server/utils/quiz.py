@@ -3,6 +3,10 @@ from sqlalchemy import desc
 from typing import Optional, Union
 
 class QuizUtils:
+    def get_quiz_by_id_and_user(self, quiz_id, user_id):
+        quiz = VocabQuiz.query.filter_by(id=quiz_id, user_id=user_id).first()
+        return quiz
+
     def get_current_quiz(self, quiz_type: str, user_id: int) -> Optional[Union[VocabQuiz, VerbConjugationQuiz]]:
         if quiz_type == 'VocabQuiz':
             return VocabQuiz.query.filter_by(user_id=user_id).order_by(desc(VocabQuiz.date_taken)).first()
@@ -36,10 +40,26 @@ class QuizUtils:
             return None
         return next_question_obj, next_question
 
+    def check_all_questions_answered(self, quiz_type: str, user_id: int):
+        current_quiz = self.get_current_quiz(quiz_type, user_id)
+        if current_quiz is None:
+            return False
+
+        if quiz_type == 'VocabQuiz':
+            last_question = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).order_by(desc(VocabQuizQuestion.id)).first()
+            if last_question is None:  
+                return False
+
+            answered_questions_count = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).count()
+            if answered_questions_count < current_quiz.total_questions:
+                return False
+
+        return True
+
     def get_next_question(self, quiz_type: str, user_id: int):
         current_quiz = self.get_current_quiz(quiz_type, user_id)
         if current_quiz is None:
-            return None
+            return None, None
 
         if quiz_type == 'VocabQuiz':
             next_question_obj = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=False).first()
@@ -64,6 +84,8 @@ class QuizUtils:
             }
         else:
             return None
+        
+        print("NEXT Q", next_question)
         return next_question_obj, next_question
 
     def get_quiz_answer(self, quiz_type: str, user_id: int):
@@ -75,6 +97,7 @@ class QuizUtils:
             return None
 
         if quiz_type == 'VocabQuiz':
+            print([current_question_obj.word.english, current_question_obj.word.arabic])
             return current_question_obj.word.arabic
         elif quiz_type == 'VerbConjugationQuiz':
             return current_question_obj.verb_conjugation.conjugation
@@ -89,6 +112,7 @@ class QuizUtils:
 
         try:
             current_question_obj.is_answered =  True
+            current_question_obj.user_answer = user_answer
             if quiz_type == 'VocabQuiz':
                 if (user_answer == current_question_obj.word.arabic):
                     current_question_obj.is_correct = True
@@ -99,8 +123,34 @@ class QuizUtils:
                     current_quiz.score += 1
 
             db.session.commit()
-            return True, current_question_obj.is_correct
+            return True, current_question_obj
         except:
             return False, None
+        
+    def get_quiz_results(self, quiz_type: str, user_id: int):
+        current_quiz = self.get_current_quiz(quiz_type, user_id)
+        if current_quiz is None:
+            return None
+        if quiz_type == 'VocabQuiz':
+            questions = [
+                {
+                    'question_id': q.id,
+                    'question': q.word.english,
+                    'user_answer': q.user_answer,
+                    'correct_answer': q.word.arabic,
+                    'is_correct': q.is_correct,
+                }
+                for q in current_quiz.questions
+            ]
 
+        results = {
+            'score': current_quiz.score,
+            'total': current_quiz.total_questions,
+            'category': current_quiz.category.category_name,
+            'username': current_quiz.user.username,
+            'date': current_quiz.date_taken,
+            'questions': questions,  
+        }
+
+        return results
 
