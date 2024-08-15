@@ -10,7 +10,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     useEffect(() => {
         const fetchFileList = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/flashcards/get-all-category-names');
+                const response = await axios.get('http://127.0.0.1:5000/flashcards/get-all-category-names');
                 setFileList(response.data);
             } catch (error) {
                 console.error('Error fetching file list:', error);
