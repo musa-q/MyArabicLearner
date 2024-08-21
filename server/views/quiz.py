@@ -233,10 +233,9 @@ def view_current_user_vocab_quizzes(user_id):
 def get_quiz_next_question(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
-    quiz_id = data.get('quiz_type', None)
+    quiz_id = data.get('quiz_id', None)
 
     def get_quiz():
-        print('num is ', num)
         if quiz_id:    
             quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
         else:
@@ -244,14 +243,13 @@ def get_quiz_next_question(user_id):
         if quiz:
             return quiz
         else:
-            raise Exception("Quiz not found")
+            raise Exception(f"Quiz not found. quiz_id: {quiz_id}, user_id: {user_id}")
 
-    num = 1
     quiz = utils.retry(
         3,
         lambda: get_quiz(),
         lambda: True,
-        lambda: time.sleep(0.5)
+        lambda: time.sleep(1)
     )
 
     if not quiz:
