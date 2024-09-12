@@ -107,7 +107,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     const handleEnterKeyPress = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (resultMessage === "Correct!") {
+            if (resultMessage === "Correct!" || resultMessage === "Incorrect!") {
                 nextQuestion();
             } else {
                 checkAnswer();
