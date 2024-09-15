@@ -9,6 +9,10 @@ const WordsPracticePage = () => {
     const [quizId, setQuizId] = useState(null);
     const [categoryName, setCategoryname] = useState(null);
 
+    const updateCategoryName = (inputName) => {
+        setCategoryname(inputName);
+    };
+
     const chooseWordsList = (listChoice) => {
         createQuiz(listChoice);
     };
@@ -28,7 +32,7 @@ const WordsPracticePage = () => {
 
     return (
         <div className="words-page-container">
-            {chosenWordsList === "choose" && <ChooseWordsPage onChoose={chooseWordsList} title={"Practice words"} setCategoryname={setCategoryname} />}
+            {chosenWordsList === "choose" && <ChooseWordsPage onChoose={chooseWordsList} title={"Practice words"} setCategoryname={updateCategoryName} />}
             {chosenWordsList !== "choose" && <WordsPracticeQuestionPage quizId={quizId} pageTitle={categoryName} />}
         </div>
     );
