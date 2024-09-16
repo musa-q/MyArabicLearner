@@ -236,7 +236,7 @@ def get_quiz_next_question(user_id):
     quiz_id = data.get('quiz_id', None)
 
     def get_quiz():
-        if quiz_id:    
+        if quiz_id:
             quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
         else:
             quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
@@ -254,7 +254,7 @@ def get_quiz_next_question(user_id):
 
     if not quiz:
         return jsonify({'question': None, 'all_answered': True, 'quiz_id': None}), 200
-    
+
     _, next_question = quiz_utils.get_next_question(quiz_type, user_id)
     hint = quiz_utils.get_quiz_answer(quiz_type, user_id)
 
@@ -294,8 +294,23 @@ def get_results(user_id):
 
     if not quiz_utils.check_all_questions_answered(quiz_type, user_id):
         return jsonify({'quiz_answered': False, 'results': None}), 409
-    
+
     results_obj = quiz_utils.get_quiz_results(quiz_type, user_id)
     return jsonify({'quiz_answered': True, 'results': results_obj}), 200
-    
- 
+
+
+@quiz_bp.route('/users/<int:user_id>/get-completed-quizzes', methods=['POST'])
+def get_completed_quizzes(user_id):
+    data = request.get_json()
+    quiz_type = data.get('quiz_type', 'VocabQuiz')
+
+    completed_quizzes = quiz_utils.get_completed_quizzes_info(quiz_type, user_id)
+
+    if completed_quizzes is None:
+        return jsonify({'error': 'Invalid quiz type', 'completed_quizzes': None}), 400
+
+    return jsonify({
+        'user_id': user_id,
+        'quiz_type': quiz_type,
+        'completed_quizzes': completed_quizzes
+    }), 200

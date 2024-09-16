@@ -47,7 +47,7 @@ class QuizUtils:
 
         if quiz_type == 'VocabQuiz':
             last_question = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).order_by(desc(VocabQuizQuestion.id)).first()
-            if last_question is None:  
+            if last_question is None:
                 return False
 
             answered_questions_count = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).count()
@@ -84,7 +84,7 @@ class QuizUtils:
             }
         else:
             return None
-        
+
         print("NEXT Q", next_question)
         return next_question_obj, next_question
 
@@ -126,7 +126,7 @@ class QuizUtils:
             return True, current_question_obj
         except:
             return False, None
-        
+
     def get_quiz_results(self, quiz_type: str, user_id: int):
         current_quiz = self.get_current_quiz(quiz_type, user_id)
         if current_quiz is None:
@@ -149,8 +149,30 @@ class QuizUtils:
             'category': current_quiz.category.category_name,
             'username': current_quiz.user.username,
             'date': current_quiz.date_taken,
-            'questions': questions,  
+            'questions': questions,
         }
 
         return results
+
+    def get_completed_quizzes_info(self, quiz_type: str, user_id: int):
+        if quiz_type == 'VocabQuiz':
+            quizzes = VocabQuiz.query.filter_by(user_id=user_id).order_by(desc(VocabQuiz.date_taken)).all()
+        elif quiz_type == 'VerbConjugationQuiz':
+            quizzes = VerbConjugationQuiz.query.filter_by(user_id=user_id).order_by(desc(VerbConjugationQuiz.date_taken)).all()
+        else:
+            return None
+
+        completed_quizzes_info = []
+        for quiz in quizzes:
+            all_answered = all(question.is_answered for question in quiz.questions)
+            if all_answered:
+                quiz_info = {
+                    'date_completed': quiz.date_taken,
+                    'score': quiz.score,
+                    'total_questions': quiz.total_questions,
+                    'category': quiz.category.category_name if quiz_type == 'VocabQuiz' else 'Verb Conjugation'
+                }
+                completed_quizzes_info.append(quiz_info)
+
+        return completed_quizzes_info
 
