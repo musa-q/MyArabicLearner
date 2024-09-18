@@ -4,11 +4,11 @@ import axios from 'axios';
 
 const LoginPage = ({ onLogin }) => {
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState(''); // For new user registration
+    const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
     const [message, setMessage] = useState('');
     const [showTokenInput, setShowTokenInput] = useState(false);
-    const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user
+    const [isNewUser, setIsNewUser] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -30,9 +30,9 @@ const LoginPage = ({ onLogin }) => {
     const handleVerify = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/verify', { email, token });
+            const response = await axios.post('http://127.0.0.1:5000/auth/verify', { email, token });
             setMessage(response.data.message);
-            onLogin(response.data.user_id, response.data.token);  // Pass both user_id and token
+            onLogin(response.data.user_id, response.data.token);
         } catch (error) {
             setMessage(error.response.data.error);
         }

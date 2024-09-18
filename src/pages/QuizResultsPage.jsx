@@ -16,9 +16,17 @@ const QuizResultsPage = () => {
     const [resultsDetails, setResultsDetails] = useState({});
 
     const getUserResults = async () => {
-        const response = await axios.post('http://127.0.0.1:5000/quiz/users/1/get-results', {
-            quiz_type: 'VocabQuiz',
-        });
+        const token = localStorage.getItem('authToken');
+        const response = await axios.post('http://127.0.0.1:5000/quiz/get-results',
+            {
+                quiz_type: 'VocabQuiz',
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
 
         const data = response.data;
         setResultsDetails(data.results);

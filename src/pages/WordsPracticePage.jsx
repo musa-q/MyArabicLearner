@@ -18,11 +18,18 @@ const WordsPracticePage = () => {
     };
 
     const createQuiz = async (listChoice) => {
+        const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post('http://127.0.0.1:5000/quiz/create-vocab-quiz', {
-                user_id: 1,
-                category_id: listChoice
-            });
+            const response = await axios.post('http://127.0.0.1:5000/quiz/create-vocab-quiz',
+                {
+                    category_id: listChoice
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             setQuizId(response.data.quiz_id);
             setChosenWordsList(listChoice);
         } catch (error) {

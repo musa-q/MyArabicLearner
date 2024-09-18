@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..models import db, User, Verb, VerbConjugation, VocabCategory, VocabWord, VocabQuiz, VocabQuizQuestion, VerbConjugationQuiz, VerbConjugationQuizQuestion
-from ..utils import utils, quiz_utils
+from ..utils import utils, quiz_utils, user_utils
 from sqlalchemy.sql.expression import func
 from sqlalchemy import desc
 from datetime import datetime, timedelta
@@ -11,10 +11,11 @@ quiz_bp = Blueprint('quiz', __name__)
 @quiz_bp.route('/create-vocab-quiz', methods=['POST'])
 def create_vocab_quiz():
     data = request.get_json()
-    user_id = data.get('user_id')
     category_id = data.get('category_id')
     num_questions = data.get('num_questions', 3)
     category_name_input = data.get('category_name_input')
+
+    user_id = user_utils.get_user_id_from_request()
 
     if not all([user_id, category_id]) and not all([user_id, category_name_input]):
         return jsonify({'error': 'User ID and Category ID are required'}), 400
@@ -60,8 +61,9 @@ def create_vocab_quiz():
 @quiz_bp.route('/create-verb-conjugation-quiz', methods=['POST'])
 def create_verb_conjugation_quiz():
     data = request.get_json()
-    user_id = data.get('user_id')
     num_questions = data.get('num_questions', 3)
+
+    user_id = user_utils.get_user_id_from_request()
 
     if not user_id:
         return jsonify({'error': 'User ID is required'}), 400
@@ -101,8 +103,10 @@ def create_verb_conjugation_quiz():
 
 #####
 
-@quiz_bp.route('/users/<int:user_id>/vocab-quizzes', methods=['GET'])
-def view_user_vocab_quizzes(user_id):
+@quiz_bp.route('/vocab-quizzes', methods=['GET'])
+def view_user_vocab_quizzes():
+    user_id = user_utils.get_user_id_from_request()
+
     quizzes = VocabQuiz.query.filter_by(user_id=user_id).all()
     quizzes_list = [{
         'id': quiz.id,
@@ -139,8 +143,10 @@ def view_vocab_quiz(quiz_id):
     }
     return jsonify(quiz_data), 200
 
-@quiz_bp.route('/users/<int:user_id>/verb-conjugation-quizzes', methods=['GET'])
-def view_user_verb_conjugation_quizzes(user_id):
+@quiz_bp.route('/verb-conjugation-quizzes', methods=['GET'])
+def view_user_verb_conjugation_quizzes():
+    user_id = user_utils.get_user_id_from_request()
+
     quizzes = VerbConjugationQuiz.query.filter_by(user_id=user_id).all()
     quizzes_list = [{
         'id': quiz.id,
@@ -177,8 +183,10 @@ def view_verb_conjugation_quiz(quiz_id):
 
 ##########
 
-@quiz_bp.route('/users/<int:user_id>/current-vocab-quizzes', methods=['GET'])
-def view_current_user_vocab_quizzes(user_id):
+@quiz_bp.route('/current-vocab-quizzes', methods=['GET'])
+def view_current_user_vocab_quizzes():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
@@ -229,8 +237,10 @@ def view_current_user_vocab_quizzes(user_id):
 
     return jsonify(quiz_data), 200
 
-@quiz_bp.route('/users/<int:user_id>/get-next-question', methods=['POST'])
-def get_quiz_next_question(user_id):
+@quiz_bp.route('/get-next-question', methods=['POST'])
+def get_quiz_next_question():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id', None)
@@ -264,8 +274,10 @@ def get_quiz_next_question(user_id):
     return jsonify({'question': next_question, 'hint': hint, 'all_answered': False}), 200
 
 
-@quiz_bp.route('/users/<int:user_id>/send-answer', methods=['POST'])
-def send_answer_from_client(user_id):
+@quiz_bp.route('/send-answer', methods=['POST'])
+def send_answer_from_client():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     user_answer = data.get('user_answer')
@@ -279,16 +291,20 @@ def send_answer_from_client(user_id):
 
     return jsonify({'answer_response': answer_response, 'question_id': res.id}), 200
 
-@quiz_bp.route('/users/<int:user_id>/check-quiz-finished', methods=['GET'])
-def check_quiz_finished(user_id):
+@quiz_bp.route('/check-quiz-finished', methods=['GET'])
+def check_quiz_finished():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
     quiz_finished_bool = quiz_utils.check_all_questions_answered(quiz_type, user_id)
     return jsonify({'finished': quiz_finished_bool}), 200
 
-@quiz_bp.route('/users/<int:user_id>/get-results', methods=['POST'])
-def get_results(user_id):
+@quiz_bp.route('/get-results', methods=['POST'])
+def get_results():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -299,8 +315,10 @@ def get_results(user_id):
     return jsonify({'quiz_answered': True, 'results': results_obj}), 200
 
 
-@quiz_bp.route('/users/<int:user_id>/get-completed-quizzes', methods=['POST'])
-def get_completed_quizzes(user_id):
+@quiz_bp.route('/get-completed-quizzes', methods=['POST'])
+def get_completed_quizzes():
+    user_id = user_utils.get_user_id_from_request()
+
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 

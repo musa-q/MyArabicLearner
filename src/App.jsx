@@ -24,7 +24,6 @@ const App = () => {
     if (token && storedUserId) {
       setIsLoggedIn(true);
       setUserId(storedUserId);
-      // Set up axios default headers
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
   }, []);

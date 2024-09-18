@@ -39,10 +39,18 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
         // }
         var guess = processText(currentAnswer);
 
-        const response = await axios.post('http://127.0.0.1:5000/quiz/users/1/send-answer', {
-            quiz_type: 'VocabQuiz',
-            user_answer: guess,
-        });
+        const token = localStorage.getItem('authToken');
+        const response = await axios.post('http://127.0.0.1:5000/quiz/send-answer',
+            {
+                quiz_type: 'VocabQuiz',
+                user_answer: guess,
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
 
         const data = response.data;
         if (data.answer_response == true) {
@@ -58,24 +66,32 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     }
 
     const nextQuestion = async () => {
-        setLoading(true); 
+        setLoading(true);
 
         if (currentAnswer == "") {
             setResultMessage("Please answer!");
         }
         try {
-            const response = await axios.post('http://127.0.0.1:5000/quiz/users/1/get-next-question', {
-                quiz_type: 'VocabQuiz',
-                quiz_id: quizId
-            });
-    
+            const token = localStorage.getItem('authToken');
+            const response = await axios.post('http://127.0.0.1:5000/quiz/get-next-question',
+                {
+                    quiz_type: 'VocabQuiz',
+                    quiz_id: quizId
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
             const data = response.data;
             console.log('DADATA', data, quizId);
             if (data.all_answered == true) {
                 setShowResultsPage(true);
                 return;
             }
-    
+
             setHint(data.hint);
             setCurrentQuestion(data.question.english);
             setCurrentAnswer("");
@@ -174,7 +190,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                                         setCurrentAnswer(e);
                                     }}
                                     lang="ar"
-                                    />
+                                />
                                 {showNextButton && (
                                     <Button className="con-form-button" variant="secondary" type="button" onClick={nextQuestion}>Next</Button>
                                 )}
