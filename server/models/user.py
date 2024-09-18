@@ -13,7 +13,7 @@ class User(db.Model):
 
     def set_auth_token(self, token):
         self.auth_token = token
-        self.token_expiration = datetime.utcnow() + timedelta(minutes=10)
+        self.token_expiration = datetime.utcnow() + timedelta(minutes=2)
 
     def is_token_valid(self):
         return self.auth_token and self.token_expiration > datetime.utcnow()

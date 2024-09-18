@@ -25,8 +25,23 @@ const App = () => {
       setIsLoggedIn(true);
       setUserId(storedUserId);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      const tokenCheckInterval = setInterval(checkTokenValidity, 60000);
+      return () => clearInterval(tokenCheckInterval);
     }
   }, []);
+
+  const checkTokenValidity = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/auth/check-token');
+      if (!response.data.valid) {
+        handleLogout();
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+      handleLogout();
+    }
+  };
 
   const navigateToPage = (page) => {
     setCurrentPage(page);

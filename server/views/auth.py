@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..models import db, User
+from ..utils import user_utils
 from datetime import datetime
 from ..config import Config
 import secrets
@@ -80,3 +81,12 @@ def logout():
         db.session.commit()
 
     return jsonify({'message': 'Logged out successfully'}), 200
+
+
+@auth_bp.route('/check-token', methods=['GET'])
+def check_token():
+    user = user_utils.get_user_id_from_request()
+    if user:
+        return jsonify({'valid': True, 'user_id': user}), 200
+    else:
+        return jsonify({'valid': False}), 401
