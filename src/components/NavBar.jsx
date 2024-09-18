@@ -1,10 +1,11 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout }) => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
@@ -18,12 +19,21 @@ const MyNavBar = ({ onNavigate }) => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => onNavigate('home')}>Home</Nav.Link>
-                        <Nav.Link onClick={() => onNavigate('wordsflashcard')}>Flashcards</Nav.Link>
-                        <Nav.Link onClick={() => onNavigate('wordspractice')}>Vocab Quiz</Nav.Link>
-                        <Nav.Link onClick={() => onNavigate('verbs')}>Conjugation Quiz</Nav.Link>
+                        {isLoggedIn && (
+                            <>
+                                <Nav.Link onClick={() => onNavigate('wordsflashcard')}>Flashcards</Nav.Link>
+                                <Nav.Link onClick={() => onNavigate('wordspractice')}>Vocab Quiz</Nav.Link>
+                                <Nav.Link onClick={() => onNavigate('verbs')}>Conjugation Quiz</Nav.Link>
+                            </>
+                        )}
                     </Nav>
                     <div className="d-flex align-items-center">
-                        <span className="me-3">Follow the developer:</span>
+                        {isLoggedIn ? (
+                            <Button variant="outline-light" onClick={onLogout}>Logout</Button>
+                        ) : (
+                            <Button variant="outline-light" onClick={() => onNavigate('login')}>Login</Button>
+                        )}
+                        <span className="ms-3 me-3">Follow the developer:</span>
                         <a href="https://www.linkedin.com/in/musa-qureshi/" target="_blank" rel="noopener noreferrer">
                             <img
                                 src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white"
@@ -37,4 +47,4 @@ const MyNavBar = ({ onNavigate }) => {
     );
 }
 
-export default MyNavBar
+export default MyNavBar;

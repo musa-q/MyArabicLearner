@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import VerbsPage from './pages/VerbsPage'
 import WordsFlashcardsPage from './pages/WordsFlashcardsPage';
@@ -9,12 +9,46 @@ import './components/Scrollbar.css'
 import './App.css'
 import Logger from './components/Logger';
 import { Helmet } from "react-helmet";
+import LoginPage from './pages/LoginPage';
+import axios from 'axios';
+
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const storedUserId = localStorage.getItem('userId');
+    if (token && storedUserId) {
+      setIsLoggedIn(true);
+      setUserId(storedUserId);
+      // Set up axios default headers
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleLogin = (userId, token) => {
+    setIsLoggedIn(true);
+    setUserId(userId);
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('userId', userId);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    navigateToPage('home');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserId(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    delete axios.defaults.headers.common['Authorization'];
+    navigateToPage('home');
   };
 
   return (
@@ -43,12 +77,16 @@ const App = () => {
         <meta name="twitter:description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
-      <MyNavBar onNavigate={navigateToPage} />
-      {/* <Logger userPage={currentPage} setPage={setCurrentPage} /> */}
-      {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
-      {currentPage === 'verbs' && <VerbsPage />}
-      {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
-      {currentPage === 'wordspractice' && <WordsPracticePage />}
+      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+      {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
+      {isLoggedIn && (
+        <>
+          {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
+          {currentPage === 'verbs' && <VerbsPage />}
+          {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
+          {currentPage === 'wordspractice' && <WordsPracticePage />}
+        </>
+      )}
     </div>
   )
 }
