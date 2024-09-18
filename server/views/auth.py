@@ -13,10 +13,23 @@ def send_auth_email(email, token):
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
-    subject = "My Arabic Learner Authentication Token"
-    body = f"Your authentication token is: {token}"
+    subject = "Verify Your Email - My Arabic Learner"
 
-    msg = MIMEText(body)
+    html_content = f"""
+    <html>
+        <body>
+            <h2>Welcome to My Arabic Learner!</h2>
+            <p>To verify your email address, please use the following code:</p>
+            <h3 style="color: #2E86C1;">{token}</h3>
+            <p>If you did not sign up for this account, you can ignore this email.</p>
+            <br>
+            <p>Best regards,</p>
+            <p>The My Arabic Learner Team</p>
+        </body>
+    </html>
+    """
+
+    msg = MIMEText(html_content, "html")
     msg['Subject'] = subject
     msg['From'] = sender_email
     msg['To'] = email
