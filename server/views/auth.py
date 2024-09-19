@@ -17,14 +17,21 @@ def send_auth_email(email, token):
 
     html_content = f"""
     <html>
-        <body>
-            <h2>Welcome to My Arabic Learner!</h2>
-            <p>To verify your email address, please use the following code:</p>
-            <h3 style="color: #2E86C1;">{token}</h3>
-            <p>If you did not sign up for this account, you can ignore this email.</p>
+        <body style="font-family: sans-serif;">
+            <img src="https://i.ibb.co/25NHfYy/myarabiclearner-logo.png" width="100" alt="My Arabic Learner Logo" style="display: block; margin: 30px auto;">
+            <h2 style="text-align: center; color: #2E86C1;">Welcome to My Arabic Learner!</h2>
+            <p style="text-align: center;">
+                To verify your email address, please use the following code:<br>
+                <h3 style="color: #2E86C1; font-weight: bold; text-align: center;">{token}</h3>
+            </p>
+            <p style="text-align: center;">
+                If you did not sign up for this account, you can ignore this email.
+            </p>
             <br>
-            <p>Best regards,</p>
-            <p>The My Arabic Learner Team</p>
+            <p style="text-align: center;">
+                Best regards,<br>
+                The My Arabic Learner Team
+            </p>
         </body>
     </html>
     """
