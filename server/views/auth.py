@@ -69,7 +69,7 @@ def login():
 
     send_auth_email(email, token)
 
-    return jsonify({'message': 'Authentication token generated', 'token': token}), 200
+    return jsonify({'message': 'Authentication token sent to your email', 'token': token}), 200
 
 @auth_bp.route('/verify', methods=['POST'])
 def verify():
