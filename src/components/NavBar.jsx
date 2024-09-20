@@ -2,6 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
@@ -28,18 +29,43 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout }) => {
                         )}
                     </Nav>
                     <div className="d-flex align-items-center">
-                        {isLoggedIn ? (
-                            <Button variant="outline-light" onClick={onLogout}>Logout</Button>
-                        ) : (
-                            <Button variant="outline-light" onClick={() => onNavigate('login')}>Login</Button>
-                        )}
-                        <span className="ms-3 me-3">Follow the developer:</span>
-                        <a href="https://www.linkedin.com/in/musa-qureshi/" target="_blank" rel="noopener noreferrer">
-                            <img
-                                src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white"
-                                alt="LinkedIn Badge"
-                            />
-                        </a>
+                        <Nav>
+                            <NavDropdown
+                                id="user-dropdown"
+                                title={<span className='aref-ruqaa-regular gold dropdown-title'>انا</span>}
+                                menuVariant="dark"
+                                align={{ lg: 'end' }}
+                            >
+                                {isLoggedIn ? (
+                                    <>
+                                        <NavDropdown.Item onClick={() => onNavigate('quiz-results')}>
+                                            View Results
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item onClick={onLogout}>
+                                            Logout
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                        >
+                                            Follow the developer
+                                        </NavDropdown.Item>
+                                    </>
+                                ) : (
+                                    <>
+                                        <NavDropdown.Item onClick={() => onNavigate('')}>
+                                            Login
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                        >
+                                            Follow the developer
+                                        </NavDropdown.Item>
+                                    </>
+                                )}
+                            </NavDropdown>
+                        </Nav>
                     </div>
                 </Navbar.Collapse>
             </Container>

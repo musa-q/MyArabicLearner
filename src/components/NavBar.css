@@ -11,3 +11,11 @@
 .nav-title {
     font-size: 25px;
 }
+
+#user-dropdown {
+    margin-right: 20px;
+}
+
+.dropdown-title {
+    font-size: 25px;
+}
