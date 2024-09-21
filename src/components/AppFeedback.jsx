@@ -56,7 +56,7 @@ const AppFeedback = ({ show, handleClose }) => {
 
     return (
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal centered show={show} onHide={handleClose}>
             <Form onSubmit={handleSubmit}>
                 <Modal.Header closeButton>
                     <Modal.Title>Please provide feedback!</Modal.Title>
