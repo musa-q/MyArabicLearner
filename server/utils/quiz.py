@@ -167,6 +167,7 @@ class QuizUtils:
             all_answered = all(question.is_answered for question in quiz.questions)
             if all_answered:
                 quiz_info = {
+                    'quiz_id': quiz.id,
                     'date_completed': quiz.date_taken,
                     'score': quiz.score,
                     'total_questions': quiz.total_questions,

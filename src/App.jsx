@@ -11,6 +11,7 @@ import Logger from './components/Logger';
 import { Helmet } from "react-helmet";
 import LoginPage from './pages/LoginPage';
 import axios from 'axios';
+import AllQuizResultsPage from './pages/AllQuizResultsPage';
 
 
 const App = () => {
@@ -99,6 +100,7 @@ const App = () => {
           {currentPage === 'verbs' && <VerbsPage />}
           {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
           {currentPage === 'wordspractice' && <WordsPracticePage />}
+          {currentPage === 'quiz-results' && <AllQuizResultsPage />}
         </>
       )}
     </div>

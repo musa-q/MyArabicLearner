@@ -332,3 +332,44 @@ def get_completed_quizzes():
         'quiz_type': quiz_type,
         'completed_quizzes': completed_quizzes
     }), 200
+
+@quiz_bp.route('/get-quiz-details', methods=['POST'])
+def get_quiz_details():
+    user_id = user_utils.get_user_id_from_request()
+
+    data = request.get_json()
+    quiz_type = data.get('quiz_type', 'VocabQuiz')
+    quiz_id = data.get('quiz_id')
+    # user_id = data.get('user_id')
+    print(quiz_id, user_id, 'were')
+
+    quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
+    # quiz = VocabQuiz.query.filter_by(id=quiz_id).first()
+
+    if not quiz:
+        return jsonify({'error': 'Quiz not found', 'quiz': None}), 400
+
+    quiz_data = {
+        'id': quiz.id,
+        'category_name': quiz.category.category_name,
+        'score': quiz.score,
+        'total_questions': quiz.total_questions,
+        'date_taken': quiz.date_taken.isoformat()
+    }
+
+    if quiz_type == 'VocabQuiz':
+        questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
+        questions_list = [{
+            'english': question.word.english,
+            'arabic': question.word.arabic,
+            'user_answer': question.user_answer,
+            'is_correct': question.is_correct,
+        } for question in questions]
+
+        quiz_data['questions'] = questions_list
+
+    return jsonify({
+        'user_id': user_id,
+        'quiz_type': quiz_type,
+        'quiz_data': quiz_data
+    }), 200
