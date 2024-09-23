@@ -7,7 +7,6 @@ import MyNavBar from './components/NavBar';
 import WordsPracticePage from './pages/WordsPracticePage';
 import './components/Scrollbar.css'
 import './App.css'
-import Logger from './components/Logger';
 import { Helmet } from "react-helmet";
 import LoginPage from './pages/LoginPage';
 import axios from 'axios';
@@ -48,11 +47,10 @@ const App = () => {
     setCurrentPage(page);
   };
 
-  const handleLogin = (userId, token) => {
+  const handleLogin = (token) => {
     setIsLoggedIn(true);
     setUserId(userId);
     localStorage.setItem('authToken', token);
-    localStorage.setItem('userId', userId);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     navigateToPage('home');
   };

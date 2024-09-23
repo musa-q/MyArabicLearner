@@ -10,6 +10,7 @@ const LoginPage = ({ onLogin }) => {
     const [message, setMessage] = useState('');
     const [showTokenInput, setShowTokenInput] = useState(false);
     const [isNewUser, setIsNewUser] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (e) => {
@@ -19,7 +20,11 @@ const LoginPage = ({ onLogin }) => {
             const payload = isNewUser ? { email, username } : { email };
             const response = await axios.post('http://127.0.0.1:5000/auth/login', payload);
             setMessage(response.data.message);
-            setShowTokenInput(true);
+            if (response.data.authenticated) {
+                onLogin(response.data.token);
+            } else {
+                setShowTokenInput(true);
+            }
         } catch (error) {
             if (error.response && error.response.status === 404) {
                 setMessage('User not found. Please enter a username to create an account.');
@@ -38,7 +43,7 @@ const LoginPage = ({ onLogin }) => {
         try {
             const response = await axios.post('http://127.0.0.1:5000/auth/verify', { email, token });
             setMessage(response.data.message);
-            onLogin(response.data.user_id, response.data.token);
+            onLogin(response.data.token);
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {

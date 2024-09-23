@@ -1,5 +1,6 @@
 from . import db
 from datetime import datetime, timedelta
+from ..config import Config
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,13 +8,24 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     auth_token = db.Column(db.String(100), unique=True, nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
+    sessions = db.relationship('UserSession', backref='user', lazy=True)
 
     def __repr__(self):
         return f'<User {self.username}>'
 
     def set_auth_token(self, token):
         self.auth_token = token
-        self.token_expiration = datetime.utcnow() + timedelta(weeks=2)
+        self.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
 
     def is_token_valid(self):
         return self.auth_token and self.token_expiration > datetime.utcnow()
+
+class UserSession(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    ip_address = db.Column(db.String(45), nullable=False)
+    location = db.Column(db.String(100), nullable=True)
+    last_used = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def is_valid(self):
+        return (datetime.utcnow() - self.last_used) < Config.SESSION_TOKEN_TIME

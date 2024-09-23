@@ -1,13 +1,32 @@
 from flask import Blueprint, request, jsonify
-from ..models import db, User
+from ..models import db, User, UserSession
 from ..utils import user_utils
-from datetime import datetime
+from datetime import datetime, timedelta
 from ..config import Config
 import secrets
 import smtplib
 from email.mime.text import MIMEText
 
 auth_bp = Blueprint('auth', __name__)
+
+def create_or_update_session(user, ip_address):
+    location = user_utils.get_geolocation(ip_address)
+    existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
+
+    if existing_session:
+        existing_session.last_used = datetime.utcnow()
+        existing_session.location = location
+    else:
+        new_session = UserSession(
+            user_id=user.id,
+            ip_address=ip_address,
+            location=location,
+            last_used=datetime.utcnow()
+        )
+        db.session.add(new_session)
+
+    db.session.commit()
+
 
 def send_auth_email(email, token):
     sender_email = Config.EMAIL
@@ -50,6 +69,7 @@ def login():
     data = request.get_json()
     email = data.get('email')
     username = data.get('username', None)
+    ip_address = request.remote_addr
 
     # if not email or not username:
     #     return jsonify({'error': 'Email and username are required'}), 400
@@ -63,19 +83,29 @@ def login():
         db.session.add(user)
         db.session.commit()
 
-    token = secrets.token_urlsafe(32)
+    existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
+    if existing_session and (datetime.utcnow() - existing_session.last_used) < Config.SESSION_TOKEN_TIME:
+        create_or_update_session(user, ip_address)
+        return jsonify({
+            'message': 'Authenticated already',
+            'token': existing_session.id,
+            'authenticated': True
+        }), 200
+
+    token = secrets.token_urlsafe(32).replace('-', 'g').replace('_', '9')
     user.set_auth_token(token)
     db.session.commit()
 
     send_auth_email(email, token)
 
-    return jsonify({'message': 'Authentication token sent to your email', 'token': token}), 200
+    return jsonify({'message': 'Authentication token sent to your email', 'authenticated': False}), 200
 
 @auth_bp.route('/verify', methods=['POST'])
 def verify():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
+    ip_address = request.remote_addr
 
     if not email or not token:
         return jsonify({'error': 'Email and token are required'}), 400
@@ -84,7 +114,9 @@ def verify():
     if not user or not user.is_token_valid() or user.auth_token != token:
         return jsonify({'error': 'Invalid or expired token'}), 401
 
-    return jsonify({'message': 'Authentication successful', 'user_id': user.id, 'token': token}), 200
+    create_or_update_session(user, ip_address)
+
+    return jsonify({'message': 'Authentication successful', 'token': token}), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
