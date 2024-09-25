@@ -86,9 +86,10 @@ def login():
     existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
     if existing_session and (datetime.utcnow() - existing_session.last_used) < Config.SESSION_TOKEN_TIME:
         create_or_update_session(user, ip_address)
+        user_token = User.query.filter_by(id=user.id).first().auth_token
         return jsonify({
             'message': 'Authenticated already',
-            'token': existing_session.id,
+            'token': user_token,
             'authenticated': True
         }), 200
 
@@ -134,11 +135,23 @@ def logout():
 
     return jsonify({'message': 'Logged out successfully'}), 200
 
+@auth_bp.route('/logout-all', methods=['POST'])
+def logout_all():
+    try:
+        num_deleted = UserSession.query.delete()
 
-@auth_bp.route('/check-token', methods=['GET'])
+        User.query.update({User.auth_token: None, User.token_expiration: None})
+
+        db.session.commit()
+        return jsonify({'message': f'All users logged out successfully. {num_deleted} sessions removed.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+
+@auth_bp.route('/check-token', methods=['POST'])
 def check_token():
-    user = user_utils.get_user_id_from_request()
-    if user:
-        return jsonify({'valid': True, 'user_id': user}), 200
+    user_id = user_utils.get_user_id_from_request()
+    if user_id:
+        return jsonify({'valid': True}), 200
     else:
         return jsonify({'valid': False}), 401

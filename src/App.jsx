@@ -16,32 +16,37 @@ import AllQuizResultsPage from './pages/AllQuizResultsPage';
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const storedUserId = localStorage.getItem('userId');
-    if (token && storedUserId) {
-      setIsLoggedIn(true);
-      setUserId(storedUserId);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const verifyToken = async () => {
+      const token = localStorage.getItem('authToken');
 
-      const tokenCheckInterval = setInterval(checkTokenValidity, 60000);
-      return () => clearInterval(tokenCheckInterval);
-    }
-  }, []);
-
-  const checkTokenValidity = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:5000/auth/check-token');
-      if (!response.data.valid) {
-        handleLogout();
+      if (token) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5000/auth/check-token',
+            {},
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+          if (response.data.valid) {
+            setIsLoggedIn(true);
+          } else {
+            handleLogout();
+          }
+        } catch (error) {
+          console.error('Error verifying token:', error);
+          handleLogout();
+        }
       }
-    } catch (error) {
-      console.error('Error checking token validity:', error);
-      handleLogout();
-    }
-  };
+    };
+
+    verifyToken();
+    const tokenCheckInterval = setInterval(verifyToken, 60000); // Check every minute
+    return () => clearInterval(tokenCheckInterval);
+  }, []);
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
@@ -49,17 +54,15 @@ const App = () => {
 
   const handleLogin = (token) => {
     setIsLoggedIn(true);
-    setUserId(userId);
     localStorage.setItem('authToken', token);
+    console.log("my token is", token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     navigateToPage('home');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserId(null);
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userId');
     delete axios.defaults.headers.common['Authorization'];
     navigateToPage('home');
   };
