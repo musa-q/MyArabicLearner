@@ -96,7 +96,6 @@ class QuizUtils:
             return None
 
         if quiz_type == 'VocabQuiz':
-            print([current_question_obj.word.english, current_question_obj.word.arabic])
             return current_question_obj.word.arabic
         elif quiz_type == 'VerbConjugationQuiz':
             return current_question_obj.verb_conjugation.conjugation
