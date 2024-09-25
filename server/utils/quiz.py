@@ -85,7 +85,6 @@ class QuizUtils:
         else:
             return None
 
-        print("NEXT Q", next_question)
         return next_question_obj, next_question
 
     def get_quiz_answer(self, quiz_type: str, user_id: int):

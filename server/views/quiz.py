@@ -341,7 +341,6 @@ def get_quiz_details():
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id')
     # user_id = data.get('user_id')
-    print(quiz_id, user_id, 'were')
 
     quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
     # quiz = VocabQuiz.query.filter_by(id=quiz_id).first()
