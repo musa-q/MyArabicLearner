@@ -4,7 +4,9 @@ from ..utils import utils, quiz_utils, user_utils
 from sqlalchemy.sql.expression import func
 from sqlalchemy import desc
 from datetime import datetime, timedelta
+from ..config import Config
 import time
+from sqlalchemy.exc import *
 
 quiz_bp = Blueprint('quiz', __name__)
 
@@ -12,7 +14,7 @@ quiz_bp = Blueprint('quiz', __name__)
 def create_vocab_quiz():
     data = request.get_json()
     category_id = data.get('category_id')
-    num_questions = data.get('num_questions', 3)
+    num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
     category_name_input = data.get('category_name_input')
 
     user_id = user_utils.get_user_id_from_request()
@@ -61,7 +63,7 @@ def create_vocab_quiz():
 @quiz_bp.route('/create-verb-conjugation-quiz', methods=['POST'])
 def create_verb_conjugation_quiz():
     data = request.get_json()
-    num_questions = data.get('num_questions', 3)
+    num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
 
     user_id = user_utils.get_user_id_from_request()
 
@@ -73,33 +75,37 @@ def create_verb_conjugation_quiz():
     if not user:
         return jsonify({'error': 'Invalid User ID'}), 400
 
-    current_time = datetime.now()
-    previous_quiz = quiz_utils.get_current_quiz('VerbConjugationQuiz', user_id)
-    if previous_quiz:
-        time_difference = current_time - previous_quiz.date_taken
-        if time_difference < timedelta(minutes=1):
-            return jsonify({'error': 'Cannot create quiz'}), 429
+    # current_time = datetime.now()
+    # previous_quiz = quiz_utils.get_current_quiz('VerbConjugationQuiz', user_id)
+    # if previous_quiz:
+    #     time_difference = current_time - previous_quiz.date_taken
+    #     if time_difference < timedelta(minutes=1):
+    #         return jsonify({'error': 'Cannot create quiz'}), 429
 
-    conjugations = VerbConjugation.query.order_by(func.random()).limit(num_questions).all()
+    try:
+        conjugations = VerbConjugation.query.order_by(func.random()).limit(num_questions).all()
 
-    if len(conjugations) < num_questions:
-        num_questions = len(conjugations)
+        if len(conjugations) < num_questions:
+            num_questions = len(conjugations)
 
-    quiz = VerbConjugationQuiz(user_id=user_id, score=0, total_questions=num_questions)
-    db.session.add(quiz)
-    db.session.flush()
+        quiz = VerbConjugationQuiz(user_id=user_id, score=0, total_questions=num_questions)
+        db.session.add(quiz)
+        db.session.flush()
 
-    for conjugation in conjugations:
-        question = VerbConjugationQuizQuestion(quiz_id=quiz.id, verb_conjugation_id=conjugation.id, is_correct=False, is_answered=False )
-        db.session.add(question)
+        for conjugation in conjugations:
+            question = VerbConjugationQuizQuestion(quiz_id=quiz.id, verb_conjugation_id=conjugation.id, is_correct=False, is_answered=False )
+            db.session.add(question)
 
-    db.session.commit()
+        db.session.commit()
 
-    return jsonify({
-        'message': 'Verb conjugation quiz created successfully',
-        'quiz_id': quiz.id,
-        'num_questions': num_questions
-    }), 201
+        return jsonify({
+            'message': 'Verb conjugation quiz created successfully',
+            'quiz_id': quiz.id,
+            'num_questions': num_questions
+        }), 201
+    except IntegrityError:
+            db.session.rollback()
+            return jsonify({'error': 'Database integrity error occurred'}), 500
 
 #####
 
@@ -308,6 +314,7 @@ def get_results():
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
+    print('the quiz type is: ', quiz_type)
     if not quiz_utils.check_all_questions_answered(quiz_type, user_id):
         return jsonify({'quiz_answered': False, 'results': None}), 409
 

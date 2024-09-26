@@ -22,6 +22,7 @@ class VerbConjugationQuizQuestion(db.Model):
     verb_conjugation_id = db.Column(db.Integer, db.ForeignKey('verb_conjugation.id'), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False)
     is_answered = db.Column(db.Boolean, nullable=False)
+    user_answer = db.Column(db.String, nullable=True)
 
     verb_conjugation = db.relationship('VerbConjugation', backref=db.backref('quiz_questions', lazy=True))
 

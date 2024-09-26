@@ -53,8 +53,22 @@ class QuizUtils:
             answered_questions_count = VocabQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).count()
             if answered_questions_count < current_quiz.total_questions:
                 return False
+            return True
 
-        return True
+        if quiz_type == 'VerbConjugationQuiz':
+            last_question = VerbConjugationQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).order_by(desc(VerbConjugationQuizQuestion.id)).first()
+            if last_question is None:
+                print('No last question')
+                return False
+
+            answered_questions_count = VerbConjugationQuizQuestion.query.filter_by(quiz_id=current_quiz.id, is_answered=True).count()
+            if answered_questions_count < current_quiz.total_questions:
+                print('Not enough questions answered')
+                return False
+            return True
+
+        return None
+
 
     def get_next_question(self, quiz_type: str, user_id: int):
         current_quiz = self.get_current_quiz(quiz_type, user_id)
@@ -76,6 +90,8 @@ class QuizUtils:
             if not next_question_obj:
                 return None, None
             next_question = {
+                'english_verb': next_question_obj.verb_conjugation.verb.english_verb,
+                'arabic_verb': next_question_obj.verb_conjugation.verb.arabic_verb,
                 'tense': next_question_obj.verb_conjugation.tense,
                 'pronoun': next_question_obj.verb_conjugation.pronoun,
                 'question_id': next_question_obj.id,
@@ -129,6 +145,7 @@ class QuizUtils:
         current_quiz = self.get_current_quiz(quiz_type, user_id)
         if current_quiz is None:
             return None
+
         if quiz_type == 'VocabQuiz':
             questions = [
                 {
@@ -141,14 +158,40 @@ class QuizUtils:
                 for q in current_quiz.questions
             ]
 
-        results = {
-            'score': current_quiz.score,
-            'total': current_quiz.total_questions,
-            'category': current_quiz.category.category_name,
-            'username': current_quiz.user.username,
-            'date': current_quiz.date_taken,
-            'questions': questions,
-        }
+            results = {
+                'score': current_quiz.score,
+                'total': current_quiz.total_questions,
+                'category': current_quiz.category.category_name,
+                'username': current_quiz.user.username,
+                'date': current_quiz.date_taken,
+                'questions': questions,
+            }
+
+        elif quiz_type == 'VerbConjugationQuiz':
+            questions = [
+                {
+                    'question_id': q.id,
+                    'english_verb': q.verb_conjugation.verb.english_verb,
+                    'arabic_verb': q.verb_conjugation.verb.arabic_verb,
+                    'tense': q.verb_conjugation.tense,
+                    'pronoun': q.verb_conjugation.pronoun,
+                    'user_answer': q.user_answer,
+                    'correct_answer': q.verb_conjugation.conjugation,
+                    'is_correct': q.is_correct,
+                }
+                for q in current_quiz.questions
+            ]
+
+            results = {
+                'score': current_quiz.score,
+                'total': current_quiz.total_questions,
+                'username': current_quiz.user.username,
+                'date': current_quiz.date_taken,
+                'questions': questions,
+            }
+
+        else:
+            return None
 
         return results
 

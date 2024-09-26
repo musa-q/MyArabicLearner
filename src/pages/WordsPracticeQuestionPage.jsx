@@ -215,7 +215,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
 
     return (
         <>
-            {(showResultsPage) ? (<QuizResultsPage />) : (questionPage())}
+            {(showResultsPage) ? (<QuizResultsPage quiz_type='VocabQuiz' />) : (questionPage())}
         </>
     );
 };
