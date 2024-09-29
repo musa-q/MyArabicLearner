@@ -3,8 +3,13 @@ from sqlalchemy import desc
 from typing import Optional, Union
 
 class QuizUtils:
-    def get_quiz_by_id_and_user(self, quiz_id, user_id):
-        quiz = VocabQuiz.query.filter_by(id=quiz_id, user_id=user_id).first()
+    def get_quiz_by_id_and_user(self, quiz_id, user_id, quiz_type = 'VocabQuiz'):
+        if quiz_type == 'VocabQuiz':
+            quiz = VocabQuiz.query.filter_by(id=quiz_id, user_id=user_id).first()
+        elif quiz_type == 'VerbConjugationQuiz':
+            quiz = VerbConjugationQuiz.query.filter_by(id=quiz_id, user_id=user_id).first()
+        else:
+            return None
         return quiz
 
     def get_current_quiz(self, quiz_type: str, user_id: int) -> Optional[Union[VocabQuiz, VerbConjugationQuiz]]:

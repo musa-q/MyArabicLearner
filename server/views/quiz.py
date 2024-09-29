@@ -253,7 +253,7 @@ def get_quiz_next_question():
 
     def get_quiz():
         if quiz_id:
-            quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
+            quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id, quiz_type)
         else:
             quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
         if quiz:
@@ -347,23 +347,21 @@ def get_quiz_details():
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id')
-    # user_id = data.get('user_id')
 
-    quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id)
-    # quiz = VocabQuiz.query.filter_by(id=quiz_id).first()
+    quiz = quiz_utils.get_quiz_by_id_and_user(quiz_id, user_id, quiz_type)
 
     if not quiz:
         return jsonify({'error': 'Quiz not found', 'quiz': None}), 400
 
     quiz_data = {
         'id': quiz.id,
-        'category_name': quiz.category.category_name,
         'score': quiz.score,
         'total_questions': quiz.total_questions,
         'date_taken': quiz.date_taken.isoformat()
     }
 
     if quiz_type == 'VocabQuiz':
+        quiz_data['category_name'] = quiz.category.category_name
         questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
         questions_list = [{
             'english': question.word.english,
@@ -371,8 +369,19 @@ def get_quiz_details():
             'user_answer': question.user_answer,
             'is_correct': question.is_correct,
         } for question in questions]
+    elif quiz_type == 'VerbConjugationQuiz':
+        questions = VerbConjugationQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
+        questions_list = [{
+            'english_verb': question.verb_conjugation.verb.english_verb,
+            'arabic_verb': question.verb_conjugation.verb.arabic_verb,
+            'tense': question.verb_conjugation.tense,
+            'pronoun': question.verb_conjugation.pronoun,
+            'conjugation': question.verb_conjugation.conjugation,
+            'user_answer': question.user_answer,
+            'is_correct': question.is_correct,
+        } for question in questions]
 
-        quiz_data['questions'] = questions_list
+    quiz_data['questions'] = questions_list
 
     return jsonify({
         'user_id': user_id,

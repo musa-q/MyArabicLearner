@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Table, Badge, Spinner, Modal } from 'react-bootstrap';
+import { Container, Table, Badge, Spinner, Modal, Button, ButtonGroup } from 'react-bootstrap';
 import { capitaliseWords } from '../utils';
 
 const AllQuizResultsPage = () => {
@@ -8,17 +8,18 @@ const AllQuizResultsPage = () => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedQuizDetails, setSelectedQuizDetails] = useState(null);
+    const [quizType, setQuizType] = useState('VocabQuiz');
 
     useEffect(() => {
         loadUserData();
-    }, []);
+    }, [quizType]);
 
     const loadUserData = async () => {
         try {
             const token = localStorage.getItem('authToken');
             const response = await axios.post('http://127.0.0.1:5000/quiz/get-completed-quizzes',
                 {
-                    quiz_type: 'VocabQuiz',
+                    quiz_type: quizType,
                 },
                 {
                     headers: {
@@ -41,7 +42,8 @@ const AllQuizResultsPage = () => {
             const token = localStorage.getItem('authToken');
             const response = await axios.post('http://127.0.0.1:5000/quiz/get-quiz-details',
                 {
-                    quiz_id: quiz_id
+                    quiz_id: quiz_id,
+                    quiz_type: quizType
                 },
                 {
                     headers: {
@@ -49,7 +51,6 @@ const AllQuizResultsPage = () => {
                     }
                 }
             );
-            console.log('Response:', response.data);
             setSelectedQuizDetails(response.data.quiz_data);
             setShowModal(true);
         } catch (error) {
@@ -68,14 +69,14 @@ const AllQuizResultsPage = () => {
                         <Table bordered hover responsive className="text-center">
                             <thead className="bg-light">
                                 <tr>
-                                    <th>Category</th>
+                                    <th>{quizType === 'VocabQuiz' ? 'Category' : 'Quiz Type'}</th>
                                     <th>Date Completed</th>
                                     <th>Score</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{capitaliseWords(selectedQuizDetails.category_name)}</td>
+                                    <td>{quizType === 'VocabQuiz' ? capitaliseWords(selectedQuizDetails.category_name) : 'Verb Conjugation'}</td>
                                     <td>
                                         {new Date(selectedQuizDetails.date_taken).toLocaleString('default', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </td>
@@ -99,6 +100,7 @@ const AllQuizResultsPage = () => {
                                     <tr>
                                         <th>English</th>
                                         <th>Arabic</th>
+                                        {quizType === 'VerbConjugationQuiz' && <th>Conjugation</th>}
                                         <th>Correct</th>
                                         <th>Your answer</th>
                                     </tr>
@@ -106,8 +108,9 @@ const AllQuizResultsPage = () => {
                                 <tbody>
                                     {selectedQuizDetails.questions.map((question, idx) => (
                                         <tr key={idx}>
-                                            <td>{capitaliseWords(question.english)}</td>
-                                            <td>{question.arabic}</td>
+                                            <td>{capitaliseWords(quizType === 'VocabQuiz' ? question.english : question.english_verb)}</td>
+                                            <td>{quizType === 'VocabQuiz' ? question.arabic : question.arabic_verb}</td>
+                                            {quizType === 'VerbConjugationQuiz' && <td>{`${capitaliseWords(question.pronoun)}, ${capitaliseWords(question.tense)}`}</td>}
                                             <td>{question.is_correct ? 'Yes' : 'No'}</td>
                                             <td>{question.user_answer}</td>
                                         </tr>
@@ -134,10 +137,26 @@ const AllQuizResultsPage = () => {
     return (
         <Container className="quiz-results-page my-5">
             <h1 className="text-center text-white pb-4">All Quiz Results</h1>
+            <div className="d-flex justify-content-center mb-4">
+                <ButtonGroup>
+                    <Button
+                        variant={quizType === 'VocabQuiz' ? 'primary' : 'secondary'}
+                        onClick={() => setQuizType('VocabQuiz')}
+                    >
+                        Vocabulary Quiz
+                    </Button>
+                    <Button
+                        variant={quizType === 'VerbConjugationQuiz' ? 'primary' : 'secondary'}
+                        onClick={() => setQuizType('VerbConjugationQuiz')}
+                    >
+                        Verb Conjugation Quiz
+                    </Button>
+                </ButtonGroup>
+            </div>
             <Table bordered hover responsive className="text-center">
                 <thead className="bg-light">
                     <tr>
-                        <th>Category</th>
+                        <th>{quizType === 'VocabQuiz' ? 'Category' : 'Quiz Type'}</th>
                         <th>Date Completed</th>
                         <th>Score</th>
                         <th></th>
@@ -146,7 +165,7 @@ const AllQuizResultsPage = () => {
                 <tbody>
                     {quizResults.map((quiz, index) => (
                         <tr key={index}>
-                            <td>{capitaliseWords(quiz.category)}</td>
+                            <td>{quizType === 'VocabQuiz' ? capitaliseWords(quiz.category) : 'Verb Conjugation'}</td>
                             <td>
                                 {new Date(quiz.date_completed).toLocaleString('default', { day: 'numeric', month: 'long' })}
                             </td>
