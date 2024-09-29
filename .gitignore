@@ -2,6 +2,8 @@
 public/arabic/*.csv
 *.db
 
+config.py
+
 # Virtual environment
 venv/
 
