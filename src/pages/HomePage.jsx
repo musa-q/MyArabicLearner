@@ -6,19 +6,50 @@ import './HomePage.css';
 import '../fonts.css';
 import AppFeedback from '../components/AppFeedback';
 import logo from '/logo_main.svg';
+import { motion, useAnimation } from "framer-motion";
+import TypingAnimation from '../components/TypingAnimation';
 
 const HomePage = ({ onNavigate }) => {
     const [showFeedbackToast, setShowFeedbackToast] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const logoControls = useAnimation();
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowFeedbackToast(true);
-        }, 1000);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        if (imageLoaded) {
+            logoControls.start({
+                x: 0,
+                rotate: 0,
+                transition: {
+                    type: "spring",
+                    damping: 10,
+                    stiffness: 75,
+                    duration: 1.5
+                }
+            });
+
+            const intervalId = setInterval(() => {
+                logoControls.start({
+                    y: [0, -30, 0],
+                    transition: {
+                        duration: 0.5,
+                        times: [0, 0.5, 1],
+                        ease: ["easeOut", "easeIn"]
+                    }
+                });
+            }, 5000);
+
+            return () => clearInterval(intervalId);
+        }
+    }, [logoControls, imageLoaded]);
 
     const handleCloseToast = () => setShowFeedbackToast(false);
     const handleShowModal = () => {
@@ -39,31 +70,25 @@ const HomePage = ({ onNavigate }) => {
                     <h2>متعلمو العربية</h2>
                 </div>}
 
-            <img
+            <motion.img
                 src={logo}
                 alt="Logo"
                 className="homepage-logo"
                 loading="lazy"
                 onLoad={handleImageLoad}
                 style={{ display: imageLoaded ? 'block' : 'none' }}
+                initial={{ x: "-100%", rotate: -720 }}
+                animate={logoControls}
+                transition={{
+                    type: "spring",
+                    damping: 10,
+                    stiffness: 75,
+                    duration: 10
+                }}
             />
 
-            <div className="button-container-left">
-                <Button variant="outline-light" size="lg" onClick={() => onNavigate('wordsflashcard')}>
-                    Flashcards
-                </Button>
-                <Button variant="outline-light" size="lg" onClick={() => onNavigate('wordspractice')}>
-                    Vocab Quiz
-                </Button>
-            </div>
-            <div className="button-container-right">
-                <Button variant="outline-light" size="lg" onClick={() => onNavigate('verbs')}>
-                    Conjugation Quiz
-                </Button>
-                <Button variant="outline-light" size="lg" onClick={handleShowModal}>
-                    Feedback
-                </Button>
-            </div>
+            <TypingAnimation text={"أهلاً وسهلاً"} />
+
             <AppFeedback data-bs-theme="dark" show={showFeedbackModal} handleClose={handleCloseModal} />
 
             <ToastContainer
@@ -71,14 +96,14 @@ const HomePage = ({ onNavigate }) => {
                 position={"bottom-end"}
                 style={{ zIndex: 1 }}
             >
-                <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast">
+                <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast" >
                     <Toast.Header>
                         <strong className="me-auto">Feedback</strong>
                     </Toast.Header>
-                    <Toast.Body style={{ fontSize: "17px" }}>We&apos;d love to hear your feedback! Click the &quot;Feedback&quot; button to share.</Toast.Body>
+                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>We'd love your feedback! Click this pop-up!</Toast.Body>
                 </Toast>
             </ToastContainer>
-        </div>
+        </div >
     );
 };
 

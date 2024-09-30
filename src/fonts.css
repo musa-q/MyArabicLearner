@@ -10,6 +10,18 @@
     font-style: normal;
 }
 
+.noto-kufi-regular {
+    font-family: "Noto Kufi Arabic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.noto-kufi-bold {
+    font-family: "Noto Kufi Arabic", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
 .gold {
     color: #c8be68;
 }
