@@ -18,7 +18,7 @@ const HomePage = ({ onNavigate }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowFeedbackToast(true);
-        }, 1000);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, []);
@@ -96,11 +96,11 @@ const HomePage = ({ onNavigate }) => {
                 position={"bottom-end"}
                 style={{ zIndex: 1 }}
             >
-                <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast">
+                <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast" >
                     <Toast.Header>
                         <strong className="me-auto">Feedback</strong>
                     </Toast.Header>
-                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "17px", cursor: "pointer" }}>We'd love to hear your feedback! Click this pop-up</Toast.Body>
+                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>We'd love your feedback! Click this pop-up!</Toast.Body>
                 </Toast>
             </ToastContainer>
         </div >
