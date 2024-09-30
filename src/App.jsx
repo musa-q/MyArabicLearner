@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import VerbsPage from './pages/VerbsPage'
 import WordsFlashcardsPage from './pages/WordsFlashcardsPage';
@@ -7,14 +7,64 @@ import MyNavBar from './components/NavBar';
 import WordsPracticePage from './pages/WordsPracticePage';
 import './components/Scrollbar.css'
 import './App.css'
-import Logger from './components/Logger';
 import { Helmet } from "react-helmet";
+import LoginPage from './pages/LoginPage';
+import axios from 'axios';
+import AllQuizResultsPage from './pages/AllQuizResultsPage';
+
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState('start');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      const token = localStorage.getItem('authToken');
+
+      if (token) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5000/auth/check-token',
+            {},
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+          if (response.data.valid) {
+            setIsLoggedIn(true);
+          } else {
+            handleLogout();
+          }
+        } catch (error) {
+          console.error('Error verifying token:', error);
+          handleLogout();
+        }
+      }
+    };
+
+    verifyToken();
+    const tokenCheckInterval = setInterval(verifyToken, 60000); // Check every minute
+    return () => clearInterval(tokenCheckInterval);
+  }, []);
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleLogin = (token) => {
+    setIsLoggedIn(true);
+    localStorage.setItem('authToken', token);
+    console.log("my token is", token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    navigateToPage('home');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('authToken');
+    delete axios.defaults.headers.common['Authorization'];
+    navigateToPage('home');
   };
 
   return (
@@ -43,12 +93,17 @@ const App = () => {
         <meta name="twitter:description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
-      <MyNavBar onNavigate={navigateToPage} />
-      <Logger userPage={currentPage} setPage={setCurrentPage} />
-      {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
-      {currentPage === 'verbs' && <VerbsPage />}
-      {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
-      {currentPage === 'wordspractice' && <WordsPracticePage />}
+      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+      {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
+      {isLoggedIn && (
+        <>
+          {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
+          {currentPage === 'verbs' && <VerbsPage />}
+          {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
+          {currentPage === 'wordspractice' && <WordsPracticePage />}
+          {currentPage === 'quiz-results' && <AllQuizResultsPage />}
+        </>
+      )}
     </div>
   )
 }

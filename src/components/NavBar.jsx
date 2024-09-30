@@ -2,10 +2,12 @@ import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleNavigate = (path) => {
@@ -26,18 +28,52 @@ const MyNavBar = ({ onNavigate }) => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('wordspractice')}>Vocab Quiz</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('verbs')}>Conjugation Quiz</Nav.Link>
+                        {isLoggedIn && (
+                            <>
+                                <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('wordspractice')}>Vocab Quiz</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('verbs')}>Conjugation Quiz</Nav.Link>
+                            </>
+                        )}
                     </Nav>
                     <div className="d-flex align-items-center">
-                        <span className="me-3">Follow the developer:</span>
-                        <a href="https://www.linkedin.com/in/musa-qureshi/" target="_blank" rel="noopener noreferrer">
-                            <img
-                                src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white"
-                                alt="LinkedIn Badge"
-                            />
-                        </a>
+                        <Nav>
+                            <NavDropdown
+                                id="user-dropdown"
+                                title={<span className='aref-ruqaa-regular gold dropdown-title'>انا</span>}
+                                menuVariant="dark"
+                                align={{ lg: 'end' }}
+                            >
+                                {isLoggedIn ? (
+                                    <>
+                                        <NavDropdown.Item onClick={() => onNavigate('quiz-results')}>
+                                            View Results
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item onClick={onLogout}>
+                                            Logout
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                        >
+                                            Follow the developer
+                                        </NavDropdown.Item>
+                                    </>
+                                ) : (
+                                    <>
+                                        <NavDropdown.Item onClick={() => onNavigate('')}>
+                                            Login
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                        >
+                                            Follow the developer
+                                        </NavDropdown.Item>
+                                    </>
+                                )}
+                            </NavDropdown>
+                        </Nav>
                     </div>
                 </Navbar.Collapse>
             </Container>
@@ -45,4 +81,4 @@ const MyNavBar = ({ onNavigate }) => {
     );
 }
 
-export default MyNavBar
+export default MyNavBar;

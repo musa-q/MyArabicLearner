@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import FlashCards from '../components/FlashCards';
 import './FlashCardsPage.css'
+import axios from 'axios';
+import { capitaliseWords } from '../utils';
 
 const FlashCardsPage = ({ wordsList }) => {
     const [flashcards, setFlashcards] = useState([]);
@@ -9,12 +11,11 @@ const FlashCardsPage = ({ wordsList }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/arabic/words/${wordsList}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setFlashcards(data.translations);
+                const response = await axios.post('http://127.0.0.1:5000/flashcards/get-category-flashcards', {
+                    category_id: wordsList,
+                });
+                const data = await response.data;
+                setFlashcards(data.words);
                 setPageTitle(data.title);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -26,7 +27,7 @@ const FlashCardsPage = ({ wordsList }) => {
 
     return (
         <div className="flash-cards-page-container">
-            <h1>{pageTitle}</h1>
+            <h1>{capitaliseWords(pageTitle)}</h1>
             <div>
                 <FlashCards flashcards={flashcards} />
             </div>
