@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import './ChooseWordsPage.css';
 import axios from 'axios';
 import { capitaliseWords } from '../utils';
+import { API_URL } from '../config';
 
 const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     const [fileList, setFileList] = useState([]);
@@ -10,7 +11,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     useEffect(() => {
         const fetchFileList = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/flashcards/get-all-category-names');
+                const response = await axios.get(`${API_URL}/flashcards/get-all-category-names`);
                 setFileList(response.data);
             } catch (error) {
                 console.error('Error fetching file list:', error);

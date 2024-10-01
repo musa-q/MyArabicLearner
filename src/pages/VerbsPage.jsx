@@ -9,6 +9,7 @@ import { ReactTransliterate } from "react-transliterate";
 import "react-transliterate/dist/index.css";
 import axios from 'axios';
 import QuizResultsPage from './QuizResultsPage';
+import { API_URL } from '../config';
 
 const tenses = ["present", "past", "future"];
 const pronouns = ["i", "you_m", "you_f", "he", "she", "they", "we"];
@@ -40,7 +41,7 @@ const VerbsPage = () => {
     const createQuiz = async () => {
         const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post('http://127.0.0.1:5000/quiz/create-verb-conjugation-quiz',
+            const response = await axios.post(`${API_URL}/quiz/create-verb-conjugation-quiz`,
                 {},
                 {
                     headers: {
@@ -59,7 +60,7 @@ const VerbsPage = () => {
         setLoading(true);
         const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/quiz/get-next-question`,
+            const response = await axios.post(`${API_URL}/quiz/get-next-question`,
                 {
                     quiz_type: 'VerbConjugationQuiz'
                 },
@@ -100,7 +101,7 @@ const VerbsPage = () => {
         var guess = processText(currentAnswer);
 
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/quiz/send-answer`,
+            const response = await axios.post(`${API_URL}/quiz/send-answer`,
                 {
                     quiz_type: 'VerbConjugationQuiz',
                     user_answer: guess,

@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet";
 import LoginPage from './pages/LoginPage';
 import axios from 'axios';
 import AllQuizResultsPage from './pages/AllQuizResultsPage';
+import { API_URL } from './config';
 
 
 const App = () => {
@@ -23,7 +24,7 @@ const App = () => {
 
       if (token) {
         try {
-          const response = await axios.post('http://127.0.0.1:5000/auth/check-token',
+          const response = await axios.post(`${API_URL}/auth/check-token`,
             {},
             {
               headers: {

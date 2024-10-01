@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 
 const AppFeedback = ({ show, handleClose }) => {
@@ -27,7 +28,7 @@ const AppFeedback = ({ show, handleClose }) => {
         const token = localStorage.getItem('authToken');
 
         try {
-            const response = await axios.post('http://127.0.0.1:5000/feedback/send-feedback',
+            const response = await axios.post(`${API_URL}/feedback/send-feedback`,
                 {
                     rating: rating,
                     message: message,

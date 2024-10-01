@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ChooseWordsPage from './ChooseWordsPage';
 import WordsPracticeQuestionPage from './WordsPracticeQuestionPage';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 // Renders either choose page or flash cards
 const WordsPracticePage = () => {
@@ -20,7 +21,7 @@ const WordsPracticePage = () => {
     const createQuiz = async (listChoice) => {
         const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post('http://127.0.0.1:5000/quiz/create-vocab-quiz',
+            const response = await axios.post(`${API_URL}/quiz/create-vocab-quiz`,
                 {
                     category_id: listChoice
                 },

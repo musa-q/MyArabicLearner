@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Table, Badge, Spinner, Modal, Button, ButtonGroup } from 'react-bootstrap';
 import { capitaliseWords } from '../utils';
+import { API_URL } from '../config';
 
 const AllQuizResultsPage = () => {
     const [quizResults, setQuizResults] = useState([]);
@@ -17,7 +18,7 @@ const AllQuizResultsPage = () => {
     const loadUserData = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await axios.post('http://127.0.0.1:5000/quiz/get-completed-quizzes',
+            const response = await axios.post(`${API_URL}/quiz/get-completed-quizzes`,
                 {
                     quiz_type: quizType,
                 },
@@ -40,7 +41,7 @@ const AllQuizResultsPage = () => {
     const fetchQuizDetails = async (quiz_id) => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await axios.post('http://127.0.0.1:5000/quiz/get-quiz-details',
+            const response = await axios.post(`${API_URL}/quiz/get-quiz-details`,
                 {
                     quiz_id: quiz_id,
                     quiz_type: quizType

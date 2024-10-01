@@ -10,6 +10,7 @@ import ToastContainer from 'react-bootstrap/ToastContainer';
 import { capitaliseWords } from '../utils';
 import axios from 'axios';
 import QuizResultsPage from './QuizResultsPage';
+import { API_URL } from '../config';
 
 // Practice words by typing
 const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
@@ -33,14 +34,11 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             setResultMessage("Please answer!");
             return;
         }
-        // if (resultMessage != "Please answer!" && resultMessage != "" || resultMessage == null) {
-        //     console.log(resultMessage, 'ssafsaf');
-        //     return;
-        // }
+
         var guess = processText(currentAnswer);
 
         const token = localStorage.getItem('authToken');
-        const response = await axios.post('http://127.0.0.1:5000/quiz/send-answer',
+        const response = await axios.post(`${API_URL}/quiz/send-answer`,
             {
                 quiz_type: 'VocabQuiz',
                 user_answer: guess,
@@ -73,7 +71,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
         }
         try {
             const token = localStorage.getItem('authToken');
-            const response = await axios.post('http://127.0.0.1:5000/quiz/get-next-question',
+            const response = await axios.post(`${API_URL}/quiz/get-next-question`,
                 {
                     quiz_type: 'VocabQuiz',
                     quiz_id: quizId

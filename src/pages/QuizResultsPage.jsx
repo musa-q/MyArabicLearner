@@ -8,6 +8,7 @@ import en from 'javascript-time-ago/locale/en.json';
 import { formatInTimeZone } from 'date-fns-tz';
 import { parse } from 'date-fns';
 import './QuizResultsPage.css';
+import { API_URL } from '../config';
 
 JavascriptTimeAgo.addDefaultLocale(en);
 
@@ -18,7 +19,7 @@ const QuizResultsPage = (quiz_type) => {
 
     const getUserResults = async () => {
         const token = localStorage.getItem('authToken');
-        const response = await axios.post('http://127.0.0.1:5000/quiz/get-results',
+        const response = await axios.post(`${API_URL}/quiz/get-results`,
             {
                 quiz_type: resultsQuizType,
             },

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import './LoginPage.css';
+import { API_URL } from '../config';
 
 const LoginPage = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ const LoginPage = ({ onLogin }) => {
         setIsLoading(true);
         try {
             const payload = isNewUser ? { email, username } : { email };
-            const response = await axios.post('http://127.0.0.1:5000/auth/login', payload);
+            const response = await axios.post(`${API_URL}/auth/login`, payload);
             setMessage(response.data.message);
             if (response.data.authenticated) {
                 onLogin(response.data.token);
@@ -41,7 +42,7 @@ const LoginPage = ({ onLogin }) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await axios.post('http://127.0.0.1:5000/auth/verify', { email, token });
+            const response = await axios.post(`${API_URL}/auth/verify`, { email, token });
             setMessage(response.data.message);
             onLogin(response.data.token);
         } catch (error) {

@@ -32,7 +32,7 @@ const TypingAnimation = ({ text }) => {
                 flexDirection: 'row-reverse',
                 fontSize: '4rem',
                 fontWeight: 'bold',
-                overflow: 'hidden',
+                overflow: 'visible',
                 paddingBottom: '100px',
                 unicodeBidi: 'bidi-override',
                 justifyContent: 'flex-start',
