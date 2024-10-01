@@ -30,14 +30,15 @@ const TypingAnimation = ({ text }) => {
             style={{
                 display: 'flex',
                 flexDirection: 'row-reverse',
-                fontSize: '4rem',
+                fontSize: 'clamp(3.5rem, 8vw, 4rem)',
                 fontWeight: 'bold',
-                overflow: 'hidden',
-                paddingBottom: '100px',
+                overflow: 'visible',
                 unicodeBidi: 'bidi-override',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
                 alignItems: 'center',
                 gap: '0.3em',
+                textAlign: 'center',
+                maxWidth: '90vw',
             }}
             variants={containerVariants}
             initial="hidden"
