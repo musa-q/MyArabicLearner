@@ -70,7 +70,6 @@ const VerbsPage = () => {
                     }
                 }
             );
-            console.log('DADATA', response.data);
 
             if (response.data.all_answered === true) {
                 setShowResultsPage(true);

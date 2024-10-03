@@ -56,7 +56,6 @@ const App = () => {
   const handleLogin = (token) => {
     setIsLoggedIn(true);
     localStorage.setItem('authToken', token);
-    console.log("my token is", token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     navigateToPage('home');
   };
