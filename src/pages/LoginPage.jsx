@@ -17,9 +17,16 @@ const LoginPage = ({ onLogin }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        const token = localStorage.getItem('authToken');
         try {
             const payload = isNewUser ? { email, username } : { email };
-            const response = await axios.post(`${API_URL}/auth/login`, payload);
+            const response = await axios.post(`${API_URL}/auth/login`, payload,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             setMessage(response.data.message);
             if (response.data.authenticated) {
                 onLogin(response.data.token);
@@ -41,8 +48,15 @@ const LoginPage = ({ onLogin }) => {
     const handleVerify = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post(`${API_URL}/auth/verify`, { email, token });
+            const response = await axios.post(`${API_URL}/auth/verify`, { email, token },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             setMessage(response.data.message);
             onLogin(response.data.token);
         } catch (error) {

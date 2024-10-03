@@ -10,8 +10,16 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
 
     useEffect(() => {
         const fetchFileList = async () => {
+            const token = localStorage.getItem('authToken');
             try {
-                const response = await axios.get(`${API_URL}/flashcards/get-all-category-names`);
+                const response = await axios.post(`${API_URL}/flashcards/get-all-category-names`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
                 setFileList(response.data);
             } catch (error) {
                 console.error('Error fetching file list:', error);

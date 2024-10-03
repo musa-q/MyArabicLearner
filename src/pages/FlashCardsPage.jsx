@@ -5,16 +5,24 @@ import axios from 'axios';
 import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
 
-const FlashCardsPage = ({ wordsList }) => {
+const FlashCardsPage = ({ wordsList, category_name }) => {
     const [flashcards, setFlashcards] = useState([]);
     const [pageTitle, setPageTitle] = useState("Words Practice");
 
     useEffect(() => {
         const fetchData = async () => {
+            const token = localStorage.getItem('authToken');
             try {
-                const response = await axios.post(`${API_URL}/flashcards/get-category-flashcards`, {
-                    category_id: wordsList,
-                });
+                const response = await axios.post(`${API_URL}/flashcards/get-category-flashcards`,
+                    {
+                        category_id: wordsList,
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
                 const data = await response.data;
                 setFlashcards(data.words);
                 setPageTitle(data.title);
@@ -28,7 +36,7 @@ const FlashCardsPage = ({ wordsList }) => {
 
     return (
         <div className="flash-cards-page-container">
-            <h1>{capitaliseWords(pageTitle)}</h1>
+            <h1>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
             <div>
                 <FlashCards flashcards={flashcards} />
             </div>

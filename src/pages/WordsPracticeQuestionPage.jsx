@@ -84,7 +84,6 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             );
 
             const data = response.data;
-            console.log('DADATA', data, quizId);
             if (data.all_answered == true) {
                 setShowResultsPage(true);
                 return;
