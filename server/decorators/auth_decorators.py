@@ -8,7 +8,6 @@ def require_auth(allowed_roles=None):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             user_id = user_utils.get_user_id_from_request()
-            print('userrrrrrr id',user_id)
             if not user_id:
                 return jsonify({'error': 'Unauthorized'}), 401
 
@@ -17,7 +16,6 @@ def require_auth(allowed_roles=None):
                 return jsonify({'error': 'User not found'}), 404
 
             if allowed_roles:
-                print(user.role)
                 if not any(role in user.role for role in allowed_roles):
                     return jsonify({'error': 'Access denied'}), 403
 

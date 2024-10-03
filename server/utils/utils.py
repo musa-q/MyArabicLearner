@@ -28,7 +28,7 @@ class Utils:
         if pronoun_input in self.list_pronouns:
             return True
         return False
-    
+
     def retry(self, attempts, command, should_retry, on_error=None):
         last_exception = None
         for attempt in range(1, attempts + 1):
@@ -38,15 +38,12 @@ class Utils:
                     return result
             except Exception as e:
                 last_exception = e
-                # Only handle retries or exceptions silently, no print here
 
                 if attempt == attempts:
-                    # If this is the last attempt, raise the last exception
                     if last_exception:
                         raise last_exception
 
                 if not should_retry():
-                    # If we should not retry, raise the last exception
                     if last_exception:
                         raise last_exception
 

@@ -306,7 +306,6 @@ def get_results(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
-    print('the quiz type is: ', quiz_type)
     if not quiz_utils.check_all_questions_answered(quiz_type, user_id):
         return jsonify({'quiz_answered': False, 'results': None}), 409
 
