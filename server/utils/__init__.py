@@ -5,3 +5,5 @@ from .user import UserUtils
 utils = Utils()
 quiz_utils = QuizUtils()
 user_utils = UserUtils()
+
+__all__ = ['utils', 'quiz_utils', 'user_utils']

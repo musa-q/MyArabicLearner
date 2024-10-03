@@ -7,3 +7,18 @@ from .vocab_word import VocabWord
 from .vocab_quiz import VocabQuiz, VocabQuizQuestion
 from .verb_quiz import VerbConjugationQuiz, VerbConjugationQuizQuestion
 from .feedback import Feedback
+
+__all__ = [
+    'db',
+    'User',
+    'UserSession',
+    'Verb',
+    'VerbConjugation',
+    'VocabCategory',
+    'VocabWord',
+    'VocabQuiz',
+    'VocabQuizQuestion',
+    'VerbConjugationQuiz',
+    'VerbConjugationQuizQuestion',
+    'Feedback',
+]
