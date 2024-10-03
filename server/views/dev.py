@@ -3,6 +3,7 @@ import os
 import json
 from ..models import db, User, Verb, VerbConjugation, VocabCategory, VocabWord, VocabQuiz, VocabQuizQuestion, VerbConjugationQuiz, VerbConjugationQuizQuestion
 from ..utils import utils
+from ..decorators import require_auth
 
 class PopulateDB:
     def __init__(self):
@@ -124,12 +125,14 @@ populateDb = PopulateDB()
 
 dev_bp = Blueprint('dev', __name__)
 
-@dev_bp.route('/start-words', methods=['GET'])
-def start_words():
+@dev_bp.route('/start-words', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def start_words(*args):
     populateDb.start_words()
     return jsonify({"message": "Words processing started"}), 200
 
-@dev_bp.route('/start-verbs', methods=['GET'])
-def start_verbs():
+@dev_bp.route('/start-verbs', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def start_verbs(*args):
     populateDb.start_verbs()
     return jsonify({"message": "Verbs processing started"}), 200

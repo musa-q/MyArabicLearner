@@ -8,6 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     auth_token = db.Column(db.String(100), unique=True, nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
+    role = db.Column(db.String(20), nullable=False, default='basic')
     sessions = db.relationship('UserSession', backref='user', lazy=True)
 
     def __repr__(self):

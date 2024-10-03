@@ -2,13 +2,14 @@ from flask import Blueprint, request, jsonify
 from ..models import Feedback, db
 from datetime import datetime
 from ..utils import user_utils
+from ..decorators import require_auth
 
 feedback_bp = Blueprint('feedback', __name__)
 
 @feedback_bp.route('/send-feedback', methods=['POST'])
-def submit_feedback():
+@require_auth()
+def submit_feedback(user_id):
     data = request.json
-    user_id = user_utils.get_user_id_from_request()
 
     new_feedback = Feedback(
         user_id=user_id,
@@ -22,8 +23,9 @@ def submit_feedback():
 
     return jsonify({"message": "Feedback submitted successfully"}), 200
 
-@feedback_bp.route('/get-feedback', methods=['GET'])
-def get_feedback():
+@feedback_bp.route('/get-feedback', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def get_feedback(*args):
     feedback = Feedback.query.all()
 
     feedback_list = []

@@ -3,6 +3,7 @@ from ..models import db, User, UserSession
 from ..utils import user_utils
 from datetime import datetime, timedelta
 from ..config import Config
+from ..decorators import require_auth
 import secrets
 import smtplib
 from email.mime.text import MIMEText
@@ -79,7 +80,7 @@ def login():
     if not user:
         if not username:
             return jsonify({'error': 'Email does not exist. Enter a username to signup'}), 404
-        user = User(email=email, username=username)
+        user = User(email=email, username=username, role='basic')
         db.session.add(user)
         db.session.commit()
 
@@ -120,6 +121,7 @@ def verify():
     return jsonify({'message': 'Authentication successful', 'token': token}), 200
 
 @auth_bp.route('/logout', methods=['POST'])
+@require_auth()
 def logout():
     data = request.get_json()
     email = data.get('email')
@@ -136,6 +138,7 @@ def logout():
     return jsonify({'message': 'Logged out successfully'}), 200
 
 @auth_bp.route('/logout-all', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
 def logout_all():
     try:
         num_deleted = UserSession.query.delete()

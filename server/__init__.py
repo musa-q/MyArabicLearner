@@ -3,7 +3,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from .config import Config
-from .ip_restriction import check_ip
 from flask_cors import CORS
 
 db = SQLAlchemy()
@@ -14,8 +13,6 @@ def create_app():
 
     db.init_app(app)
     migrate = Migrate(app, db)
-
-    app.before_request(check_ip)
 
     CORS(app)
 
@@ -31,5 +28,8 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+    from .commands import cli_commands
+    cli_commands.init_app(app)
 
     return app

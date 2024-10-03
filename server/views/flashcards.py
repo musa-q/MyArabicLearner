@@ -1,17 +1,20 @@
 from flask import Blueprint, request, jsonify
 from ..models import db, VocabCategory, VocabWord
 from ..utils import utils
+from ..decorators import require_auth
 
 flashcards_bp = Blueprint('flashcards', __name__)
 
-@flashcards_bp.route('/get-all-category-names', methods=['GET'])
-def get_all_category_names():
+@flashcards_bp.route('/get-all-category-names', methods=['POST'])
+@require_auth()
+def get_all_category_names(*args):
     categories = VocabCategory.query.all()
     category_list = [{'id': category.id, 'category_name': category.category_name} for category in categories]
     return jsonify(category_list), 200
 
 @flashcards_bp.route('/get-category-flashcards', methods=['POST'])
-def get_category_flashcards():
+@require_auth()
+def get_category_flashcards(*args):
     data = request.get_json()
     category_id = data.get('category_id')
     category_name_input = data.get('category_name_input')

@@ -5,19 +5,19 @@ from sqlalchemy.sql.expression import func
 from sqlalchemy import desc
 from datetime import datetime, timedelta
 from ..config import Config
+from ..decorators import require_auth
 import time
 from sqlalchemy.exc import *
 
 quiz_bp = Blueprint('quiz', __name__)
 
 @quiz_bp.route('/create-vocab-quiz', methods=['POST'])
-def create_vocab_quiz():
+@require_auth()
+def create_vocab_quiz(user_id):
     data = request.get_json()
     category_id = data.get('category_id')
     num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
     category_name_input = data.get('category_name_input')
-
-    user_id = user_utils.get_user_id_from_request()
 
     if not all([user_id, category_id]) and not all([user_id, category_name_input]):
         return jsonify({'error': 'User ID and Category ID are required'}), 400
@@ -61,11 +61,10 @@ def create_vocab_quiz():
         return jsonify({'error': 'Database integrity error occurred'}), 500
 
 @quiz_bp.route('/create-verb-conjugation-quiz', methods=['POST'])
-def create_verb_conjugation_quiz():
+@require_auth()
+def create_verb_conjugation_quiz(user_id):
     data = request.get_json()
     num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
-
-    user_id = user_utils.get_user_id_from_request()
 
     if not user_id:
         return jsonify({'error': 'User ID is required'}), 400
@@ -109,144 +108,140 @@ def create_verb_conjugation_quiz():
 
 #####
 
-@quiz_bp.route('/vocab-quizzes', methods=['GET'])
-def view_user_vocab_quizzes():
-    user_id = user_utils.get_user_id_from_request()
+# @quiz_bp.route('/vocab-quizzes', methods=['POST'])
+# @require_auth()
+# def view_user_vocab_quizzes(user_id):
+#     quizzes = VocabQuiz.query.filter_by(user_id=user_id).all()
+#     quizzes_list = [{
+#         'id': quiz.id,
+#         'category_id': quiz.category_id,
+#         'category_name': quiz.category.category_name,
+#         'score': quiz.score,
+#         'total_questions': quiz.total_questions,
+#         'date_taken': quiz.date_taken.isoformat()
+#     } for quiz in quizzes]
+#     return jsonify(quizzes_list), 200
 
-    quizzes = VocabQuiz.query.filter_by(user_id=user_id).all()
-    quizzes_list = [{
-        'id': quiz.id,
-        'category_id': quiz.category_id,
-        'category_name': quiz.category.category_name,
-        'score': quiz.score,
-        'total_questions': quiz.total_questions,
-        'date_taken': quiz.date_taken.isoformat()
-    } for quiz in quizzes]
-    return jsonify(quizzes_list), 200
+# @quiz_bp.route('/vocab-quizzes/<int:quiz_id>', methods=['GET'])
+# def view_vocab_quiz(quiz_id):
+#     quiz = VocabQuiz.query.get_or_404(quiz_id)
+#     questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz_id).all()
+#     questions_list = [{
+#         'id': question.id,
+#         'word_id': question.word_id,
+#         'english': question.word.english,
+#         'arabic': question.word.arabic,
+#         'is_correct': question.is_correct,
+#         'is_answered': question.is_answered
+#     } for question in questions]
 
-@quiz_bp.route('/vocab-quizzes/<int:quiz_id>', methods=['GET'])
-def view_vocab_quiz(quiz_id):
-    quiz = VocabQuiz.query.get_or_404(quiz_id)
-    questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz_id).all()
-    questions_list = [{
-        'id': question.id,
-        'word_id': question.word_id,
-        'english': question.word.english,
-        'arabic': question.word.arabic,
-        'is_correct': question.is_correct,
-        'is_answered': question.is_answered
-    } for question in questions]
+#     quiz_data = {
+#         'id': quiz.id,
+#         'user_id': quiz.user_id,
+#         'category_id': quiz.category_id,
+#         'category_name': quiz.category.category_name,
+#         'score': quiz.score,
+#         'total_questions': quiz.total_questions,
+#         'date_taken': quiz.date_taken.isoformat(),
+#         'questions': questions_list
+#     }
+#     return jsonify(quiz_data), 200
 
-    quiz_data = {
-        'id': quiz.id,
-        'user_id': quiz.user_id,
-        'category_id': quiz.category_id,
-        'category_name': quiz.category.category_name,
-        'score': quiz.score,
-        'total_questions': quiz.total_questions,
-        'date_taken': quiz.date_taken.isoformat(),
-        'questions': questions_list
-    }
-    return jsonify(quiz_data), 200
+# @quiz_bp.route('/verb-conjugation-quizzes', methods=['POST'])
+# @require_auth()
+# def view_user_verb_conjugation_quizzes(user_id):
+#     quizzes = VerbConjugationQuiz.query.filter_by(user_id=user_id).all()
+#     quizzes_list = [{
+#         'id': quiz.id,
+#         'score': quiz.score,
+#         'total_questions': quiz.total_questions,
+#         'date_taken': quiz.date_taken.isoformat()
+#     } for quiz in quizzes]
+#     return jsonify(quizzes_list), 200
 
-@quiz_bp.route('/verb-conjugation-quizzes', methods=['GET'])
-def view_user_verb_conjugation_quizzes():
-    user_id = user_utils.get_user_id_from_request()
+# @quiz_bp.route('/verb-conjugation-quizzes/<int:quiz_id>', methods=['GET'])
+# def view_verb_conjugation_quiz(quiz_id):
+#     quiz = VerbConjugationQuiz.query.get_or_404(quiz_id)
+#     questions = VerbConjugationQuizQuestion.query.filter_by(quiz_id=quiz_id).all()
+#     questions_list = [{
+#         'id': question.id,
+#         'verb_conjugation_id': question.verb_conjugation_id,
+#         'verb': question.verb_conjugation.verb.english_verb,
+#         'tense': question.verb_conjugation.tense,
+#         'pronoun': question.verb_conjugation.pronoun,
+#         'conjugation': question.verb_conjugation.conjugation,
+#         'is_correct': question.is_correct,
+#         'is_answered': question.is_answered
+#     } for question in questions]
 
-    quizzes = VerbConjugationQuiz.query.filter_by(user_id=user_id).all()
-    quizzes_list = [{
-        'id': quiz.id,
-        'score': quiz.score,
-        'total_questions': quiz.total_questions,
-        'date_taken': quiz.date_taken.isoformat()
-    } for quiz in quizzes]
-    return jsonify(quizzes_list), 200
-
-@quiz_bp.route('/verb-conjugation-quizzes/<int:quiz_id>', methods=['GET'])
-def view_verb_conjugation_quiz(quiz_id):
-    quiz = VerbConjugationQuiz.query.get_or_404(quiz_id)
-    questions = VerbConjugationQuizQuestion.query.filter_by(quiz_id=quiz_id).all()
-    questions_list = [{
-        'id': question.id,
-        'verb_conjugation_id': question.verb_conjugation_id,
-        'verb': question.verb_conjugation.verb.english_verb,
-        'tense': question.verb_conjugation.tense,
-        'pronoun': question.verb_conjugation.pronoun,
-        'conjugation': question.verb_conjugation.conjugation,
-        'is_correct': question.is_correct,
-        'is_answered': question.is_answered
-    } for question in questions]
-
-    quiz_data = {
-        'id': quiz.id,
-        'user_id': quiz.user_id,
-        'score': quiz.score,
-        'total_questions': quiz.total_questions,
-        'date_taken': quiz.date_taken.isoformat(),
-        'questions': questions_list
-    }
-    return jsonify(quiz_data), 200
+#     quiz_data = {
+#         'id': quiz.id,
+#         'user_id': quiz.user_id,
+#         'score': quiz.score,
+#         'total_questions': quiz.total_questions,
+#         'date_taken': quiz.date_taken.isoformat(),
+#         'questions': questions_list
+#     }
+#     return jsonify(quiz_data), 200
 
 ##########
 
-@quiz_bp.route('/current-vocab-quizzes', methods=['GET'])
-def view_current_user_vocab_quizzes():
-    user_id = user_utils.get_user_id_from_request()
+# @quiz_bp.route('/current-vocab-quizzes', methods=['POST'])
+# @require_auth()
+# def view_current_user_vocab_quizzes(user_id):
+#     data = request.get_json()
+#     quiz_type = data.get('quiz_type', 'VocabQuiz')
+#     quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
+#     if quiz_type == 'VocabQuiz':
+#         questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
+#         questions_list = [{
+#             'id': question.id,
+#             'word_id': question.word_id,
+#             'english': question.word.english,
+#             'arabic': question.word.arabic,
+#             'is_correct': question.is_correct,
+#             'is_answered': question.is_answered
+#         } for question in questions]
 
-    data = request.get_json()
-    quiz_type = data.get('quiz_type', 'VocabQuiz')
-    quiz = quiz_utils.get_current_quiz(quiz_type, user_id)
-    if quiz_type == 'VocabQuiz':
-        questions = VocabQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
-        questions_list = [{
-            'id': question.id,
-            'word_id': question.word_id,
-            'english': question.word.english,
-            'arabic': question.word.arabic,
-            'is_correct': question.is_correct,
-            'is_answered': question.is_answered
-        } for question in questions]
+#         quiz_data = {
+#             'id': quiz.id,
+#             'user_id': quiz.user_id,
+#             'category_id': quiz.category_id,
+#             'category_name': quiz.category.category_name,
+#             'score': quiz.score,
+#             'total_questions': quiz.total_questions,
+#             'date_taken': quiz.date_taken.isoformat(),
+#             'questions': questions_list
+#         }
+#     elif quiz_type == 'VerbConjugationQuiz':
+#         questions = VerbConjugationQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
+#         questions_list = [{
+#             'id': question.id,
+#             'verb_conjugation_id': question.verb_conjugation_id,
+#             'verb': question.verb_conjugation.verb.english_verb,
+#             'tense': question.verb_conjugation.tense,
+#             'pronoun': question.verb_conjugation.pronoun,
+#             'conjugation': question.verb_conjugation.conjugation,
+#             'is_correct': question.is_correct,
+#             'is_answered': question.is_answered
+#         } for question in questions]
 
-        quiz_data = {
-            'id': quiz.id,
-            'user_id': quiz.user_id,
-            'category_id': quiz.category_id,
-            'category_name': quiz.category.category_name,
-            'score': quiz.score,
-            'total_questions': quiz.total_questions,
-            'date_taken': quiz.date_taken.isoformat(),
-            'questions': questions_list
-        }
-    elif quiz_type == 'VerbConjugationQuiz':
-        questions = VerbConjugationQuizQuestion.query.filter_by(quiz_id=quiz.id).all()
-        questions_list = [{
-            'id': question.id,
-            'verb_conjugation_id': question.verb_conjugation_id,
-            'verb': question.verb_conjugation.verb.english_verb,
-            'tense': question.verb_conjugation.tense,
-            'pronoun': question.verb_conjugation.pronoun,
-            'conjugation': question.verb_conjugation.conjugation,
-            'is_correct': question.is_correct,
-            'is_answered': question.is_answered
-        } for question in questions]
+#         quiz_data = {
+#             'id': quiz.id,
+#             'user_id': quiz.user_id,
+#             'score': quiz.score,
+#             'total_questions': quiz.total_questions,
+#             'date_taken': quiz.date_taken.isoformat(),
+#             'questions': questions_list
+#         }
+#     else:
+#         return jsonify({'error': 'quiz_type is unset'}), 400
 
-        quiz_data = {
-            'id': quiz.id,
-            'user_id': quiz.user_id,
-            'score': quiz.score,
-            'total_questions': quiz.total_questions,
-            'date_taken': quiz.date_taken.isoformat(),
-            'questions': questions_list
-        }
-    else:
-        return jsonify({'error': 'quiz_type is unset'}), 400
-
-    return jsonify(quiz_data), 200
+#     return jsonify(quiz_data), 200
 
 @quiz_bp.route('/get-next-question', methods=['POST'])
-def get_quiz_next_question():
-    user_id = user_utils.get_user_id_from_request()
-
+@require_auth()
+def get_quiz_next_question(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id', None)
@@ -281,9 +276,8 @@ def get_quiz_next_question():
 
 
 @quiz_bp.route('/send-answer', methods=['POST'])
-def send_answer_from_client():
-    user_id = user_utils.get_user_id_from_request()
-
+@require_auth()
+def send_answer_from_client(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     user_answer = data.get('user_answer')
@@ -297,10 +291,9 @@ def send_answer_from_client():
 
     return jsonify({'answer_response': answer_response, 'question_id': res.id}), 200
 
-@quiz_bp.route('/check-quiz-finished', methods=['GET'])
-def check_quiz_finished():
-    user_id = user_utils.get_user_id_from_request()
-
+@quiz_bp.route('/check-quiz-finished', methods=['POST'])
+@require_auth()
+def check_quiz_finished(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -308,9 +301,8 @@ def check_quiz_finished():
     return jsonify({'finished': quiz_finished_bool}), 200
 
 @quiz_bp.route('/get-results', methods=['POST'])
-def get_results():
-    user_id = user_utils.get_user_id_from_request()
-
+@require_auth()
+def get_results(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -323,9 +315,8 @@ def get_results():
 
 
 @quiz_bp.route('/get-completed-quizzes', methods=['POST'])
-def get_completed_quizzes():
-    user_id = user_utils.get_user_id_from_request()
-
+@require_auth()
+def get_completed_quizzes(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -341,9 +332,8 @@ def get_completed_quizzes():
     }), 200
 
 @quiz_bp.route('/get-quiz-details', methods=['POST'])
-def get_quiz_details():
-    user_id = user_utils.get_user_id_from_request()
-
+@require_auth()
+def get_quiz_details(user_id):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id')
