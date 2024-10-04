@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react'
 import HomePage from './pages/HomePage'
-import VerbsPage from './pages/VerbsPage'
 import WordsFlashcardsPage from './pages/WordsFlashcardsPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavBar from './components/NavBar';
-import WordsPracticePage from './pages/WordsPracticePage';
 import './components/Scrollbar.css'
 import './App.css'
 import { Helmet } from "react-helmet";
 import LoginPage from './pages/LoginPage';
 import axios from 'axios';
+import QuizTypesPage from './pages/QuizTypesPage';
 import AllQuizResultsPage from './pages/AllQuizResultsPage';
 import { API_URL } from './config';
 
@@ -98,9 +97,8 @@ const App = () => {
       {isLoggedIn && (
         <>
           {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
-          {currentPage === 'verbs' && <VerbsPage />}
           {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
-          {currentPage === 'wordspractice' && <WordsPracticePage />}
+          {currentPage === 'quiz' && <QuizTypesPage />}
           {currentPage === 'quiz-results' && <AllQuizResultsPage />}
         </>
       )}
