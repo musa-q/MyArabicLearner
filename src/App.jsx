@@ -16,6 +16,27 @@ import { API_URL } from './config';
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState(null);
+
+  const getUserDetails = async () => {
+    if (!username) {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(`${API_URL}/homepage`,
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      setUsername(response.data.username);
+      console.log(response.data.other_info);
+    }
+  }
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -92,11 +113,11 @@ const App = () => {
         <meta name="twitter:description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
-      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} username={username} />
       {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
       {isLoggedIn && (
         <>
-          {currentPage === 'home' && <HomePage onNavigate={navigateToPage} />}
+          {currentPage === 'home' && <HomePage onNavigate={navigateToPage} username={username} />}
           {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
           {currentPage === 'quiz' && <QuizTypesPage />}
           {currentPage === 'quiz-results' && <AllQuizResultsPage />}

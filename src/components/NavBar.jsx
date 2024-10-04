@@ -6,7 +6,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate, isLoggedIn, onLogout }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleNavigate = (path) => {
@@ -46,6 +46,12 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout }) => {
                     >
                         {isLoggedIn ? (
                             <>
+                                {username &&
+                                    <>
+                                        <NavDropdown.Item style={{ 'pointerEvents': 'none', 'textAlign': 'center' }}>{username}</NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                    </>
+                                }
                                 <NavDropdown.Item onClick={() => onNavigate('quiz-results')}>
                                     View Results
                                 </NavDropdown.Item>

@@ -100,7 +100,7 @@ const HomePage = ({ onNavigate }) => {
                     <Toast.Header>
                         <strong className="me-auto">Feedback</strong>
                     </Toast.Header>
-                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>We'd love your feedback! Click this pop-up!</Toast.Body>
+                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>{username}, we'd love your feedback! Click this pop-up!</Toast.Body>
                 </Toast>
             </ToastContainer>
         </div >

@@ -10,8 +10,8 @@ const QuizTypesPage = () => {
         return (
             <div>
                 <h1>Choose a quiz type</h1>
-                <Button variant="primary" onClick={() => clickQuizType('VocabQuiz')}>Vocab Quiz</Button>
-                <Button variant="primary" onClick={() => clickQuizType('VerbConjugationQuiz')}>Verb Conjugation Quiz</Button>
+                <Button centered variant="primary" onClick={() => clickQuizType('VocabQuiz')}>Vocab Quiz</Button>
+                <Button centered variant="primary" onClick={() => clickQuizType('VerbConjugationQuiz')}>Verb Conjugation Quiz</Button>
             </div>
         );
     };
