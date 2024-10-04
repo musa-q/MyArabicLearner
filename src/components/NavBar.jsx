@@ -32,7 +32,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username }) => {
                         {isLoggedIn && (
                             <>
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
-                                <Nav.Link onClick={() => handleNavigate('quiz')}>Quiz</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
                             </>
                         )}
                     </Nav>

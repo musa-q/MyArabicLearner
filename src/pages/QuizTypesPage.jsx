@@ -1,17 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import WordsPracticePage from './WordsPracticePage';
 import VerbsPage from './VerbsPage';
+import './QuizTypesPage.css';
 
 const QuizTypesPage = () => {
     const [quizType, setQuizType] = useState(null);
 
     const chooseQuizType = () => {
         return (
-            <div>
+            <div className="choose-quiz-type-container">
                 <h1>Choose a quiz type</h1>
-                <Button centered variant="primary" onClick={() => clickQuizType('VocabQuiz')}>Vocab Quiz</Button>
-                <Button centered variant="primary" onClick={() => clickQuizType('VerbConjugationQuiz')}>Verb Conjugation Quiz</Button>
+                <div className="buttons-list">
+                    <Button className="button p-3"
+                        variant="outline-light"
+                        type="button"
+                        onClick={() => clickQuizType('VocabQuiz')}>
+                        Vocab Quiz
+                    </Button>
+
+                    <Button className="button p-3"
+                        variant="outline-light"
+                        type="button"
+                        onClick={() => clickQuizType('VerbConjugationQuiz')}>
+                        Verb Conjugation Quiz
+                    </Button>
+                </div>
             </div>
         );
     };
@@ -30,7 +44,7 @@ const QuizTypesPage = () => {
     };
 
     return (
-        <div className="quiz-types-page">
+        <div>
             {quizType === null ? chooseQuizType() : loadQuizPage()}
         </div>
     );

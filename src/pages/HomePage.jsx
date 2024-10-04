@@ -9,7 +9,7 @@ import logo from '/logo_main.svg';
 import { motion, useAnimation } from "framer-motion";
 import TypingAnimation from '../components/TypingAnimation';
 
-const HomePage = ({ onNavigate }) => {
+const HomePage = ({ onNavigate, username }) => {
     const [showFeedbackToast, setShowFeedbackToast] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
