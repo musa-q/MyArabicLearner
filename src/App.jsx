@@ -11,6 +11,7 @@ import axios from 'axios';
 import QuizTypesPage from './pages/QuizTypesPage';
 import AllQuizResultsPage from './pages/AllQuizResultsPage';
 import { API_URL } from './config';
+import CheatsheetTypesPage from './pages/CheatsheetTypesPage';
 
 
 const App = () => {
@@ -121,6 +122,7 @@ const App = () => {
           {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
           {currentPage === 'quiz' && <QuizTypesPage />}
           {currentPage === 'quiz-results' && <AllQuizResultsPage />}
+          {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
         </>
       )}
     </div>

@@ -33,6 +33,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username }) => {
                             <>
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
                                 <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('cheatsheet')}>Cheatsheets</Nav.Link>
                             </>
                         )}
                     </Nav>

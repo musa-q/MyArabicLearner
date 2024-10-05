@@ -9,7 +9,7 @@ const QuizTypesPage = () => {
 
     const chooseQuizType = () => {
         return (
-            <div className="choose-quiz-type-container">
+            <div className="choose-type-container">
                 <h1>Choose a quiz type</h1>
                 <div className="buttons-list">
                     <Button className="button p-3"
