@@ -20,7 +20,7 @@ users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/view-users', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def view_users():
+def view_users(*args, **kwargs):
     users = User.query.all()
     user_list = [{'id': cat.id, 'username': cat.username, 'email': cat.email} for cat in users]
     return jsonify(user_list), 200
