@@ -19,7 +19,12 @@ const LoginPage = ({ onLogin }) => {
         setIsLoading(true);
         const token = localStorage.getItem('authToken');
         try {
-            const payload = isNewUser ? { email, username } : { email };
+            const payload = isNewUser ? {
+                'email': email,
+                'username': username,
+            } : {
+                'email': email,
+            };
             const response = await axios.post(`${API_URL}/auth/login`, payload,
                 {
                     headers: {
@@ -50,7 +55,11 @@ const LoginPage = ({ onLogin }) => {
         setIsLoading(true);
         const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.post(`${API_URL}/auth/verify`, { email, token },
+            const response = await axios.post(`${API_URL}/auth/verify`,
+                {
+                    'email': email,
+                    'token': token,
+                },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
