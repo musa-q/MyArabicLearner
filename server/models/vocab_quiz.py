@@ -9,9 +9,8 @@ class VocabQuiz(db.Model):
     total_questions = db.Column(db.Integer, nullable=False)
     date_taken = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
-    user = db.relationship('User', backref=db.backref('vocab_quizzes', lazy=True))
     category = db.relationship('VocabCategory', backref=db.backref('quizzes', lazy=True))
-    questions = db.relationship('VocabQuizQuestion', backref='quiz', lazy=True)
+    questions = db.relationship('VocabQuizQuestion', cascade='all, delete-orphan', backref='quiz', lazy=True)
 
     __table_args__ = (db.UniqueConstraint('user_id', 'date_taken', name='uq_user_date'),)
 
@@ -24,7 +23,7 @@ class VocabQuizQuestion(db.Model):
     word_id = db.Column(db.Integer, db.ForeignKey('vocab_word.id'), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False)
     is_answered = db.Column(db.Boolean, nullable=False)
-    user_answer = db.Column(db.String, nullable=True)  
+    user_answer = db.Column(db.String, nullable=True)
 
     word = db.relationship('VocabWord', backref=db.backref('quiz_questions', lazy=True))
 

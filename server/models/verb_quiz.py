@@ -8,8 +8,7 @@ class VerbConjugationQuiz(db.Model):
     total_questions = db.Column(db.Integer, nullable=False)
     date_taken = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
-    user = db.relationship('User', backref=db.backref('verb_conjugation_quizzes', lazy=True))
-    questions = db.relationship('VerbConjugationQuizQuestion', backref='quiz', lazy=True)
+    questions = db.relationship('VerbConjugationQuizQuestion', cascade='all, delete-orphan', backref='quiz', lazy=True)
 
     __table_args__ = (db.UniqueConstraint('user_id', 'date_taken', name='uq_user_date'),)
 

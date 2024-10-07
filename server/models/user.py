@@ -9,7 +9,11 @@ class User(db.Model):
     auth_token = db.Column(db.String(100), unique=True, nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.String(20), nullable=False, default='basic')
-    sessions = db.relationship('UserSession', backref='user', lazy=True)
+
+    sessions = db.relationship('UserSession', cascade='all, delete-orphan', backref='user', lazy=True)
+    vocab_quizzes = db.relationship('VocabQuiz', cascade='all, delete-orphan', backref='user', lazy=True)
+    verb_conjugation_quizzes = db.relationship('VerbConjugationQuiz', cascade='all, delete-orphan', backref='user', lazy=True)
+    feedback = db.relationship('Feedback', cascade='all, delete-orphan', backref='user', lazy=True)
 
     def __repr__(self):
         return f'<User {self.username}>'

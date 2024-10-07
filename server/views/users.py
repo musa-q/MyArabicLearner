@@ -46,7 +46,7 @@ def delete_user(*args, **kwargs):
     try:
         db.session.delete(user)
         db.session.commit()
-        return jsonify({'message': f'User {username} deleted successfully'}), 200
+        return jsonify({'message': f'User {username or email} and all associated data deleted successfully'}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'An error occurred while deleting the user: {str(e)}'}), 500
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
