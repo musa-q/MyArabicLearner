@@ -1,1 +1,65 @@
-{"title": "Months", "translations": [{"arabic": "يناير", "romanized": "Yanayir", "english": "January"}, {"arabic": "فبراير", "romanized": "Fibrayir", "english": "February"}, {"arabic": "مارس", "romanized": "Maris", "english": "March"}, {"arabic": "أبريل", "romanized": "Abril", "english": "April"}, {"arabic": "مايو", "romanized": "Mayu", "english": "May"}, {"arabic": "يونيو", "romanized": "Yunyu", "english": "June"}, {"arabic": "يوليو", "romanized": "Yulyu", "english": "July"}, {"arabic": "أغسطس", "romanized": "Agustus", "english": "August"}, {"arabic": "سبتمبر", "romanized": "Sabtimbir", "english": "September"}, {"arabic": "أكتوبر", "romanized": "Oktubar", "english": "October"}, {"arabic": "نوفمبر", "romanized": "Nufimbir", "english": "November"}, {"arabic": "ديسمبر", "romanized": "Disimbar", "english": "December"}]}
+{
+    "title": "Months",
+    "translations": [
+        {
+            "arabic": "يناير",
+            "romanized": "Yanayir",
+            "english": "January"
+        },
+        {
+            "arabic": "فبراير",
+            "romanized": "Fibrayir",
+            "english": "February"
+        },
+        {
+            "arabic": "مارس",
+            "romanized": "Maris",
+            "english": "March"
+        },
+        {
+            "arabic": "أبريل",
+            "romanized": "Abril",
+            "english": "April"
+        },
+        {
+            "arabic": "مايو",
+            "romanized": "Mayu",
+            "english": "May"
+        },
+        {
+            "arabic": "يونيو",
+            "romanized": "Yunyu",
+            "english": "June"
+        },
+        {
+            "arabic": "يوليو",
+            "romanized": "Yulyu",
+            "english": "July"
+        },
+        {
+            "arabic": "أغسطس",
+            "romanized": "Agustus",
+            "english": "August"
+        },
+        {
+            "arabic": "سبتمبر",
+            "romanized": "Sabtimbir",
+            "english": "September"
+        },
+        {
+            "arabic": "أكتوبر",
+            "romanized": "Oktubar",
+            "english": "October"
+        },
+        {
+            "arabic": "نوفمبر",
+            "romanized": "Nufimbir",
+            "english": "November"
+        },
+        {
+            "arabic": "ديسمبر",
+            "romanized": "Disimbar",
+            "english": "December"
+        }
+    ]
+}
