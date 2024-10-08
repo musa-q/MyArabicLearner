@@ -37,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     const verifyToken = async () => {
