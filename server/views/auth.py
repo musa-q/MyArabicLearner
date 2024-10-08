@@ -91,6 +91,7 @@ def login():
         return jsonify({
             'message': 'Authenticated already',
             'token': user_token,
+            'email': email,
             'authenticated': True
         }), 200
 
@@ -118,7 +119,7 @@ def verify():
 
     create_or_update_session(user, ip_address)
 
-    return jsonify({'message': 'Authentication successful', 'token': token}), 200
+    return jsonify({'message': 'Authentication successful', 'token': token, 'email': email}), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 @require_auth()

@@ -74,9 +74,10 @@ const App = () => {
     setCurrentPage(page);
   };
 
-  const handleLogin = (token) => {
+  const handleLogin = (token, email) => {
     setIsLoggedIn(true);
     localStorage.setItem('authToken', token);
+    localStorage.setItem('userEmail', email);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     navigateToPage('home');
   };
@@ -84,6 +85,7 @@ const App = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
     delete axios.defaults.headers.common['Authorization'];
     navigateToPage('home');
   };

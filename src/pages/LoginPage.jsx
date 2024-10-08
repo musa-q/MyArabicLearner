@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import './LoginPage.css';
@@ -13,6 +13,14 @@ const LoginPage = ({ onLogin }) => {
     const [isNewUser, setIsNewUser] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [storedEmail, setStoredEmail] = useState(null);
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setStoredEmail(storedEmail);
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,7 +35,7 @@ const LoginPage = ({ onLogin }) => {
             const response = await axios.post(`${API_URL}/auth/login`, payload);
             setMessage(response.data.message);
             if (response.data.authenticated) {
-                onLogin(response.data.token);
+                onLogin(response.data.token, response.data.email);
             } else {
                 setShowTokenInput(true);
             }
@@ -54,7 +62,7 @@ const LoginPage = ({ onLogin }) => {
                 }
             );
             setMessage(response.data.message);
-            onLogin(response.data.token);
+            onLogin(response.data.token, response.data.email);
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {
@@ -76,7 +84,7 @@ const LoginPage = ({ onLogin }) => {
                                 <Form.Control
                                     type="email"
                                     placeholder="Enter email"
-                                    value={email}
+                                    value={storedEmail || email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
