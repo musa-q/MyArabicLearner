@@ -109,7 +109,7 @@ const CheckVocabPage = () => {
 
     return (
         <Container>
-            <h1 className='pt-4 text-center'>Admin Vocab Editor</h1>
+            <h1 className='pt-4 text-center'>Check Vocab Page</h1>
             <Form.Group className='mb-4'>
                 <Form.Label>Select Category</Form.Label>
                 <Form.Control as="select" onChange={handleCategoryChange} value={selectedCategory}>
