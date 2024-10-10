@@ -6,13 +6,19 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleNavigate = (path) => {
         onNavigate(path);
         setExpanded(false);
     };
+
+    const createExtraButtons = Array.isArray(extraButtons) && extraButtons.map((button, index) => (
+        <Nav.Link key={index} onClick={() => handleNavigate(button.action)}>
+            {button.label}
+        </Nav.Link>
+    ));
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary" expanded={expanded}>
@@ -34,6 +40,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username }) => {
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
                                 <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
                                 <Nav.Link onClick={() => handleNavigate('cheatsheet')}>Cheatsheets</Nav.Link>
+                                {createExtraButtons}
                             </>
                         )}
                     </Nav>

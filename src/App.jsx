@@ -12,12 +12,14 @@ import QuizTypesPage from './pages/QuizTypesPage';
 import AllQuizResultsPage from './pages/AllQuizResultsPage';
 import { API_URL } from './config';
 import CheatsheetTypesPage from './pages/CheatsheetTypesPage';
-
+import CheckVocabPage from './pages/maintenance/CheckVocabPage';
+import CheckVerbPage from './pages/maintenance/CheckVerbPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
+  const [extraButtons, setExtraButtons] = useState(null);
 
   const getUserDetails = async () => {
     if (!username) {
@@ -32,12 +34,16 @@ const App = () => {
       );
       setUsername(response.data.username);
       console.log(response.data.other_info);
+
+      if (response.data.extra_buttons) {
+        setExtraButtons(response.data.extra_buttons);
+      }
     }
   }
 
   useEffect(() => {
     getUserDetails();
-  }, [username]);
+  }, [username, extraButtons]);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -116,7 +122,7 @@ const App = () => {
         <meta name="twitter:description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
-      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} username={username} />
+      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} username={username} extraButtons={extraButtons} />
       {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
       {isLoggedIn && (
         <>
@@ -125,6 +131,12 @@ const App = () => {
           {currentPage === 'quiz' && <QuizTypesPage />}
           {currentPage === 'quiz-results' && <AllQuizResultsPage />}
           {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
+          {extraButtons && (
+            <>
+              {currentPage === 'checkvocab' && <CheckVocabPage />}
+              {currentPage === 'checkverbs' && <CheckVerbPage />}
+            </>
+          )}
         </>
       )}
     </div>
