@@ -22,7 +22,7 @@ users_bp = Blueprint('users', __name__)
 @require_auth(allowed_roles=['admin'])
 def view_users(*args, **kwargs):
     users = User.query.all()
-    user_list = [{'id': cat.id, 'username': cat.username, 'email': cat.email} for cat in users]
+    user_list = [{'id': cat.id, 'username': cat.username, 'email': cat.email, 'role': cat.role} for cat in users]
     return jsonify(user_list), 200
 
 @users_bp.route('/delete-user', methods=['DELETE'])
