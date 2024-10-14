@@ -35,6 +35,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
+                        <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
                         {isLoggedIn && (
                             <>
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>

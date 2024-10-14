@@ -14,6 +14,7 @@ import { API_URL } from './config';
 import CheatsheetTypesPage from './pages/CheatsheetTypesPage';
 import CheckVocabPage from './pages/maintenance/CheckVocabPage';
 import CheckVerbPage from './pages/maintenance/CheckVerbPage';
+import AboutPage from './pages/AboutPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -131,6 +132,7 @@ const App = () => {
           {currentPage === 'quiz' && <QuizTypesPage />}
           {currentPage === 'quiz-results' && <AllQuizResultsPage />}
           {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
+          {currentPage === 'about' && <AboutPage />}
           {extraButtons && (
             <>
               {currentPage === 'checkvocab' && <CheckVocabPage />}
