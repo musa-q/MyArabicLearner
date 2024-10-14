@@ -21,10 +21,16 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
   const [extraButtons, setExtraButtons] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getUserDetails = async () => {
-    if (!username) {
-      const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
       const response = await axios.post(`${API_URL}/homepage`,
         {},
         {
@@ -34,17 +40,15 @@ const App = () => {
         }
       );
       setUsername(response.data.username);
-      console.log(response.data.other_info);
-
       if (response.data.extra_buttons) {
         setExtraButtons(response.data.extra_buttons);
       }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
-
-  useEffect(() => {
-    getUserDetails();
-  }, [username, extraButtons]);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -62,6 +66,9 @@ const App = () => {
           );
           if (response.data.valid) {
             setIsLoggedIn(true);
+            if (!username) {
+              await getUserDetails();
+            }
           } else {
             handleLogout();
           }
@@ -69,28 +76,33 @@ const App = () => {
           console.error('Error verifying token:', error);
           handleLogout();
         }
+      } else {
+        setIsLoading(false);
       }
     };
 
     verifyToken();
-    const tokenCheckInterval = setInterval(verifyToken, 60000); // Check every minute
+    const tokenCheckInterval = setInterval(verifyToken, 60000);
     return () => clearInterval(tokenCheckInterval);
-  }, []);
+  }, [username]);
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
   };
 
-  const handleLogin = (token, email) => {
+  const handleLogin = async (token, email) => {
     setIsLoggedIn(true);
     localStorage.setItem('authToken', token);
     localStorage.setItem('userEmail', email);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    await getUserDetails();
     navigateToPage('home');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUsername(null);
+    setExtraButtons(null);
     localStorage.removeItem('authToken');
     localStorage.removeItem('userEmail');
     delete axios.defaults.headers.common['Authorization'];
@@ -124,19 +136,30 @@ const App = () => {
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
       <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} username={username} extraButtons={extraButtons} />
-      {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
-      {isLoggedIn && (
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
         <>
-          {currentPage === 'home' && <HomePage onNavigate={navigateToPage} username={username} />}
-          {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
-          {currentPage === 'quiz' && <QuizTypesPage />}
-          {currentPage === 'quiz-results' && <AllQuizResultsPage />}
-          {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
-          {currentPage === 'about' && <AboutPage />}
-          {extraButtons && (
+          {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
+          {isLoggedIn && (
             <>
-              {currentPage === 'checkvocab' && <CheckVocabPage />}
-              {currentPage === 'checkverbs' && <CheckVerbPage />}
+              {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
+              {isLoggedIn && (
+                <>
+                  {currentPage === 'home' && <HomePage onNavigate={navigateToPage} username={username} />}
+                  {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
+                  {currentPage === 'quiz' && <QuizTypesPage />}
+                  {currentPage === 'quiz-results' && <AllQuizResultsPage />}
+                  {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
+                  {currentPage === 'about' && <AboutPage />}
+                  {extraButtons && (
+                    <>
+                      {currentPage === 'checkvocab' && <CheckVocabPage />}
+                      {currentPage === 'checkverbs' && <CheckVerbPage />}
+                    </>
+                  )}
+                </>
+              )}
             </>
           )}
         </>
