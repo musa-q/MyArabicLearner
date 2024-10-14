@@ -10,8 +10,9 @@ maintenance_bp = Blueprint('maintenance', __name__)
 def update_flashcard_route(*args):
     data = request.json
     success, message = maintenance_utils.update_flashcard(
+        data['word_id'],
         data['category_name'].lower(),
-        data['english'].lower(),
+        data['new_english'].lower(),
         data['new_arabic'],
         data['new_transliteration']
     )

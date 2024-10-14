@@ -76,8 +76,9 @@ const CheckVocabPage = () => {
         try {
             const response = await axios.post(`${API_URL}/maintenance/update-flashcard`,
                 {
+                    word_id: editedFlashcard.id,
                     category_name: categories.find(cat => cat.id === parseInt(selectedCategory)).category_name,
-                    english: editedFlashcard.english,
+                    new_english: editedFlashcard.english,
                     new_arabic: editedFlashcard.arabic,
                     new_transliteration: editedFlashcard.transliteration
                 },
