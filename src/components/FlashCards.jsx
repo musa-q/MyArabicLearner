@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import { capitaliseWords } from '../utils';
 
 const FlashCards = ({ flashcards }) => {
     const [flippedCards, setFlippedCards] = useState(Array(flashcards.length).fill(false));
@@ -114,7 +115,7 @@ const FlashCards = ({ flashcards }) => {
                                     {translitRadioValue === 'true' ? (
                                         <>
                                             <Card.Title className='front-card-title'>{flashcard.arabic}</Card.Title>
-                                            <Card.Text>{flashcard.romanized}</Card.Text>
+                                            <Card.Text>{flashcard.transliteration}</Card.Text>
                                         </>
                                     ) : (
                                         <>
@@ -123,7 +124,7 @@ const FlashCards = ({ flashcards }) => {
                                     )}
                                 </div>
                                 <div className="card-back">
-                                    <Card.Title className='back-card-title'>{flashcard.english}</Card.Title>
+                                    <Card.Title className='back-card-title'>{capitaliseWords(flashcard.english)}</Card.Title>
                                 </div>
                             </Card>
                         </div>

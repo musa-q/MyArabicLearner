@@ -9,7 +9,7 @@ import logo from '/logo_main.svg';
 import { motion, useAnimation } from "framer-motion";
 import TypingAnimation from '../components/TypingAnimation';
 
-const HomePage = ({ onNavigate }) => {
+const HomePage = ({ onNavigate, username }) => {
     const [showFeedbackToast, setShowFeedbackToast] = useState(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -100,7 +100,7 @@ const HomePage = ({ onNavigate }) => {
                     <Toast.Header>
                         <strong className="me-auto">Feedback</strong>
                     </Toast.Header>
-                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>We'd love your feedback! Click this pop-up!</Toast.Body>
+                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>{username}, we'd love your feedback! Click this pop-up!</Toast.Body>
                 </Toast>
             </ToastContainer>
         </div >

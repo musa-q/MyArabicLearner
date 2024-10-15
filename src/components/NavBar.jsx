@@ -2,10 +2,11 @@ import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from '/logo_main.svg';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleNavigate = (path) => {
@@ -13,36 +14,84 @@ const MyNavBar = ({ onNavigate }) => {
         setExpanded(false);
     };
 
+    const createExtraButtons = Array.isArray(extraButtons) && extraButtons.map((button, index) => (
+        <Nav.Link key={index} onClick={() => handleNavigate(button.action)}>
+            {button.label}
+        </Nav.Link>
+    ));
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary" expanded={expanded}>
-            <Container>
-                <Navbar.Brand onClick={() => onNavigate('home')}>
-                    <div className='aref-ruqaa-regular gold nav-title logo-container unselectable'>
-                        <img src={logo} alt="Logo" className="nav-logo" />
-                        متعلمو العربية
-                    </div>
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(expanded ? false : true)} />
+            <Container fluid className="navbar-container">
+                <div className="navbar-left">
+                    <Navbar.Brand onClick={() => onNavigate('home')}>
+                        <div className='aref-ruqaa-regular gold nav-title logo-container unselectable'>
+                            <img src={logo} alt="Logo" className="nav-logo" />
+                            متعلمو العربية
+                        </div>
+                    </Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(expanded ? false : true)} />
+                </div>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('wordspractice')}>Vocab Quiz</Nav.Link>
-                        <Nav.Link onClick={() => handleNavigate('verbs')}>Conjugation Quiz</Nav.Link>
+                        <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
+                        {isLoggedIn && (
+                            <>
+                                <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('cheatsheet')}>Cheatsheets</Nav.Link>
+                                {createExtraButtons}
+                            </>
+                        )}
                     </Nav>
-                    <div className="d-flex align-items-center">
-                        <span className="me-3">Follow the developer:</span>
-                        <a href="https://www.linkedin.com/in/musa-qureshi/" target="_blank" rel="noopener noreferrer">
-                            <img
-                                src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white"
-                                alt="LinkedIn Badge"
-                            />
-                        </a>
-                    </div>
                 </Navbar.Collapse>
+                <div className="navbar-right">
+                    <NavDropdown
+                        id="user-dropdown"
+                        title={<span className='aref-ruqaa-regular gold nav-title unselectable'>انا</span>}
+                        menuVariant="dark"
+                        align="end"
+                    >
+                        {isLoggedIn ? (
+                            <>
+                                {username &&
+                                    <>
+                                        <NavDropdown.Item style={{ 'pointerEvents': 'none', 'textAlign': 'center' }}>{username}</NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                    </>
+                                }
+                                <NavDropdown.Item onClick={() => onNavigate('quiz-results')}>
+                                    View Results
+                                </NavDropdown.Item>
+                                <NavDropdown.Item onClick={onLogout}>
+                                    Logout
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item
+                                    onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                >
+                                    Follow the developer
+                                </NavDropdown.Item>
+                            </>
+                        ) : (
+                            <>
+                                <NavDropdown.Item onClick={() => onNavigate('')}>
+                                    Login
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item
+                                    onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
+                                >
+                                    Follow the developer
+                                </NavDropdown.Item>
+                            </>
+                        )}
+                    </NavDropdown>
+                </div>
             </Container>
         </Navbar>
     );
 }
 
-export default MyNavBar
+export default MyNavBar;

@@ -1,36 +1,55 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import './ChooseWordsPage.css';
+import axios from 'axios';
+import { capitaliseWords } from '../utils';
+import { API_URL } from '../config';
 
-// Where choose which words list for flashcards
-const ChooseWordsPage = ({ onChoose, title }) => {
+const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     const [fileList, setFileList] = useState([]);
 
     useEffect(() => {
         const fetchFileList = async () => {
+            const token = localStorage.getItem('authToken');
             try {
-                const response = await fetch('/arabic/words/index.json');
-                const indexData = await response.json();
-
-                setFileList(indexData.files);
+                const response = await axios.post(`${API_URL}/flashcards/get-all-category-names`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                setFileList(response.data);
             } catch (error) {
                 console.error('Error fetching file list:', error);
             }
         };
-
-
         fetchFileList();
     }, []);
 
+    const handleCategoryClick = async (categoryId, name) => {
+        try {
+            onChoose(categoryId);
+            setCategoryname(name);
+        } catch (error) {
+            console.error('Error sending category ID:', error);
+        }
+    };
+
     return (
         <div className="choose-words-page-container">
-            <h1>{title}</h1>
+            <h1>{capitaliseWords(title)}</h1>
             <div className="buttons-list">
-                {fileList.map((file, index) => (
-                    <Button className="button p-3" variant="outline-light" type="button" key={index} onClick={() => {
-                        onChoose(file.filename);
-                    }}>
-                        {file.title}
+                {fileList.map((category) => (
+                    <Button
+                        className="button p-3"
+                        variant="outline-light"
+                        type="button"
+                        key={category.id}
+                        onClick={() => handleCategoryClick(category.id, category.category_name)}
+                    >
+                        {capitaliseWords(category.category_name)}
                     </Button>
                 ))}
             </div>

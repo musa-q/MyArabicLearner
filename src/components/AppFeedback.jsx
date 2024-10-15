@@ -4,6 +4,9 @@ import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Form from 'react-bootstrap/Form';
+import axios from 'axios';
+import { API_URL } from '../config';
+
 
 const AppFeedback = ({ show, handleClose }) => {
     const [rating, setRating] = useState(null);
@@ -22,26 +25,20 @@ const AppFeedback = ({ show, handleClose }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setSubmitting(true);
-
-        const currDate = new Date().toLocaleDateString();
-        const currTime = new Date().toLocaleTimeString();
-
-        const formData = {
-            date: currDate,
-            time: currTime,
-            rating: rating,
-            email: email,
-            message: message,
-        };
+        const token = localStorage.getItem('authToken');
 
         try {
-            const response = await fetch('https://sheetdb.io/api/v1/x02nd9a6p29h1', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            const response = await axios.post(`${API_URL}/feedback/send-feedback`,
+                {
+                    rating: rating,
+                    message: message,
                 },
-                body: JSON.stringify(formData)
-            });
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
 
             if (!response.ok) {
                 console.error('Error submitting form');
