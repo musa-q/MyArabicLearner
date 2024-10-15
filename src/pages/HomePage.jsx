@@ -18,7 +18,7 @@ const HomePage = ({ onNavigate, username }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowFeedbackToast(true);
-        }, 1500);
+        }, 1750);
 
         return () => clearTimeout(timer);
     }, []);
