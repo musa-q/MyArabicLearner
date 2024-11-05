@@ -87,10 +87,10 @@ def login():
     existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
     if existing_session and (datetime.utcnow() - existing_session.last_used) < Config.SESSION_TOKEN_TIME:
         create_or_update_session(user, ip_address)
-        user_token = User.query.filter_by(id=user.id).first().auth_token
+        user.set_auth_token(user.auth_token)
         return jsonify({
             'message': 'Authenticated already',
-            'token': user_token,
+            'token': user.auth_token,
             'email': email,
             'authenticated': True
         }), 200
