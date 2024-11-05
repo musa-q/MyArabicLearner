@@ -71,15 +71,15 @@ const LoginPage = ({ onLogin }) => {
     };
 
     return (
-        <div className="mt-5 login-page-container">
+        <div className="login-page-container">
             {!showTokenInput ? (
-                <Card className="mt-3 login-card">
-                    <Card.Header className="text-center">
-                        <h3 style={{ fontSize: "1.5rem" }}>Login</h3>
-                    </Card.Header>
-                    <Card.Body>
+                <div className="login-container">
+                    <div className="login-header text-center">
+                        <h3 style={{ fontSize: "2rem" }}>Login</h3>
+                    </div>
+                    <div className="login-body">
                         <Form onSubmit={handleLogin}>
-                            <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Group className="mb-4" controlId="formBasicEmail">
                                 <Form.Label>Email address</Form.Label>
                                 <Form.Control
                                     type="email"
@@ -91,7 +91,7 @@ const LoginPage = ({ onLogin }) => {
                             </Form.Group>
 
                             {isNewUser && (
-                                <Form.Group className="mb-3" controlId="formBasicUsername">
+                                <Form.Group className="mb-4" controlId="formBasicUsername">
                                     <Form.Label>Username</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -105,7 +105,7 @@ const LoginPage = ({ onLogin }) => {
 
                             <div className="d-flex justify-content-center">
                                 <Button
-                                    variant="outline-light"
+                                    className='button'
                                     type="submit"
                                     disabled={isLoading}
                                 >
@@ -116,14 +116,14 @@ const LoginPage = ({ onLogin }) => {
                                 </Button>
                             </div>
                         </Form>
-                    </Card.Body>
-                </Card>
+                    </div>
+                </div>
             ) : (
-                <Card className="mt-3 login-card">
-                    <Card.Header className="text-center">
+                <div className="login-container">
+                    <div className="login-header text-center">
                         <h3 style={{ fontSize: "1.5rem" }}>Enter Token</h3>
-                    </Card.Header>
-                    <Card.Body>
+                    </div>
+                    <div className="login-body">
                         <Form onSubmit={handleVerify}>
                             <Form.Group className="mb-3" controlId="formBasicToken">
                                 <Form.Label>Enter Token</Form.Label>
@@ -137,7 +137,7 @@ const LoginPage = ({ onLogin }) => {
                             </Form.Group>
                             <div className="d-flex justify-content-center">
                                 <Button
-                                    variant="outline-light"
+                                    className='button'
                                     type="submit"
                                     disabled={isLoading}
                                 >
@@ -145,12 +145,13 @@ const LoginPage = ({ onLogin }) => {
                                 </Button>
                             </div>
                         </Form>
-                    </Card.Body>
-                </Card>
+                    </div>
+                </div>
             )}
             {message && <Alert className="mt-3">{message}</Alert>}
         </div>
     );
+
 };
 
 export default LoginPage;

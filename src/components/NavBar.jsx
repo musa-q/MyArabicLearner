@@ -21,7 +21,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
     ));
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary" expanded={expanded}>
+        <Navbar expand="lg" className='navbar-main' expanded={expanded}>
             <Container fluid className="navbar-container">
                 <div className="navbar-left">
                     <Navbar.Brand onClick={() => onNavigate('home')}>
