@@ -87,10 +87,14 @@ def login():
     existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
     if existing_session and (datetime.utcnow() - existing_session.last_used) < Config.SESSION_TOKEN_TIME:
         create_or_update_session(user, ip_address)
-        user_token = User.query.filter_by(id=user.id).first().auth_token
+        token = user.auth_token
+        if not user.is_token_valid():
+            token = secrets.token_urlsafe(32).replace('-', 'g').replace('_', '9')
+            user.set_auth_token(token)
+        db.session.commit()
         return jsonify({
             'message': 'Authenticated already',
-            'token': user_token,
+            'token': user.auth_token,
             'email': email,
             'authenticated': True
         }), 200
@@ -123,24 +127,19 @@ def verify():
 
 @auth_bp.route('/logout', methods=['POST'])
 @require_auth()
-def logout():
-    data = request.get_json()
-    email = data.get('email')
-
-    if not email:
-        return jsonify({'error': 'Email is required'}), 400
-
-    user = User.query.filter_by(email=email).first()
+def logout(user_id, *args):
+    user = User.query.filter_by(id=user_id).first()
     if user:
         user.auth_token = None
         user.token_expiration = None
         db.session.commit()
+        return jsonify({'logged_out': True, 'message': 'Logged out successfully'}), 200
 
-    return jsonify({'message': 'Logged out successfully'}), 200
+    return jsonify({'logged_out': False, 'error': 'Email is required'}), 400
 
 @auth_bp.route('/logout-all', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def logout_all():
+def logout_all(*args):
     try:
         num_deleted = UserSession.query.delete()
 
