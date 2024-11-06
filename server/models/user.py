@@ -20,10 +20,10 @@ class User(db.Model):
 
     def set_auth_token(self, token):
         self.auth_token = token
-        self.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
+        self.token_expiration = datetime.now() + Config.SESSION_TOKEN_TIME
 
     def is_token_valid(self):
-        return self.auth_token and self.token_expiration > datetime.utcnow()
+        return self.auth_token and self.token_expiration > datetime.now()
 
 class UserSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)

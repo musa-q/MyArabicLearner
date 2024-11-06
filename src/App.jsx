@@ -70,11 +70,11 @@ const App = () => {
               await getUserDetails();
             }
           } else {
-            handleLogout();
+            removeLocalStorage();
           }
         } catch (error) {
           console.error('Error verifying token:', error);
-          handleLogout();
+          removeLocalStorage();
         }
       } else {
         setIsLoading(false);
@@ -85,6 +85,17 @@ const App = () => {
     const tokenCheckInterval = setInterval(verifyToken, 60000);
     return () => clearInterval(tokenCheckInterval);
   }, [username]);
+
+  const removeLocalStorage = () => {
+    setIsLoggedIn(false);
+    setUsername(null);
+    setExtraButtons(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    delete axios.defaults.headers.common['Authorization'];
+    navigateToPage('home');
+  }
+
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
@@ -99,14 +110,25 @@ const App = () => {
     navigateToPage('home');
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername(null);
-    setExtraButtons(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userEmail');
-    delete axios.defaults.headers.common['Authorization'];
-    navigateToPage('home');
+  const handleLogout = async () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const response = await axios.post(`${API_URL}/auth/logout`,
+          {},
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
+        if (response.data.logged_out) {
+          removeLocalStorage();
+        }
+      } catch (error) {
+        console.error('Error verifying token:', error);
+      }
+    }
   };
 
   return (
