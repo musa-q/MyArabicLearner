@@ -49,7 +49,7 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
                         Back to groups
                     </Button>
                 </div>
-                <h1 className='gold'>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
+                <h1 className='gold pb-2'>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
 
                 <div>
                     <FlashCards flashcards={flashcards} />

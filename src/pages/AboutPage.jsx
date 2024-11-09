@@ -101,7 +101,7 @@ const AboutPage = ({ onNavigate }) => {
                             variant="outline-light"
                             type="button"
                             className="button text-white mt-4 py-3 px-8 duration-300"
-                            style={{ width: '40%' }}
+                            style={{ maxWidth: '300px' }}
                             onClick={() => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                 onNavigate('wordsflashcard');

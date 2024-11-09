@@ -6,8 +6,8 @@ import { capitaliseWords } from '../utils';
 
 const FlashCards = ({ flashcards }) => {
     const [flippedCards, setFlippedCards] = useState(Array(flashcards.length).fill(false));
-    const [langRadioValue, setLangRadioValue] = useState('1');  // '1' for Arabic, '2' for English
-    const [translitRadioValue, setTranslitRadioValue] = useState('true');  // 'true' for On, 'false' for Off
+    const [langRadioValue, setLangRadioValue] = useState('1');
+    const [translitRadioValue, setTranslitRadioValue] = useState('true');
 
     const langRadios = [
         { name: 'Arabic', value: '1' },
@@ -27,14 +27,17 @@ const FlashCards = ({ flashcards }) => {
         });
     };
 
+    const setAllCards = (flipped) => {
+        setFlippedCards(Array(flashcards.length).fill(flipped));
+    };
+
     const changeTransliteration = (val) => {
         setTranslitRadioValue(val);
     };
 
     const changeLanguage = (val) => {
-        console.log(val, 'val1');
         setLangRadioValue(val);
-        console.log(val, 'val2');
+        setAllCards(val === '2');
     };
 
     return (

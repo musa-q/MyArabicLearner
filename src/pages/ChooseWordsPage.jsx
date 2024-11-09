@@ -13,7 +13,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const [showSearch, setShowSearch] = useState(false); // New state to toggle search bar
+    const [showSearch, setShowSearch] = useState(false);
 
     const groupedCategories = useMemo(() => {
         const groups = {};
@@ -155,7 +155,6 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                     {/* Category List */}
                     <div className="space-y-4">
                         {searchQuery && showSearch ? (
-                            // Show flat list when searching
                             filteredCategories.length > 0 ? (
                                 filteredCategories.map((category) => (
                                     <CategoryCard key={category.id} category={category} />
@@ -164,15 +163,12 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                 <p className="text-center text-gray-400">No categories found.</p>
                             )
                         ) : (
-                            // Show grouped categories when not searching
                             selectedGroup ? (
-                                // Show selected group's categories
                                 <div>
                                     <Button
                                         onClick={() => setSelectedGroup(null)}
                                         className="flex items-center mb-4"
                                         variant="outline-light"
-                                    // style={{ maxWidth: 'fit-content' }}
                                     >
                                         <ArrowLeft className="w-4 h-4 mr-2 me-2" />
                                         Back to groups
@@ -190,12 +186,12 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                         key={group}
                                         whileHover={{ scale: 1.01 }}
                                         className="bg-gray-800 p-4 rounded-lg cursor-pointer
-                                                 border border-gray-700 hover:border-purple-500"
+                                                 border border-gray-700 hover:border-purple-500 mb-3"
                                         onClick={() => setSelectedGroup(group)}
                                     >
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <h3 className="text-xl font-semibold mb-1 gold">
+                                                <h3 className="text-xl font-semibold mb-1">
                                                     {capitaliseWords(group)}
                                                 </h3>
                                                 <p className="text-gray-400 text-sm">
