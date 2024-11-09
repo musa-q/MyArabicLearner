@@ -13,6 +13,19 @@
     cursor: pointer;
 }
 
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.65s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-tile.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
 .flashcard-content {
     position: absolute;
     width: 100%;
@@ -24,7 +37,6 @@
     justify-content: center;
     padding: 20px;
     border-radius: 10px;
-    transition: transform 0.6s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -44,14 +56,6 @@
     transform: rotateY(180deg);
 }
 
-.flipped .card-front {
-    transform: rotateY(180deg);
-}
-
-.flipped .card-back {
-    transform: rotateY(0);
-}
-
 .card-title {
     font-size: 1.6em;
     font-weight: bold;
@@ -62,7 +66,6 @@
 .card-translit {
     font-size: 1.1em;
     color: #d3cdcd;
-    /* Lighter color for transliteration */
     font-style: italic;
 }
 
@@ -79,10 +82,8 @@
     justify-content: center;
     margin: 20px 0;
     flex-wrap: wrap;
-    /* Allows wrapping on small screens */
 }
 
-/* Each Toggle Group */
 .toggle-group {
     display: flex;
     align-items: center;
@@ -92,12 +93,9 @@
 .toggle-group span {
     margin-right: 8px;
     font-weight: bold;
-    /* color: #333; */
 }
 
 @media (max-width: 600px) {
-
-    /* Stack toggle buttons vertically */
     .toggle-buttons {
         flex-direction: column;
         align-items: center;
@@ -105,6 +103,5 @@
 
     .toggle-group {
         margin-bottom: 10px;
-        /* Adds spacing between buttons */
     }
 }

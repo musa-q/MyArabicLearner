@@ -27,17 +27,9 @@ const FlashCards = ({ flashcards }) => {
         });
     };
 
-    const setAllCards = (flipped) => {
-        setFlippedCards(Array(flashcards.length).fill(flipped));
-    };
-
-    const changeTransliteration = (val) => {
-        setTranslitRadioValue(val);
-    };
-
     const changeLanguage = (val) => {
         setLangRadioValue(val);
-        setAllCards(val === '2');
+        setFlippedCards(Array(flashcards.length).fill(val === '2'));
     };
 
     return (
@@ -72,7 +64,7 @@ const FlashCards = ({ flashcards }) => {
                                 variant={translitRadio.value === 'true' ? 'outline-success' : 'outline-danger'}
                                 value={translitRadio.value}
                                 checked={translitRadioValue === translitRadio.value}
-                                onChange={(e) => changeTransliteration(e.currentTarget.value)}
+                                onChange={(e) => setTranslitRadioValue(e.currentTarget.value)}
                             >
                                 {translitRadio.name}
                             </ToggleButton>
@@ -88,29 +80,16 @@ const FlashCards = ({ flashcards }) => {
                         className={`flashcard-tile${flippedCards[index] ? ' flipped' : ''}`}
                         onClick={() => flipCard(index)}
                     >
-                        <div className="flashcard-content card-front">
-                            {langRadioValue === '1' ? (
-                                <>
-                                    <div className="card-title">{flashcard.arabic}</div>
-                                    {translitRadioValue === 'true' && (
-                                        <div className="card-translit">{flashcard.transliteration}</div>
-                                    )}
-                                </>
-                            ) : (
+                        <div className="flashcard-inner">
+                            <div className="flashcard-content card-front">
+                                <div className="card-title">{flashcard.arabic}</div>
+                                {translitRadioValue === 'true' && (
+                                    <div className="card-translit">{flashcard.transliteration}</div>
+                                )}
+                            </div>
+                            <div className="flashcard-content card-back">
                                 <div className="card-title">{capitaliseWords(flashcard.english)}</div>
-                            )}
-                        </div>
-                        <div className="flashcard-content card-back">
-                            {langRadioValue === '1' ? (
-                                <div className="card-title">{capitaliseWords(flashcard.english)}</div>
-                            ) : (
-                                <>
-                                    <div className="card-title">{flashcard.arabic}</div>
-                                    {translitRadioValue === 'true' && (
-                                        <div className="card-translit">{flashcard.transliteration}</div>
-                                    )}
-                                </>
-                            )}
+                            </div>
                         </div>
                     </div>
                 ))}
