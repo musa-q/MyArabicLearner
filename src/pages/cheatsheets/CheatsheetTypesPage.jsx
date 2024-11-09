@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import VerbsPage from './VerbsPage';
-import './QuizTypesPage.css';
+import VerbsPage from '../VerbsPage';
+import '../QuizTypesPage.css';
 import PossessiveEndingsPage from './PossessiveEndingsPage';
 import VerbConjugationPage from './VerbConjugationPage';
 

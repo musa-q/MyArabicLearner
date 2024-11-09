@@ -10,6 +10,12 @@ const CheckVocabPage = () => {
     const [flashcards, setFlashcards] = useState([]);
     const [editedFlashcard, setEditedFlashcard] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newFlashcard, setNewFlashcard] = useState({
+        english: '',
+        arabic: '',
+        transliteration: ''
+    });
 
     useEffect(() => {
         fetchCategories();
@@ -71,6 +77,15 @@ const CheckVocabPage = () => {
         setEditedFlashcard(null);
     };
 
+    const handleCloseAddModal = () => {
+        setShowAddModal(false);
+        setNewFlashcard({
+            english: '',
+            arabic: '',
+            transliteration: ''
+        });
+    };
+
     const handleSaveFlashcard = async () => {
         const token = localStorage.getItem('authToken');
         try {
@@ -103,9 +118,42 @@ const CheckVocabPage = () => {
         }
     };
 
+    const handleAddFlashcard = async () => {
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await axios.post(`${API_URL}/maintenance/add-flashcard`,
+                {
+                    category_id: selectedCategory,
+                    english: newFlashcard.english.toLowerCase(),
+                    arabic: newFlashcard.arabic,
+                    transliteration: newFlashcard.transliteration
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                fetchFlashcards(selectedCategory);
+                handleCloseAddModal();
+            } else {
+                console.error('Error adding flashcard:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error adding flashcard:', error);
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditedFlashcard(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleNewFlashcardChange = (e) => {
+        const { name, value } = e.target;
+        setNewFlashcard(prev => ({ ...prev, [name]: value }));
     };
 
     return (
@@ -120,6 +168,14 @@ const CheckVocabPage = () => {
                     ))}
                 </Form.Control>
             </Form.Group>
+
+            {selectedCategory && (
+                <div className="mb-3">
+                    <Button variant="primary" onClick={() => setShowAddModal(true)}>
+                        Add New Word
+                    </Button>
+                </div>
+            )}
 
             {flashcards.length > 0 && (
                 <Table striped bordered hover className='mb-5'>
@@ -148,6 +204,7 @@ const CheckVocabPage = () => {
                 </Table>
             )}
 
+            {/* Edit Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Flashcard</Modal.Title>
@@ -194,9 +251,53 @@ const CheckVocabPage = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal show={showAddModal} onHide={handleCloseAddModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add New Word</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>English</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="english"
+                                value={newFlashcard.english}
+                                onChange={handleNewFlashcardChange}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Arabic</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="arabic"
+                                value={newFlashcard.arabic}
+                                onChange={handleNewFlashcardChange}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Transliteration</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="transliteration"
+                                value={newFlashcard.transliteration}
+                                onChange={handleNewFlashcardChange}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseAddModal}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleAddFlashcard}>
+                        Add Word
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
-
 
 export default CheckVocabPage;

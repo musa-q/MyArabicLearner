@@ -18,6 +18,21 @@ def update_flashcard_route(*args):
     )
     return jsonify({'success': success, 'message': message})
 
+@maintenance_bp.route('/add-flashcard', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def add_flashcard_route(*args):
+    data = request.json
+    if not all(key in data for key in ['category_id', 'english', 'arabic']):
+        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+
+    success, message = maintenance_utils.add_flashcard(
+        data['category_id'],
+        data['english'].lower(),
+        data['arabic'],
+        data.get('transliteration', '')
+    )
+    return jsonify({'success': success, 'message': message})
+
 @maintenance_bp.route('/get-all-verbs', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
 def get_all_verbs(*args):
@@ -60,3 +75,37 @@ def update_conjugation(*args):
     db.session.commit()
 
     return jsonify({'success': True, 'message': 'Conjugation updated successfully'}), 200
+
+@maintenance_bp.route('/update-category', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def update_category_route(*args):
+    data = request.json
+    success, message = maintenance_utils.update_category(
+        data['category_id'],
+        data['new_name'].lower()
+    )
+    return jsonify({'success': success, 'message': message})
+
+@maintenance_bp.route('/add-category', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def add_category_route(*args):
+    data = request.json
+    if not data.get('category_name'):
+        return jsonify({'success': False, 'message': 'Category name is required'}), 400
+
+    success, message = maintenance_utils.add_category(
+        data['category_name'].lower()
+    )
+    return jsonify({'success': success, 'message': message})
+
+@maintenance_bp.route('/delete-category', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def delete_category_route(*args):
+    data = request.json
+    if not data.get('category_id'):
+        return jsonify({'success': False, 'message': 'Category ID is required'}), 400
+
+    success, message = maintenance_utils.delete_category(
+        data['category_id']
+    )
+    return jsonify({'success': success, 'message': message})

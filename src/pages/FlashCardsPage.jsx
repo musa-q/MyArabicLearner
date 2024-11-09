@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import FlashCards from '../components/FlashCards';
 import './FlashCardsPage.css'
+import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
+import { ArrowLeft } from 'lucide-react';
 
-const FlashCardsPage = ({ wordsList, category_name }) => {
+const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
     const [flashcards, setFlashcards] = useState([]);
     const [pageTitle, setPageTitle] = useState("Words Practice");
 
@@ -36,11 +38,25 @@ const FlashCardsPage = ({ wordsList, category_name }) => {
 
     return (
         <div className="flash-cards-page-container">
-            <h1>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
-            <div>
-                <FlashCards flashcards={flashcards} />
+            <div className="max-w-4xl mx-auto ">
+                <div className="back-button-container">
+                    <Button
+                        onClick={onBack}
+                        className="flex items-center"
+                        variant="outline-light"
+                    >
+                        <ArrowLeft className="me-2" />
+                        Back to groups
+                    </Button>
+                </div>
+                <h1 className='gold'>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
+
+                <div>
+                    <FlashCards flashcards={flashcards} />
+                </div>
             </div>
         </div>
+
     );
 };
 

@@ -1,78 +1,64 @@
-.flashcard {
+.flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.flashcard-tile {
+    perspective: 1000px;
     cursor: pointer;
     position: relative;
-    margin-bottom: 20px;
-    padding: 40px;
+    height: 150px;
+    border-radius: 10px;
 }
 
-.flashcard .card-front,
-.flashcard .card-back {
+.flashcard-content {
     position: absolute;
     width: 100%;
-    backface-visibility: hidden;
-    transition: transform 0.5s;
-    border: 2px solid #76737e;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    transition: font-size 0.3s ease, transform 0.3s ease;
+    height: 100%;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
     padding: 20px;
-}
-
-.card-back {
-    transform: rotateY(180deg);
-    background-color: #2f2b3a;
+    color: white;
+    font-size: 1.2em;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .card-front {
-    background-color: #46424f;
+    background-color: #4e4b60;
 }
 
-.flipped .card-back {
-    transform: rotateY(0deg);
+.card-back {
+    background-color: #2f2b3a;
+    transform: rotateY(180deg);
 }
 
 .flipped .card-front {
     transform: rotateY(180deg);
 }
 
-.flashcard:hover {
-    .card-front {
-        background-color: #716c7f;
-    }
-
-    .card-back {
-        background-color: #464056;
-    }
-
-    .front-card-title:not(.large) {
-        font-size: 1.4em;
-        transition: .1s ease-in-out;
-    }
-
-    .front-card-title.large {
-        font-size: 1.9em;
-        transition: .1s ease-in-out;
-    }
-
-    .back-card-title {
-        font-size: 1.4em;
-        transition: .1s ease-in-out;
-    }
+.flipped .card-back {
+    transform: rotateY(0deg);
 }
 
-.front-card-title.large {
-    font-size: 1.5em;
-}
-
-.list-toggle-button {
+.toggle-buttons {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
-.full-toggle-button {
+.toggle-group {
     display: flex;
-    flex-direction: column;
-    padding-left: 20px;
-    padding-right: 20px;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.toggle-group span {
+    margin-right: 8px;
+    color: #fff;
 }

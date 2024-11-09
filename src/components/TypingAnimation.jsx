@@ -33,7 +33,6 @@ const TypingAnimation = ({ text }) => {
                 fontSize: '4rem',
                 fontWeight: 'bold',
                 overflow: 'visible',
-                paddingBottom: '100px',
                 unicodeBidi: 'bidi-override',
                 justifyContent: 'flex-start',
                 alignItems: 'center',

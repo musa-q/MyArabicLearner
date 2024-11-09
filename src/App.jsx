@@ -11,10 +11,9 @@ import axios from 'axios';
 import QuizTypesPage from './pages/QuizTypesPage';
 import AllQuizResultsPage from './pages/AllQuizResultsPage';
 import { API_URL } from './config';
-import CheatsheetTypesPage from './pages/CheatsheetTypesPage';
-import CheckVocabPage from './pages/maintenance/CheckVocabPage';
-import CheckVerbPage from './pages/maintenance/CheckVerbPage';
+import CheatsheetTypesPage from './pages/cheatsheets/CheatsheetTypesPage';
 import AboutPage from './pages/AboutPage';
+import MaintenanceHomePage from './pages/maintenance/MaintenanceHomePage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -173,11 +172,10 @@ const App = () => {
                   {currentPage === 'quiz' && <QuizTypesPage />}
                   {currentPage === 'quiz-results' && <AllQuizResultsPage />}
                   {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
-                  {currentPage === 'about' && <AboutPage />}
+                  {currentPage === 'about' && <AboutPage onNavigate={navigateToPage} />}
                   {extraButtons && (
                     <>
-                      {currentPage === 'checkvocab' && <CheckVocabPage />}
-                      {currentPage === 'checkverbs' && <CheckVerbPage />}
+                      {currentPage === 'maintenance' && <MaintenanceHomePage />}
                     </>
                   )}
                 </>
