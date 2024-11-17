@@ -1,8 +1,15 @@
 import React from "react";
-import { Table, Container } from "react-bootstrap";
-import './Cheatsheet.css';
+import { motion } from "framer-motion";
+import { Book } from 'lucide-react';
+import { Container, Card, Table } from 'react-bootstrap';
 
 const VerbConjugationPage = () => {
+    const fadeIn = {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6 }
+    };
+
     const conjugations = [
         { pronoun: "أنا", past: "نمتُ", present: "أنام", future: "رح أنام" },
         { pronoun: "إنتَ", past: "نمتَ", present: "تنام", future: "رح تنام" },
@@ -14,47 +21,78 @@ const VerbConjugationPage = () => {
     ];
 
     return (
-        <Container className="my-5">
-            <h1 className="text-center mb-4">Verb Conjugation in Jordanian Arabic</h1>
+        <Container className="pt-2 pb-5">
+            <motion.div
+                className="text-center mb-5"
+                {...fadeIn}
+            >
+                <h1 className="display-4 mb-4 text-purple-400 gold">
+                    Verb Conjugation in Arabic
+                </h1>
+                <p className="lead text-gray-300">
+                    Master verb tenses in Levantine Arabic
+                </p>
+            </motion.div>
 
-            <Table striped bordered hover className="text-center">
-                <thead>
-                    <tr>
-                        <th>Pronoun</th>
-                        <th>Past</th>
-                        <th>Present</th>
-                        <th>Future</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {conjugations.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.pronoun}</td>
-                            <td>{row.past}</td>
-                            <td>{row.present}</td>
-                            <td>{row.future}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="mb-5"
+            >
+                <Card className="bg-dark text-white">
+                    <Card.Body className="p-0">
+                        <Table className="table-dark mb-0" hover>
+                            <thead className="text-purple-400 border-purple-400">
+                                <tr>
+                                    <th className="text-center h5 py-3">Pronoun</th>
+                                    <th className="text-center h5 py-3">Past</th>
+                                    <th className="text-center h5 py-3">Present</th>
+                                    <th className="text-center h5 py-3">Future</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {conjugations.map((row, index) => (
+                                    <tr key={index}>
+                                        <td className="text-center py-3 lead">{row.pronoun}</td>
+                                        <td className="text-center py-3 lead">{row.past}</td>
+                                        <td className="text-center py-3 lead">{row.present}</td>
+                                        <td className="text-center py-3 lead">{row.future}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Card.Body>
+                </Card>
+            </motion.div>
 
-            <h2 className="mt-5">Explanation</h2>
-            <p>
-                In Levantine Arabic, verbs are conjugated differently based on the pronoun and tense.
-                The table above shows the conjugation of the verb "نام" (nama) meaning "to sleep" in the past, present, and future tenses.
-            </p>
-            <p>
-                For the present tense, Levantine Arabic typically uses the prefix "بـ" (b-) attached to the verb. For example,
-                "بنام" (banam) means "I sleep" or "I am sleeping". This prefix is consistent across all pronouns, but the verb stem and suffixes change slightly to match the subject.
-            </p>
-            <p>
-                The future tense is formed by adding the particle "رح" (rah) before the present tense verb. For instance,
-                "رح أنام" (rah anam) means "I will sleep", and "رح تنام" (rah tinam) means "you (masculine) will sleep".
-            </p>
-            <p>
-                For example, "نمتُ" (namtu) is "I slept" in the past, "بنام" (banam) is "I sleep" in the present, and "رح أنام" (rah anam) is "I will sleep" in the future.
-            </p>
-
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="mb-5"
+            >
+                <Card className="bg-dark text-white">
+                    <Card.Header className="d-flex align-items-center">
+                        <Book className="text-purple-400 me-2" size={20} />
+                        <h2 className="h5 mb-0 display-6">Quick Guide</h2>
+                    </Card.Header>
+                    <Card.Body className="text-gray-300">
+                        <p className="lead">
+                            In Levantine Arabic, verbs are conjugated differently based on the pronoun and tense.
+                            The examples above show the conjugation of the verb "نام" (nama) meaning "to sleep" in the past, present, and future tenses.
+                        </p>
+                        <p className="lead">
+                            For the present tense, Levantine Arabic typically uses the prefix "بـ" (b-) attached to the verb. For example,
+                            "بنام" (banam) means "I sleep" or "I am sleeping".
+                        </p>
+                        <p className="lead mb-0">
+                            The future tense is formed by adding the particle "رح" (rah) before the present tense verb. For instance,
+                            "رح أنام" (rah anam) means "I will sleep".
+                        </p>
+                    </Card.Body>
+                </Card>
+            </motion.div>
         </Container>
     );
 };

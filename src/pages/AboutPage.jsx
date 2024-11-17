@@ -40,10 +40,10 @@ const AboutPage = ({ onNavigate }) => {
                     className="text-center mb-16"
                     {...fadeIn}
                 >
-                    <h1 className="text-4xl font-bold pt-5 mb-4 gold">
+                    <h1 className="text-4xl font-bold pt-5 mb-4 gold display-4">
                         About My Arabic Learner
                     </h1>
-                    <p className="text-xl text-gray-300">
+                    <p className="text-xl text-gray-300 lead text-gray-300">
                         Your journey to mastering Levantine Arabic starts here
                     </p>
                 </motion.div>
@@ -55,7 +55,7 @@ const AboutPage = ({ onNavigate }) => {
                     transition={{ delay: 0.2, duration: 0.6 }}
                 >
                     <div className="">
-                        <p className="text-lg text-gray-300 leading-relaxed text-center pb-3">
+                        <p className="text-lg text-gray-300 leading-relaxed text-center pb-3 lead">
                             Whether you're just starting out or want to level up your Arabic conversations,
                             we're here to make learning Levantine Arabic easy, fun, and practical. Our platform
                             combines modern learning techniques with traditional language education to create
@@ -79,8 +79,8 @@ const AboutPage = ({ onNavigate }) => {
                         >
                             <div className="text-center">
                                 {feature.icon}
-                                <h3 className="text-xl font-semibold mb-2 gold">{feature.title}</h3>
-                                <p className="text-gray-300">{feature.description}</p>
+                                <h3 className="text-xl font-semibold mb-2 gold display-6">{feature.title}</h3>
+                                <p className="text-gray-300 lead">{feature.description}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -92,22 +92,24 @@ const AboutPage = ({ onNavigate }) => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                 >
-                    <div className="p-8 pt-4">
-                        <h2 className="text-2xl font-bold mb-4 gold">Ready to Begin?</h2>
-                        <p className="text-lg text-gray-300 mb-6">
+                    <div className="p-8 pt-4 mb-4">
+                        <h2 className="text-2xl mb-4 gold display-6">Ready to Begin?</h2>
+                        <p className="text-lg text-gray-300 mb-6 lead">
                             Start your journey into the beautiful world of Levantine Arabic today!
                         </p>
                         <Button
                             variant="outline-light"
                             type="button"
-                            className="button text-white mt-4 py-3 px-8 duration-300"
+                            className="button text-white mt-4 py-3 px-8 duration-300 mb-3"
                             style={{ maxWidth: '300px' }}
                             onClick={() => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                 onNavigate('wordsflashcard');
                             }}
                         >
-                            Get Started
+                            <div className="lead">
+                                Get Started
+                            </div>
                         </Button>
                     </div>
                 </motion.div>

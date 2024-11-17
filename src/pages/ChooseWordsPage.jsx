@@ -87,7 +87,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                 >
                     <div className="flex items-center w-full">
                         <BookOpen className="w-5 h-5 text-purple-400" />
-                        <span className="text-left text-lg text-gray-200 ms-2">
+                        <span className="text-left text-lg text-gray-200 ms-2 lead">
                             {capitaliseWords(displayText)}
                         </span>
                     </div>
@@ -101,7 +101,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
                 <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading results...</span>
+                    <span className="visually-hidden lead">Loading results...</span>
                 </Spinner>
             </Container>
         );
@@ -129,7 +129,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                 transition={{ duration: 0.5 }}
             >
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold mb-6 text-center gold pt-5 mb-4">
+                    <h1 className="text-3xl font-bold mb-6 text-center gold pt-5 mb-4 display-4">
                         {capitaliseWords(title)}
                     </h1>
 
@@ -160,7 +160,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                     <CategoryCard key={category.id} category={category} />
                                 ))
                             ) : (
-                                <p className="text-center text-gray-400">No categories found.</p>
+                                <p className="text-center text-gray-400 lead">No categories found.</p>
                             )
                         ) : (
                             selectedGroup ? (
@@ -170,8 +170,10 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                         className="flex items-center mb-4"
                                         variant="outline-light"
                                     >
-                                        <ArrowLeft className="w-4 h-4 mr-2 me-2" />
-                                        Back to groups
+                                        <div className="lead">
+                                            <ArrowLeft className="w-4 h-4 mr-2 me-2" />
+                                            Back to groups
+                                        </div>
                                     </Button>
                                     <div className="space-y-3">
                                         {groupedCategories[selectedGroup].map((category) => (
@@ -191,10 +193,10 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                     >
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <h3 className="text-xl font-semibold mb-1">
+                                                <h3 className="text-xl font-semibold mb-1 display-6">
                                                     {capitaliseWords(group)}
                                                 </h3>
-                                                <p className="text-gray-400 text-sm">
+                                                <p className="text-gray-400 text-sm lead">
                                                     {categories.length} categories
                                                 </p>
                                             </div>

@@ -45,11 +45,14 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
                         className="flex items-center"
                         variant="outline-light"
                     >
-                        <ArrowLeft className="me-2" />
-                        Back to groups
+                        <div className="lead">
+                            <ArrowLeft className="me-2" />
+
+                            Back to groups
+                        </div>
                     </Button>
                 </div>
-                <h1 className='gold pb-2'>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
+                <h1 className='gold pb-2 display-4'>{category_name ? capitaliseWords(category_name) : capitaliseWords(pageTitle)}</h1>
 
                 <div>
                     <FlashCards flashcards={flashcards} />

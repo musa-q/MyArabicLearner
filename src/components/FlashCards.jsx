@@ -36,7 +36,7 @@ const FlashCards = ({ flashcards }) => {
         <>
             <div className='toggle-buttons'>
                 <div className='toggle-group'>
-                    <span>Language:</span>
+                    <span className='lead'>Language:</span>
                     <ButtonGroup>
                         {langRadios.map((langRadio, idx) => (
                             <ToggleButton
@@ -54,7 +54,7 @@ const FlashCards = ({ flashcards }) => {
                     </ButtonGroup>
                 </div>
                 <div className='toggle-group'>
-                    <span>Transliteration:</span>
+                    <span className='lead'>Transliteration:</span>
                     <ButtonGroup>
                         {translitRadios.map((translitRadio, idx) => (
                             <ToggleButton
@@ -82,13 +82,13 @@ const FlashCards = ({ flashcards }) => {
                     >
                         <div className="flashcard-inner">
                             <div className="flashcard-content card-front">
-                                <div className="card-title">{flashcard.arabic}</div>
+                                <div className="card-title display-6">{flashcard.arabic}</div>
                                 {translitRadioValue === 'true' && (
-                                    <div className="card-translit">{flashcard.transliteration}</div>
+                                    <div className="card-translit lead">{flashcard.transliteration}</div>
                                 )}
                             </div>
                             <div className="flashcard-content card-back">
-                                <div className="card-title">{capitaliseWords(flashcard.english)}</div>
+                                <div className="card-title display-6">{capitaliseWords(flashcard.english)}</div>
                             </div>
                         </div>
                     </div>

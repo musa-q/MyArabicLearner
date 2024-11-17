@@ -1,5 +1,5 @@
 .light {
-    background: linear-gradient(to bottom, rgba(252, 213, 255, 0.1) 0%, transparent 80%);
+    background: linear-gradient(to bottom, rgba(252, 213, 255, 0.075) 0%, transparent 80%);
 }
 
 :root {

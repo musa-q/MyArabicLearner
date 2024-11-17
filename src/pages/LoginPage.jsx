@@ -75,12 +75,12 @@ const LoginPage = ({ onLogin }) => {
             {!showTokenInput ? (
                 <div className="login-container">
                     <div className="login-header text-center">
-                        <h3 style={{ fontSize: "2rem" }}>Login</h3>
+                        <h3 className="display-3">Login</h3>
                     </div>
                     <div className="login-body">
                         <Form onSubmit={handleLogin}>
                             <Form.Group className="mb-4" controlId="formBasicEmail">
-                                <Form.Label>Email address</Form.Label>
+                                <Form.Label className='lead'>Email address</Form.Label>
                                 <Form.Control
                                     type="email"
                                     placeholder="Enter email"

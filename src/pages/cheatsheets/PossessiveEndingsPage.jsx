@@ -1,80 +1,96 @@
 import React from "react";
-import { Table, Container } from "react-bootstrap";
-import './Cheatsheet.css';
+import { motion } from "framer-motion";
+import { Book, CircleDot } from 'lucide-react';
+import { Container, Card } from 'react-bootstrap';
 
 const PossessiveEndingsPage = () => {
-    const endings = [
-        { pronoun: "My", ending: "ي" },
-        { pronoun: "Your (M)", ending: "كَ" },
-        { pronoun: "Your (F)", ending: "كِ" },
-        { pronoun: "His", ending: "ه" },
-        { pronoun: "Her", ending: "ها" },
-        { pronoun: "Their", ending: "هم" },
-        { pronoun: "Our", ending: "نا" },
-    ];
+    const fadeIn = {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6 }
+    };
 
-    const examples = [
-        { pronoun: "My", example: "كتابي (kitabi) - my book" },
-        { pronoun: "Your (M)", example: "كتابكَ (kitabuka) - your book (M)" },
-        { pronoun: "Your (F)", example: "كتابكِ (kitabuki) - your book (F)" },
-        { pronoun: "His", example: "كتابُه (kitabuhu) - his book" },
-        { pronoun: "Her", example: "كتابُها (kitabuha) - her book" },
-        { pronoun: "Their", example: "كتابُهم (kitabuhum) - their book" },
-        { pronoun: "Our", example: "كتابُنا (kitabuna) - our book" },
+    const endings = [
+        { pronoun: "My", ending: "ي", example: "كتابي (kitabi) - my book" },
+        { pronoun: "Your (M)", ending: "كَ", example: "كتابكَ (kitabuka) - your book (M)" },
+        { pronoun: "Your (F)", ending: "كِ", example: "كتابكِ (kitabuki) - your book (F)" },
+        { pronoun: "His", ending: "ه", example: "كتابُه (kitabuhu) - his book" },
+        { pronoun: "Her", ending: "ها", example: "كتابُها (kitabuha) - her book" },
+        { pronoun: "Their", ending: "هم", example: "كتابُهم (kitabuhum) - their book" },
+        { pronoun: "Our", ending: "نا", example: "كتابُنا (kitabuna) - our book" },
     ];
 
     return (
-        <Container className="my-5">
-            <h1 className="text-center mb-4">Possessive Endings</h1>
-
-            <Table striped bordered hover className="text-center">
-                <thead>
-                    <tr>
-                        <th>Pronoun</th>
-                        <th>Ending</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {endings.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.pronoun}</td>
-                            <td>{row.ending}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
-
-            <div>
-                <h2 className="mt-5">Explanation</h2>
-                <p>
-                    In Jordanian Arabic, possessive endings are used to indicate ownership or belonging.
-                    These endings are attached to nouns to show who the noun belongs to.
+        <Container className="pt-2 pb-5">
+            <motion.div
+                className="text-center mb-5"
+                {...fadeIn}
+            >
+                <h1 className="gold display-4 mb-4 text-purple-400">
+                    Possessive Endings in Arabic
+                </h1>
+                <p className="lead text-gray-300">
+                    Master the art of showing possession in Levantine Arabic
                 </p>
-                <p>
-                    For example, "كتابي" (kitābī) means "my book", where the ending "ي" (ī) indicates possession by the speaker.
-                    The word "كتابُه" (kitābuhu) means "his book", with the ending "ه" (hu) showing possession by a male.
-                </p>
-                <p>
-                    It is important to note the gender-specific endings for "your". For males, "كتابكَ" (kitābuka) is used,
-                    and for females, "كتابكِ" (kitābuki) is used.
-                </p>
-            </div>
+            </motion.div>
 
-            <Table striped bordered hover className="text-center mt-5">
-                <thead>
-                    <tr>
-                        <th>Example</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {examples.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.example}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            <motion.div
+                className="row g-4 mb-5"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+            >
+                {endings.map((item, index) => (
+                    <motion.div
+                        key={index}
+                        className="col-md-6"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <Card className="h-100 bg-dark text-white border-purple-400">
+                            <Card.Body>
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <div className="d-flex align-items-center">
+                                        <CircleDot className="text-purple-400 me-2" size={20} />
+                                        <h3 className="h4 mb-0 display-6">{item.pronoun}</h3>
+                                    </div>
+                                    <span className="h3 text-purple-400 mb-0 h4 mb-0 display-6">{item.ending}</span>
+                                </div>
+                                <Card.Text className="text-gray-300 lead">
+                                    {item.example}
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </motion.div>
+                ))}
+            </motion.div>
 
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="mb-5"
+            >
+                <Card className="bg-dark text-white">
+                    <Card.Header className="d-flex align-items-center">
+                        <Book className="text-purple-400 me-2" size={20} />
+                        <h2 className="h5 mb-0 display-6">Quick Guide</h2>
+                    </Card.Header>
+                    <Card.Body className="text-gray-300 lead">
+                        <p>
+                            In Jordanian Arabic, possessive endings are attached to nouns to show ownership or belonging.
+                            These endings change based on who owns the item.
+                        </p>
+                        <p>
+                            For example, "كتابي" (kitābī) means "my book", where the ending "ي" (ī) indicates possession by the speaker.
+                            The word "كتابُه" (kitābuhu) means "his book", with the ending "ه" (hu) showing possession by a male.
+                        </p>
+                        <p className="mb-0">
+                            Notice how the endings change based on gender - "كتابكَ" (kitābuka) for males and "كتابكِ" (kitābuki) for females.
+                        </p>
+                    </Card.Body>
+                </Card>
+            </motion.div>
         </Container>
     );
 };

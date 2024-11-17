@@ -44,7 +44,7 @@ const TypingAnimation = ({ text }) => {
         >
             {words.map((word, index) => (
                 <motion.span
-                    className='noto-kufi-bold gold'
+                    className='noto-kufi-bold gold display-1'
                     key={`${word}-${index}`}
                     variants={wordVariants}
                     style={{
