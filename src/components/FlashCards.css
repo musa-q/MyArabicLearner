@@ -1,78 +1,106 @@
-.flashcard {
-    cursor: pointer;
-    position: relative;
-    margin-bottom: 20px;
-    padding: 40px;
+.flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px;
 }
 
-.flashcard .card-front,
-.flashcard .card-back {
+.flashcard-tile {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.65s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-tile.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-content {
     position: absolute;
     width: 100%;
+    height: 100%;
     backface-visibility: hidden;
-    transition: transform 0.5s;
-    border: 2px solid #76737e;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    transition: font-size 0.3s ease, transform 0.3s ease;
-    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-}
-
-.card-back {
-    transform: rotateY(180deg);
-    background-color: #2f2b3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-front {
-    background-color: #46424f;
+    background-color: #5b5166;
+    color: #2b2b3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.flipped .card-back {
-    transform: rotateY(0deg);
-}
-
-.flipped .card-front {
+.card-back {
+    background-color: #4a4a6a;
+    color: #f9f9fb;
     transform: rotateY(180deg);
 }
 
-.flashcard:hover {
-    .card-front {
-        background-color: #716c7f;
-    }
-
-    .card-back {
-        background-color: #464056;
-    }
-
-    .front-card-title:not(.large) {
-        font-size: 1.4em;
-        transition: .1s ease-in-out;
-    }
-
-    .front-card-title.large {
-        font-size: 1.9em;
-        transition: .1s ease-in-out;
-    }
-
-    .back-card-title {
-        font-size: 1.4em;
-        transition: .1s ease-in-out;
-    }
+.card-title {
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #fff;
 }
 
-.front-card-title.large {
-    font-size: 1.5em;
+.card-translit {
+    font-size: 1.1em;
+    color: #d3cdcd;
+    font-style: italic;
 }
 
-.list-toggle-button {
+.flashcard-content.card-front .card-title {
+    color: #fff;
+}
+
+.flashcard-content.card-back .card-title {
+    color: #f1f1f5;
+}
+
+.toggle-buttons {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
 }
 
-.full-toggle-button {
+.toggle-group {
     display: flex;
-    flex-direction: column;
-    padding-left: 20px;
-    padding-right: 20px;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.toggle-group span {
+    margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+    .toggle-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toggle-group {
+        margin-bottom: 10px;
+    }
 }

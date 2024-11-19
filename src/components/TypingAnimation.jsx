@@ -33,7 +33,6 @@ const TypingAnimation = ({ text }) => {
                 fontSize: '4rem',
                 fontWeight: 'bold',
                 overflow: 'visible',
-                paddingBottom: '100px',
                 unicodeBidi: 'bidi-override',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
@@ -45,7 +44,7 @@ const TypingAnimation = ({ text }) => {
         >
             {words.map((word, index) => (
                 <motion.span
-                    className='noto-kufi-bold gold'
+                    className='noto-kufi-bold gold display-1'
                     key={`${word}-${index}`}
                     variants={wordVariants}
                     style={{

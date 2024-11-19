@@ -10,8 +10,7 @@ def home():
 
 def get_admin_navbar_buttons():
     return [
-        { 'label': 'Check Vocab', 'action': 'checkvocab' },
-        { 'label': 'Check Verbs', 'action': 'checkverbs' },
+        { 'label': 'Maintenance', 'action': 'maintenance' },
     ]
 
 @home_bp.route('/homepage', methods=['POST'])
