@@ -33,7 +33,7 @@ const QuizTypesPage = () => {
                 className="bg-gray-800 p-4 rounded-lg cursor-pointer border border-gray-700 hover:border-purple-500 mb-3"
             >
                 <div
-                    onClick={() => setSelectedQuizType(quizType)}
+                    onClick={() => setSelectedQuizType(quizType.id)}
                 >
                     <Container className="d-flex justify-content-start">
                         <div style={{ padding: '20px', marginRight: '10px' }}>

@@ -62,11 +62,11 @@ const CheatsheetTypesPage = () => {
             case 'PossessiveEndings':
                 return (
                     <div>
-                        <div className="mb-4 px-4 mt-3">
+                        <div className="mb-0 px-4 mt-3">
                             <Button
                                 onClick={handleBack}
-                                className="flex items-center"
-                                variant="outline-light"
+                                className="flex items-center text-decoration-none text-white"
+                                variant="link"
                             >
                                 <div className="lead">
                                     <ArrowLeft className="me-2" />
@@ -80,11 +80,11 @@ const CheatsheetTypesPage = () => {
             case 'VerbConjugation':
                 return (
                     <div>
-                        <div className="mb-4 px-4 m-3">
+                        <div className="mb-0 px-4 m-3">
                             <Button
                                 onClick={handleBack}
-                                className="flex items-center"
-                                variant="outline-light"
+                                className="flex items-center text-decoration-none text-white"
+                                variant="link"
                             >
                                 <div className="lead">
                                     <ArrowLeft className="me-2" />

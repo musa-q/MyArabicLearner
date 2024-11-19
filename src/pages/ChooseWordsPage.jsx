@@ -167,8 +167,8 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                 <div>
                                     <Button
                                         onClick={() => setSelectedGroup(null)}
-                                        className="flex items-center mb-4"
-                                        variant="outline-light"
+                                        className="flex items-center mb-4 text-decoration-none text-white"
+                                        variant="link"
                                     >
                                         <div className="lead">
                                             <ArrowLeft className="w-4 h-4 mr-2 me-2" />
