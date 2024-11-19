@@ -99,7 +99,7 @@ def login():
             'authenticated': True
         }), 200
 
-    token = secrets.token_urlsafe(32).replace('-', 'g').replace('_', '9')
+    token = secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
     user.set_auth_token(token)
     db.session.commit()
 
