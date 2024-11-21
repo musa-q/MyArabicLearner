@@ -7,45 +7,29 @@ from ..decorators import require_auth
 import secrets
 import smtplib
 from email.mime.text import MIMEText
+import uuid
 
 auth_bp = Blueprint('auth', __name__)
-
-def create_or_update_session(user, ip_address):
-    location = user_utils.get_geolocation(ip_address)
-    existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
-
-    if existing_session:
-        existing_session.last_used = datetime.utcnow()
-        existing_session.location = location
-    else:
-        new_session = UserSession(
-            user_id=user.id,
-            ip_address=ip_address,
-            location=location,
-            last_used=datetime.utcnow()
-        )
-        db.session.add(new_session)
-
-    db.session.commit()
-
+def generate_secure_token():
+    return secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
 
 def send_auth_email(email, token):
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
-    subject = "Verify Your Email - My Arabic Learner"
+    subject = "Login Token - My Arabic Learner"
 
     html_content = f"""
     <html>
         <body style="font-family: sans-serif;">
             <img src="https://i.ibb.co/25NHfYy/myarabiclearner-logo.png" width="100" alt="My Arabic Learner Logo" style="display: block; margin: 30px auto;">
-            <h2 style="text-align: center; color: #2E86C1;">Welcome to My Arabic Learner!</h2>
+            <h2 style="text-align: center; color: #2E86C1;">Your Login Token</h2>
             <p style="text-align: center;">
-                To verify your email address, please use the following code:<br>
+                Your login token is valid for 15 minutes. Do NOT share this with anyone.
                 <h3 style="color: #2E86C1; font-weight: bold; text-align: center;">{token}</h3>
             </p>
             <p style="text-align: center;">
-                If you did not sign up for this account, you can ignore this email.
+                If you did not request this login, please ignore this email.
             </p>
             <br>
             <p style="text-align: center;">
@@ -65,65 +49,85 @@ def send_auth_email(email, token):
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg.as_string())
 
+def create_user_session(user, device_id=None):
+    UserSession.query.filter_by(user_id=user.id).delete()
+    device_id = device_id or str(uuid.uuid4())
+
+    new_session = UserSession(
+        user_id=user.id,
+        device_identifier=device_id,
+        last_used=datetime.utcnow()
+    )
+    db.session.add(new_session)
+    db.session.commit()
+    return new_session
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get('email')
     username = data.get('username', None)
-    ip_address = request.remote_addr
+    device_id = data.get('device_id')
 
-    # if not email or not username:
-    #     return jsonify({'error': 'Email and username are required'}), 400
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
 
     user = User.query.filter_by(email=email).first()
 
     if not user:
         if not username:
-            return jsonify({'error': 'Email does not exist. Enter a username to signup'}), 404
+            return jsonify({'error': 'User not found. Provide a username to create an account'}), 404
+
         user = User(email=email, username=username, role='basic')
         db.session.add(user)
         db.session.commit()
 
-    existing_session = UserSession.query.filter_by(user_id=user.id, ip_address=ip_address).first()
-    if existing_session and (datetime.utcnow() - existing_session.last_used) < Config.SESSION_TOKEN_TIME:
-        create_or_update_session(user, ip_address)
-        token = user.auth_token
-        if not user.is_token_valid():
-            token = secrets.token_urlsafe(32).replace('-', 'g').replace('_', '9')
-            user.set_auth_token(token)
-        db.session.commit()
-        return jsonify({
-            'message': 'Authenticated already',
-            'token': user.auth_token,
-            'email': email,
-            'authenticated': True
-        }), 200
-
-    token = secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
-    user.set_auth_token(token)
+    login_token = generate_secure_token()
+    user.login_token = login_token
+    user.login_token_expiration = datetime.utcnow() + timedelta(minutes=15)
     db.session.commit()
 
-    send_auth_email(email, token)
+    send_auth_email(email, login_token)
 
-    return jsonify({'message': 'Authentication token sent to your email', 'authenticated': False}), 200
+    return jsonify({
+        'message': 'Login token sent to your email',
+        'email_verified': False
+    }), 200
 
 @auth_bp.route('/verify', methods=['POST'])
 def verify():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
-    ip_address = request.remote_addr
+    device_id = data.get('device_id')
 
     if not email or not token:
         return jsonify({'error': 'Email and token are required'}), 400
 
     user = User.query.filter_by(email=email).first()
-    if not user or not user.is_token_valid() or user.auth_token != token:
+
+    if (not user or
+        not user.login_token or
+        user.login_token != token or
+        datetime.utcnow() > user.login_token_expiration):
         return jsonify({'error': 'Invalid or expired token'}), 401
 
-    create_or_update_session(user, ip_address)
+    user.login_token = None
+    user.login_token_expiration = None
 
-    return jsonify({'message': 'Authentication successful', 'token': token, 'email': email}), 200
+    session = create_user_session(user, device_id)
+
+    auth_token = generate_secure_token()
+    user.auth_token = auth_token
+    user.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
+
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Authentication successful',
+        'token': auth_token,
+        'email': email
+    }), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 @require_auth()

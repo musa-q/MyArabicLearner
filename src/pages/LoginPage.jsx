@@ -3,6 +3,7 @@ import { Card, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import './LoginPage.css';
 import { API_URL } from '../config';
+import { v4 as uuidv4 } from 'uuid';
 
 const LoginPage = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -11,11 +12,18 @@ const LoginPage = ({ onLogin }) => {
     const [message, setMessage] = useState('');
     const [showTokenInput, setShowTokenInput] = useState(false);
     const [isNewUser, setIsNewUser] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [storedEmail, setStoredEmail] = useState(null);
+    const [deviceId, setDeviceId] = useState(null);
 
     useEffect(() => {
+        let storedDeviceId = localStorage.getItem('deviceId');
+        if (!storedDeviceId) {
+            storedDeviceId = uuidv4();
+            localStorage.setItem('deviceId', storedDeviceId);
+        }
+        setDeviceId(storedDeviceId);
+
         const storedEmail = localStorage.getItem('email');
         if (storedEmail) {
             setStoredEmail(storedEmail);
@@ -26,19 +34,14 @@ const LoginPage = ({ onLogin }) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const payload = isNewUser ? {
+            const payload = {
                 'email': email,
-                'username': username,
-            } : {
-                'email': email,
+                'username': isNewUser ? username : undefined,
+                'device_id': deviceId
             };
             const response = await axios.post(`${API_URL}/auth/login`, payload);
             setMessage(response.data.message);
-            if (response.data.authenticated) {
-                onLogin(response.data.token, response.data.email);
-            } else {
-                setShowTokenInput(true);
-            }
+            setShowTokenInput(true);
         } catch (error) {
             if (error.response && error.response.status === 404) {
                 setMessage('User not found. Please enter a username to create an account.');
@@ -55,14 +58,17 @@ const LoginPage = ({ onLogin }) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await axios.post(`${API_URL}/auth/verify`,
-                {
-                    'email': email,
-                    'token': token,
-                }
-            );
+            const response = await axios.post(`${API_URL}/auth/verify`, {
+                'email': email,
+                'token': token,
+                'device_id': deviceId
+            });
+
+            localStorage.setItem('email', email);
+            localStorage.setItem('authToken', response.data.token);
+
             setMessage(response.data.message);
-            onLogin(response.data.token, response.data.email);
+            onLogin(response.data.token, email);
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {
