@@ -35,7 +35,7 @@ const LoginPage = ({ onLogin }) => {
         setIsLoading(true);
         try {
             const payload = {
-                'email': email,
+                'email': email || storedEmail,
                 'username': isNewUser ? username : undefined,
                 'device_id': deviceId
             };
