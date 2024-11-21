@@ -59,7 +59,7 @@ const LoginPage = ({ onLogin }) => {
         setIsLoading(true);
         try {
             const response = await axios.post(`${API_URL}/auth/verify`, {
-                'email': email,
+                'email': email || storedEmail,
                 'token': token,
                 'device_id': deviceId
             });
