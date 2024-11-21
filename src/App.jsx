@@ -90,7 +90,7 @@ const App = () => {
     setUsername(null);
     setExtraButtons(null);
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userEmail');
+    localStorage.removeItem('email');
     delete axios.defaults.headers.common['Authorization'];
     navigateToPage('home');
   }
