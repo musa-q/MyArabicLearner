@@ -16,12 +16,14 @@ const HomePage = ({ onNavigate, username }) => {
     const logoControls = useAnimation();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowFeedbackToast(true);
-        }, 1750);
+        if (username) {
+            const timer = setTimeout(() => {
+                setShowFeedbackToast(true);
+            }, 1750);
 
-        return () => clearTimeout(timer);
-    }, []);
+            return () => clearTimeout(timer);
+        }
+    }, [username]);
 
     useEffect(() => {
         if (imageLoaded) {
@@ -89,21 +91,25 @@ const HomePage = ({ onNavigate, username }) => {
 
             <TypingAnimation text={"أهلاً وسهلاً"} />
 
-            <AppFeedback data-bs-theme="dark" show={showFeedbackModal} handleClose={handleCloseModal} />
+            {username && (
+                <>
+                    <AppFeedback data-bs-theme="dark" show={showFeedbackModal} handleClose={handleCloseModal} />
 
-            <ToastContainer
-                className="p-3"
-                position={"bottom-end"}
-                style={{ zIndex: 1 }}
-            >
-                <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast" >
-                    <Toast.Header>
-                        <strong className="me-auto">Feedback</strong>
-                    </Toast.Header>
-                    <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>{username}, we'd love your feedback! Click this pop-up!</Toast.Body>
-                </Toast>
-            </ToastContainer>
-        </div >
+                    <ToastContainer
+                        className="p-3"
+                        position={"bottom-end"}
+                        style={{ zIndex: 1 }}
+                    >
+                        <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast" >
+                            <Toast.Header>
+                                <strong className="me-auto">Feedback</strong>
+                            </Toast.Header>
+                            <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>{username}, we'd love your feedback! Click this pop-up!</Toast.Body>
+                        </Toast>
+                    </ToastContainer>
+                </>
+            )}
+        </div>
     );
 };
 
