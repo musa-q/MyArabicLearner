@@ -43,11 +43,10 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
                     <Button
                         onClick={onBack}
                         className="flex items-center"
-                        variant="outline-light"
+                        variant="link"
                     >
                         <div className="lead">
                             <ArrowLeft className="me-2" />
-
                             Back to groups
                         </div>
                     </Button>
