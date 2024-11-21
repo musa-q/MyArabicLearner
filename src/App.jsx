@@ -22,6 +22,8 @@ const App = () => {
   const [extraButtons, setExtraButtons] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const publicPages = ['home', 'about', 'login'];
+
   const getUserDetails = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -95,7 +97,6 @@ const App = () => {
     navigateToPage('home');
   }
 
-
   const navigateToPage = (page) => {
     setCurrentPage(page);
   };
@@ -130,6 +131,31 @@ const App = () => {
     }
   };
 
+  const renderPage = () => {
+    if (!isLoggedIn && !publicPages.includes(currentPage)) {
+      return <LoginPage onLogin={handleLogin} />;
+    }
+
+    switch (currentPage) {
+      case 'home':
+        return <HomePage onNavigate={navigateToPage} username={username} />;
+      case 'about':
+        return <AboutPage onNavigate={navigateToPage} />;
+      case 'wordsflashcard':
+        return isLoggedIn ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} />;
+      case 'quiz':
+        return isLoggedIn ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} />;
+      case 'quiz-results':
+        return isLoggedIn ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} />;
+      case 'cheatsheet':
+        return isLoggedIn ? <CheatsheetTypesPage /> : <LoginPage onLogin={handleLogin} />;
+      case 'maintenance':
+        return isLoggedIn && extraButtons ? <MaintenanceHomePage /> : <LoginPage onLogin={handleLogin} />;
+      default:
+        return <HomePage onNavigate={navigateToPage} username={username} />;
+    }
+  };
+
   return (
     <div className="dark-background light" data-bs-theme="dark">
       <Helmet>
@@ -160,29 +186,7 @@ const App = () => {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <>
-          {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
-          {isLoggedIn && (
-            <>
-              {!isLoggedIn && currentPage !== 'login' && <LoginPage onLogin={handleLogin} />}
-              {isLoggedIn && (
-                <>
-                  {currentPage === 'home' && <HomePage onNavigate={navigateToPage} username={username} />}
-                  {currentPage === 'wordsflashcard' && <WordsFlashcardsPage />}
-                  {currentPage === 'quiz' && <QuizTypesPage />}
-                  {currentPage === 'quiz-results' && <AllQuizResultsPage />}
-                  {currentPage === 'cheatsheet' && <CheatsheetTypesPage />}
-                  {currentPage === 'about' && <AboutPage onNavigate={navigateToPage} />}
-                  {extraButtons && (
-                    <>
-                      {currentPage === 'maintenance' && <MaintenanceHomePage />}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </>
+        renderPage()
       )}
     </div>
   )
