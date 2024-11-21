@@ -42,7 +42,7 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
                 <div className="back-button-container">
                     <Button
                         onClick={onBack}
-                        className="flex items-center"
+                        className="flex items-center text-decoration-none text-white"
                         variant="link"
                     >
                         <div className="lead">
