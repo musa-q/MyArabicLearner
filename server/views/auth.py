@@ -116,9 +116,12 @@ def verify():
 
     session = create_user_session(user, device_id)
 
-    auth_token = generate_secure_token()
-    user.auth_token = auth_token
-    user.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
+    if not user.auth_token:
+        auth_token = generate_secure_token()
+        user.auth_token = auth_token
+        user.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
+    else:
+        auth_token = user.auth_token
 
     db.session.commit()
 
