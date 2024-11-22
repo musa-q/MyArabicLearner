@@ -8,6 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     auth_token = db.Column(db.String(100), unique=True, nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
+    last_login = db.Column(db.DateTime, nullable=True)
 
     login_token = db.Column(db.String(100), unique=True, nullable=True)
     login_token_expiration = db.Column(db.DateTime, nullable=True)

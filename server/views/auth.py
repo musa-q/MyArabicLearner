@@ -125,6 +125,8 @@ def verify():
 
     db.session.commit()
 
+    user_utils.update_last_login(user)
+
     return jsonify({
         'message': 'Authentication successful',
         'token': auth_token,

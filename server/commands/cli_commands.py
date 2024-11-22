@@ -13,7 +13,7 @@ def list_users():
 
     click.echo("Users in the database:")
     for user in users:
-        click.echo(f"ID: {user.id}, Username: {user.username}, Email: {user.email}, Role: {user.role}")
+        click.echo(f"ID: {user.id}, Username: {user.username}, Email: {user.email}, Role: {user.role}, Last Login: {user.last_login}")
 
 @click.command('find-user')
 @click.argument('identifier')
@@ -31,6 +31,7 @@ def find_user(identifier):
         click.echo(f"Username: {user.username}")
         click.echo(f"Email: {user.email}")
         click.echo(f"Role: {user.role}")
+        click.echo(f"Last Login: {user.last_login}")
         click.echo(f"Auth Token Valid: {user.is_token_valid()}")
     else:
         click.echo(f"No user found with identifier: {identifier}")

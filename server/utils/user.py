@@ -1,5 +1,6 @@
+from datetime import datetime
 from flask import request
-from ..models import User
+from ..models import User, db
 import requests
 import os
 
@@ -42,3 +43,8 @@ class UserUtils:
         except Exception as e:
             print(f"Error getting geolocation: {str(e)}")
             return "Unknown"
+
+    @staticmethod
+    def update_last_login(user, *args):
+        user.last_login = datetime.utcnow()
+        db.session.commit()
