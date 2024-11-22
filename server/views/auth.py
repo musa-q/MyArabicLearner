@@ -50,7 +50,6 @@ def send_auth_email(email, token):
         server.sendmail(sender_email, email, msg.as_string())
 
 def create_user_session(user, device_id=None):
-    UserSession.query.filter_by(user_id=user.id).delete()
     device_id = device_id or str(uuid.uuid4())
 
     new_session = UserSession(
