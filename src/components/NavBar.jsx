@@ -36,12 +36,16 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
                         <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
-                        {isLoggedIn && (
+                        {isLoggedIn ? (
                             <>
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
                                 <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
                                 <Nav.Link onClick={() => handleNavigate('cheatsheet')}>Cheatsheets</Nav.Link>
                                 {createExtraButtons}
+                            </>
+                        ) : (
+                            <>
+                                <Nav.Link onClick={() => onNavigate('')}>Login</Nav.Link>
                             </>
                         )}
                     </Nav>

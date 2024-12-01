@@ -4,6 +4,7 @@ import axios from 'axios';
 import './LoginPage.css';
 import { API_URL } from '../config';
 import { v4 as uuidv4 } from 'uuid';
+import { authManager } from '../utils';
 
 const LoginPage = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -65,7 +66,7 @@ const LoginPage = ({ onLogin }) => {
             });
 
             localStorage.setItem('email', email);
-            localStorage.setItem('authToken', response.data.token);
+            authManager.setTokens(response.data.token, response.data.refresh_token);
 
             setMessage(response.data.message);
             onLogin(response.data.token, email);

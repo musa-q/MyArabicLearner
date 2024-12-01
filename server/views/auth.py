@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from ..models import db, User, UserSession
 from ..utils import user_utils
 from datetime import datetime, timedelta
@@ -8,6 +8,8 @@ import secrets
 import smtplib
 from email.mime.text import MIMEText
 import uuid
+from user_agents import parse
+import ipaddress
 
 auth_bp = Blueprint('auth', __name__)
 def generate_secure_token():
@@ -49,13 +51,57 @@ def send_auth_email(email, token):
         server.login(sender_email, password)
         server.sendmail(sender_email, email, msg.as_string())
 
+def get_device_info():
+    user_agent = request.headers.get('User-Agent', '')
+    user_agent_info = parse(user_agent)
+
+    return {
+        'device_type': user_agent_info.device.family,
+        'device_name': f"{user_agent_info.browser.family} on {user_agent_info.os.family}"
+    }
+
+def get_client_ip():
+    if request.headers.get('X-Forwarded-For'):
+        ip = request.headers.get('X-Forwarded-For').split(',')[0]
+    else:
+        ip = request.remote_addr
+    return ip
+
 def create_user_session(user, device_id=None):
-    device_id = device_id or str(uuid.uuid4())
+    active_sessions = UserSession.query.filter_by(
+        user_id=user.id,
+        is_active=True
+    ).order_by(UserSession.last_used.desc()).all()
+
+    if len(active_sessions) >= Config.MAX_DEVICES_PER_USER:
+        oldest_session = active_sessions[-1]
+        oldest_session.is_active = False
+        db.session.commit()
+
+    device_info = get_device_info()
+    client_ip = get_client_ip()
+
+    existing_session = UserSession.query.filter_by(
+        user_id=user.id,
+        device_identifier=device_id
+    ).first()
+
+    if existing_session:
+        existing_session.is_active = True
+        existing_session.last_used = datetime.now()
+        existing_session.last_ip = client_ip
+        existing_session.device_name = device_info['device_name']
+        existing_session.device_type = device_info['device_type']
+        db.session.commit()
+        return existing_session
 
     new_session = UserSession(
         user_id=user.id,
-        device_identifier=device_id,
-        last_used=datetime.utcnow()
+        device_identifier=device_id or str(uuid.uuid4()),
+        device_name=device_info['device_name'],
+        device_type=device_info['device_type'],
+        last_ip=client_ip,
+        last_used=datetime.now()
     )
     db.session.add(new_session)
     db.session.commit()
@@ -93,6 +139,51 @@ def login():
         'email_verified': False
     }), 200
 
+@auth_bp.route('/refresh-token', methods=['POST'])
+def refresh_token():
+    data = request.get_json()
+    email = data.get('email')
+    refresh_token = data.get('refresh_token')
+    device_id = data.get('device_id')
+
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    if not refresh_token or not device_id:
+        return jsonify({'error': 'Refresh token and device ID are required'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if user.refresh_token != refresh_token:
+        return jsonify({'error': 'Invalid refresh token'}), 401
+
+    if not user.can_refresh():
+        return jsonify({'error': 'Expired refresh token'}), 401
+
+    session = UserSession.query.filter_by(
+        user_id=user.id,
+        device_identifier=device_id,
+        is_active=True
+    ).first()
+
+    if not session or not session.is_valid():
+        return jsonify({'error': 'Invalid device session'}), 401
+
+    new_auth_token = generate_secure_token()
+    new_refresh_token = generate_secure_token()
+
+    user.set_auth_tokens(new_auth_token, new_refresh_token)
+    session.update_activity(get_client_ip())
+
+    db.session.commit()
+
+    return jsonify({
+        'token': new_auth_token,
+        'refresh_token': new_refresh_token
+    }), 200
+
 @auth_bp.route('/verify', methods=['POST'])
 def verify():
     data = request.get_json()
@@ -108,7 +199,7 @@ def verify():
     if (not user or
         not user.login_token or
         user.login_token != token or
-        datetime.utcnow() > user.login_token_expiration):
+        datetime.now() > user.login_token_expiration):
         return jsonify({'error': 'Invalid or expired token'}), 401
 
     user.login_token = None
@@ -116,20 +207,17 @@ def verify():
 
     session = create_user_session(user, device_id)
 
-    if not user.auth_token:
-        auth_token = generate_secure_token()
-        user.auth_token = auth_token
-        user.token_expiration = datetime.utcnow() + Config.SESSION_TOKEN_TIME
-    else:
-        auth_token = user.auth_token
+    auth_token = generate_secure_token()
+    refresh_token = generate_secure_token()
+    user.set_auth_tokens(auth_token, refresh_token)
 
     db.session.commit()
-
     user_utils.update_last_login(user)
 
     return jsonify({
         'message': 'Authentication successful',
         'token': auth_token,
+        'refresh_token': refresh_token,
         'email': email
     }), 200
 
@@ -158,11 +246,3 @@ def logout_all(*args):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
-
-@auth_bp.route('/check-token', methods=['POST'])
-def check_token():
-    user_id = user_utils.get_user_id_from_request()
-    if user_id:
-        return jsonify({'valid': True}), 200
-    else:
-        return jsonify({'valid': False}), 401
