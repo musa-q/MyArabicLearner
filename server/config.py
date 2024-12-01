@@ -20,8 +20,11 @@ class Config:
 
     run_in_development = True
     if (run_in_development):
-        SESSION_TOKEN_TIME = timedelta(days=30)
         NUMBER_OF_QUIZ_QUESTIONS = 3
     else:
-        SESSION_TOKEN_TIME = timedelta(days=30)
         NUMBER_OF_QUIZ_QUESTIONS = 10
+
+    ACCESS_TOKEN_TIME = timedelta(hours=1)
+    REFRESH_TOKEN_TIME = timedelta(days=30)
+    TOKEN_REFRESH_WINDOW = timedelta(minutes=15)
+    MAX_DEVICES_PER_USER = 5

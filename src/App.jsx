@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
-import HomePage from './pages/HomePage'
+import { useState, useEffect } from 'react';
+import HomePage from './pages/HomePage';
 import WordsFlashcardsPage from './pages/WordsFlashcardsPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavBar from './components/NavBar';
-import './components/Scrollbar.css'
-import './App.css'
+import './components/Scrollbar.css';
+import './App.css';
 import { Helmet } from "react-helmet";
 import LoginPage from './pages/LoginPage';
 import axios from 'axios';
@@ -14,13 +14,16 @@ import { API_URL } from './config';
 import CheatsheetTypesPage from './pages/cheatsheets/CheatsheetTypesPage';
 import AboutPage from './pages/AboutPage';
 import MaintenanceHomePage from './pages/maintenance/MaintenanceHomePage';
+import { Spinner } from 'react-bootstrap';
+import { authManager } from './utils';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
   const [extraButtons, setExtraButtons] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [email, setEmail] = useState('');
 
   const publicPages = ['home', 'about', 'login'];
 
@@ -44,95 +47,96 @@ const App = () => {
       if (response.data.extra_buttons) {
         setExtraButtons(response.data.extra_buttons);
       }
+      setIsAuthenticated(true);
     } catch (error) {
       console.error('Error fetching user details:', error);
+      authManager.clearTokens();
+      setIsAuthenticated(false);
+      setEmail('');
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem('authToken');
+    const checkAuth = async () => {
+      const authToken = localStorage.getItem('authToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const storedEmail = localStorage.getItem('email');
 
-      if (token) {
-        try {
-          const response = await axios.post(`${API_URL}/auth/check-token`,
-            {},
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            }
-          );
-          if (response.data.valid) {
-            setIsLoggedIn(true);
-            if (!username) {
-              await getUserDetails();
-            }
-          } else {
-            removeLocalStorage();
-          }
-        } catch (error) {
-          console.error('Error verifying token:', error);
-          removeLocalStorage();
-        }
+      if (authToken && refreshToken) {
+        setEmail(storedEmail);
+        await getUserDetails();
       } else {
         setIsLoading(false);
       }
     };
 
-    verifyToken();
-    const tokenCheckInterval = setInterval(verifyToken, 60000);
-    return () => clearInterval(tokenCheckInterval);
-  }, [username]);
+    authManager.setupAxiosInterceptors(() => {
+      handleLogout();
+    });
 
-  const removeLocalStorage = () => {
-    setIsLoggedIn(false);
-    setUsername(null);
-    setExtraButtons(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('email');
-    delete axios.defaults.headers.common['Authorization'];
-    navigateToPage('home');
-  }
+    checkAuth();
+  }, []);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authToken = localStorage.getItem('authToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const storedEmail = localStorage.getItem('email');
+
+      if (authToken && refreshToken) {
+        setEmail(storedEmail);
+        authManager.initializeFromStorage();
+        await getUserDetails();
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    authManager.setupAxiosInterceptors(() => {
+      handleLogout();
+    });
+
+    checkAuth();
+
+    return () => {
+      if (authManager.refreshTokenTimeout) {
+        clearTimeout(authManager.refreshTokenTimeout);
+      }
+    };
+  }, []);
 
   const navigateToPage = (page) => {
     setCurrentPage(page);
   };
 
-  const handleLogin = async (token, email) => {
-    setIsLoggedIn(true);
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('userEmail', email);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  const handleLogin = async (token, userEmail) => {
+    setEmail(userEmail);
     await getUserDetails();
     navigateToPage('home');
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      try {
-        const response = await axios.post(`${API_URL}/auth/logout`,
-          {},
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          }
-        );
-        if (response.data.logged_out) {
-          removeLocalStorage();
-        }
-      } catch (error) {
-        console.error('Error verifying token:', error);
+    try {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        await axios.post(`${API_URL}/auth/logout`);
       }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      authManager.clearTokens();
+      localStorage.removeItem('email');
+      setIsAuthenticated(false);
+      setEmail('');
+      setUsername(null);
+      setExtraButtons(null);
+      navigateToPage('home');
     }
   };
 
   const renderPage = () => {
-    if (!isLoggedIn && !publicPages.includes(currentPage)) {
+    if (!isAuthenticated && !publicPages.includes(currentPage)) {
       return <LoginPage onLogin={handleLogin} />;
     }
 
@@ -142,15 +146,15 @@ const App = () => {
       case 'about':
         return <AboutPage onNavigate={navigateToPage} />;
       case 'wordsflashcard':
-        return isLoggedIn ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} />;
       case 'quiz':
-        return isLoggedIn ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} />;
       case 'quiz-results':
-        return isLoggedIn ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} />;
       case 'cheatsheet':
-        return isLoggedIn ? <CheatsheetTypesPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <CheatsheetTypesPage /> : <LoginPage onLogin={handleLogin} />;
       case 'maintenance':
-        return isLoggedIn && extraButtons ? <MaintenanceHomePage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated && extraButtons ? <MaintenanceHomePage /> : <LoginPage onLogin={handleLogin} />;
       default:
         return <HomePage onNavigate={navigateToPage} username={username} />;
     }
@@ -177,19 +181,29 @@ const App = () => {
         <meta property="og:image" content="https://www.myarabiclearner.com/logo_main.svg" />
         <meta property="og:url" content="https://www.myarabiclearner.com/" />
         <meta property="og:type" content="website" />
-
         <meta name="twitter:title" content="My Arabic Learner" />
         <meta name="twitter:description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
         <meta name="twitter:image" content="https://www.myarabiclearner.com/logo_main.svg" />
       </Helmet>
-      <MyNavBar onNavigate={navigateToPage} isLoggedIn={isLoggedIn} onLogout={handleLogout} username={username} extraButtons={extraButtons} />
+
+      <MyNavBar
+        onNavigate={navigateToPage}
+        isLoggedIn={isAuthenticated}
+        onLogout={handleLogout}
+        username={username}
+        extraButtons={extraButtons}
+      />
+
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="text-center py-5 mt-5">
+          <Spinner animation="border" variant="purple" />
+          <p className="mt-2">Loading page...</p>
+        </div>
       ) : (
         renderPage()
       )}
     </div>
-  )
-}
+  );
+};
 
 export default App;
