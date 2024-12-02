@@ -60,26 +60,10 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const authToken = localStorage.getItem('authToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      const storedEmail = localStorage.getItem('email');
-
-      if (authToken && refreshToken) {
-        setEmail(storedEmail);
-        await getUserDetails();
-      } else {
-        setIsLoading(false);
+      if (!localStorage.getItem('deviceId')) {
+        localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
       }
-    };
 
-    authManager.setupAxiosInterceptors(() => {
-      handleLogout();
-    });
-
-    checkAuth();
-  }, []);
-  useEffect(() => {
-    const checkAuth = async () => {
       const authToken = localStorage.getItem('authToken');
       const refreshToken = localStorage.getItem('refreshToken');
       const storedEmail = localStorage.getItem('email');
@@ -111,6 +95,13 @@ const App = () => {
   };
 
   const handleLogin = async (token, userEmail) => {
+    const authToken = localStorage.getItem('authToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (authToken && refreshToken) {
+      authManager.setTokens(token.auth_token, token.refresh_token, userEmail);
+    }
+
     setEmail(userEmail);
     await getUserDetails();
     navigateToPage('home');
@@ -127,6 +118,7 @@ const App = () => {
     } finally {
       authManager.clearTokens();
       localStorage.removeItem('email');
+      localStorage.removeItem('deviceId');
       setIsAuthenticated(false);
       setEmail('');
       setUsername(null);

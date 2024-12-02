@@ -25,9 +25,10 @@ const createAuthManager = () => {
     let requestInterceptor = null;
     let responseInterceptor = null;
 
-    const setTokens = (authToken, refreshToken) => {
+    const setTokens = (authToken, refreshToken, email) => {
         localStorage.setItem('authToken', authToken);
         localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('email', email);
         localStorage.setItem('tokenCreatedAt', Date.now().toString());
         setupRefreshTimer();
     };
@@ -55,24 +56,35 @@ const createAuthManager = () => {
         }
 
         const timeUntilRefresh = getTimeUntilRefresh();
+        // console.log(`Setting up refresh timer for ${timeUntilRefresh / 1000} seconds`);
+
         refreshTokenTimeout = setTimeout(() => {
+            // console.log('Refresh timer triggered');
             refreshToken();
         }, timeUntilRefresh);
     };
 
     const refreshToken = async () => {
         if (isRefreshing) {
+            // console.log('Already refreshing, waiting...');
             return new Promise((resolve) => {
                 failedRequests.push(resolve);
             });
         }
 
+        // console.log('Starting token refresh...');
         isRefreshing = true;
 
         try {
             const refreshToken = localStorage.getItem('refreshToken');
             const deviceId = localStorage.getItem('deviceId');
             const email = localStorage.getItem('email');
+
+            // console.log('Refresh attempt with:', {
+            //     email,
+            //     deviceId,
+            //     refreshTokenPresent: !!refreshToken
+            // });
 
             if (!refreshToken || !deviceId || !email) {
                 throw new Error('Missing required refresh data');
@@ -85,14 +97,14 @@ const createAuthManager = () => {
             });
 
             const { token: newAuthToken, refresh_token: newRefreshToken } = response.data;
-            setTokens(newAuthToken, newRefreshToken);
+            setTokens(newAuthToken, newRefreshToken, email);
 
             failedRequests.forEach(callback => callback(newAuthToken));
             failedRequests = [];
 
             return newAuthToken;
         } catch (error) {
-            console.error('Token refresh failed:', error);
+            // console.error('Token refresh failed:', error.response?.data || error.message);
             failedRequests.forEach(callback => callback(null));
             failedRequests = [];
             throw error;
@@ -133,7 +145,10 @@ const createAuthManager = () => {
                             return axios(originalRequest);
                         }
                     } catch (refreshError) {
+                        // console.error('Refresh failed, clearing auth state:', refreshError);
                         clearTokens();
+                        localStorage.removeItem('email');
+                        localStorage.removeItem('deviceId');
                         onLogout();
                         return Promise.reject(refreshError);
                     }
