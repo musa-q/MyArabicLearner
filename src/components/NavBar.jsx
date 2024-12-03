@@ -45,7 +45,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                             </>
                         ) : (
                             <>
-                                <Nav.Link onClick={() => onNavigate('')}>Login</Nav.Link>
+                                <Nav.Link onClick={() => handleNavigate('')}>Login</Nav.Link>
                             </>
                         )}
                     </Nav>
