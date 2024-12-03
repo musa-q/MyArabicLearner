@@ -6,7 +6,7 @@ import { API_URL } from '../config';
 import { v4 as uuidv4 } from 'uuid';
 import { authManager } from '../utils';
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = ({ onLogin, sessionExpired }) => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
@@ -16,6 +16,12 @@ const LoginPage = ({ onLogin }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [storedEmail, setStoredEmail] = useState(null);
     const [deviceId, setDeviceId] = useState(null);
+
+    useEffect(() => {
+        if (sessionExpired) {
+            setMessage('Your session has expired. Please log in again.');
+        }
+    }, [sessionExpired]);
 
     useEffect(() => {
         let storedDeviceId = localStorage.getItem('deviceId');
@@ -66,10 +72,10 @@ const LoginPage = ({ onLogin }) => {
             });
 
             localStorage.setItem('email', email);
-            authManager.setTokens(response.data.token, response.data.refresh_token);
+            authManager.setTokens(response.data.token, response.data.refresh_token, email);
 
             setMessage(response.data.message);
-            onLogin(response.data.token, email);
+            onLogin(response.data.token, response.data.refresh_token, email);
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {
@@ -155,7 +161,14 @@ const LoginPage = ({ onLogin }) => {
                     </div>
                 </div>
             )}
-            {message && <Alert className="mt-3">{message}</Alert>}
+            {message && (
+                <Alert
+                    className="mt-3"
+                    variant={sessionExpired ? "warning" : "primary"}
+                >
+                    {message}
+                </Alert>
+            )}
         </div>
     );
 

@@ -35,6 +35,8 @@ const App = () => {
     }
 
     try {
+      // console.log('Making homepage request with token:', token.substring(0, 10) + '...'); // Debug log
+
       const response = await axios.post(`${API_URL}/homepage`,
         {},
         {
@@ -50,9 +52,11 @@ const App = () => {
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error fetching user details:', error);
-      authManager.clearTokens();
-      setIsAuthenticated(false);
-      setEmail('');
+      if (error.response?.status === 401) {
+        authManager.clearTokens();
+        setIsAuthenticated(false);
+        setEmail('');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +64,11 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      if (localStorage.getItem('sessionExpired') === 'true') {
+        handleSessionExpired();
+        return;
+      }
+
       if (!localStorage.getItem('deviceId')) {
         localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
       }
@@ -69,6 +78,11 @@ const App = () => {
       const storedEmail = localStorage.getItem('email');
 
       if (authToken && refreshToken) {
+        if (!authManager.initializeFromStorage()) {
+          // console.log('Auth state migration required, redirecting to login');
+          setIsLoading(false);
+          return;
+        }
         setEmail(storedEmail);
         authManager.initializeFromStorage();
         await getUserDetails();
@@ -90,21 +104,46 @@ const App = () => {
     };
   }, []);
 
+  const handleSessionExpired = () => {
+    localStorage.removeItem('sessionExpired');
+    authManager.clearTokens();
+    localStorage.removeItem('email');
+    localStorage.removeItem('deviceId');
+    setIsAuthenticated(false);
+    setEmail('');
+    setUsername(null);
+    setExtraButtons(null);
+    setCurrentPage('login');
+  };
+
+
   const navigateToPage = (page) => {
     setCurrentPage(page);
   };
 
-  const handleLogin = async (token, userEmail) => {
-    const authToken = localStorage.getItem('authToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+  const handleLogin = async (token, refresh_token, userEmail) => {
+    // console.log('Login response:', { token, userEmail });
 
-    if (authToken && refreshToken) {
-      authManager.setTokens(token.auth_token, token.refresh_token, userEmail);
+    if (!token || !userEmail) {
+      // console.error('Missing login data:', { token, userEmail });
+      return;
     }
 
-    setEmail(userEmail);
-    await getUserDetails();
-    navigateToPage('home');
+    if (!localStorage.getItem('deviceId')) {
+      localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
+    }
+
+    try {
+      authManager.setTokens(token, refresh_token, userEmail);
+      setEmail(userEmail);
+      await getUserDetails();
+      navigateToPage('home');
+    } catch (error) {
+      console.error('Login process failed:', error);
+      authManager.clearTokens();
+      setEmail('');
+      setIsAuthenticated(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -129,7 +168,7 @@ const App = () => {
 
   const renderPage = () => {
     if (!isAuthenticated && !publicPages.includes(currentPage)) {
-      return <LoginPage onLogin={handleLogin} />;
+      return <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
     }
 
     switch (currentPage) {
@@ -138,15 +177,15 @@ const App = () => {
       case 'about':
         return <AboutPage onNavigate={navigateToPage} />;
       case 'wordsflashcard':
-        return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz':
-        return isAuthenticated ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz-results':
-        return isAuthenticated ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'cheatsheet':
-        return isAuthenticated ? <CheatsheetTypesPage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated ? <CheatsheetTypesPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'maintenance':
-        return isAuthenticated && extraButtons ? <MaintenanceHomePage /> : <LoginPage onLogin={handleLogin} />;
+        return isAuthenticated && extraButtons ? <MaintenanceHomePage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       default:
         return <HomePage onNavigate={navigateToPage} username={username} />;
     }
