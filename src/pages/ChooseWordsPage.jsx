@@ -81,7 +81,11 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                 className="w-full"
             >
                 <button
-                    onClick={() => handleCategoryClick(category.id, category.category_name)}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        handleCategoryClick(category.id, category.category_name);
+                    }}
                     className="w-full p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-200
                              flex items-center justify-between group border border-gray-700 hover:border-purple-500"
                 >
@@ -122,7 +126,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 py-8" style={{ minHeight: "100vh" }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -137,7 +141,11 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                     <div className="relative mb-6 pb-4">
                         <Search
                             className="text-gray-500"
-                            onClick={() => setShowSearch(!showSearch)}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setShowSearch(!showSearch);
+                            }}
                             style={{ cursor: 'pointer' }}
                         />
                         {showSearch && (
@@ -166,7 +174,11 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                             selectedGroup ? (
                                 <div>
                                     <Button
-                                        onClick={() => setSelectedGroup(null)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            setSelectedGroup(null);
+                                        }}
                                         className="flex items-center mb-4 text-decoration-none text-white"
                                         variant="link"
                                     >
@@ -189,7 +201,11 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                         whileHover={{ scale: 1.01 }}
                                         className="bg-gray-800 p-4 rounded-lg cursor-pointer
                                                  border border-gray-700 hover:border-purple-500 mb-3"
-                                        onClick={() => setSelectedGroup(group)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            setSelectedGroup(group);
+                                        }}
                                     >
                                         <div className="flex justify-between items-center">
                                             <div>

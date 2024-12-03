@@ -157,7 +157,7 @@ const VerbsPage = () => {
     };
 
     return (
-        <Container className="py-4 mt-4 max-w-4xl mx-auto">
+        <Container className="py-4 mt-4 max-w-4xl mx-auto" style={{ minHeight: "100vh" }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

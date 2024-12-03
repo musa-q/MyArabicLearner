@@ -19,7 +19,7 @@ const WordsFlashcardsPage = () => {
     };
 
     return (
-        <div className="words-page-container">
+        <div className="words-page-container" style={{ minHeight: "100vh" }}>
             {chosenWordsList === "choose" && (
                 <ChooseWordsPage
                     onChoose={chooseWordsList}

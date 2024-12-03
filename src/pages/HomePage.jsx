@@ -16,6 +16,16 @@ const HomePage = ({ onNavigate, username }) => {
     const logoControls = useAnimation();
 
     useEffect(() => {
+        setImageLoaded(false);
+
+        const timer = setTimeout(() => {
+            setImageLoaded(true);
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
         if (username) {
             const timer = setTimeout(() => {
                 setShowFeedbackToast(true);
@@ -96,17 +106,19 @@ const HomePage = ({ onNavigate, username }) => {
                     <AppFeedback data-bs-theme="dark" show={showFeedbackModal} handleClose={handleCloseModal} />
 
                     <ToastContainer
-                        className="p-3"
+                        className="feedback-toast-container mx-2 my-2"
                         position={"bottom-end"}
-                        style={{ zIndex: 1 }}
                     >
-                        <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast" >
+                        <Toast show={showFeedbackToast} onClose={handleCloseToast} className="feedback-toast">
                             <Toast.Header>
                                 <strong className="me-auto">Feedback</strong>
                             </Toast.Header>
-                            <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>{username}, we'd love your feedback! Click this pop-up!</Toast.Body>
+                            <Toast.Body onClick={handleShowModal} style={{ fontSize: "15px", cursor: "pointer" }}>
+                                {username}, we'd love your feedback! Click this pop-up!
+                            </Toast.Body>
                         </Toast>
                     </ToastContainer>
+
                 </>
             )}
         </div>

@@ -1,0 +1,14 @@
+.text-purple {
+    color: var(--main-color-very-light);
+}
+
+.hover-purple:hover {
+    color: var(--main-color-light);
+    transition: color 0.2s ease-in-out;
+}
+
+.icon:hover {
+    color: var(--main-color-very-light);
+    ;
+    transition: color 0.2s ease-in-out;
+}

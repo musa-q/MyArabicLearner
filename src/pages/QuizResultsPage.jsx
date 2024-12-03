@@ -42,7 +42,7 @@ const QuizResultsPage = ({ quiz_type }) => {
     }
 
     return (
-        <Container className="py-4">
+        <Container className="py-4" style={{ minHeight: "100vh" }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

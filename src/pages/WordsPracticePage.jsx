@@ -39,7 +39,7 @@ const WordsPracticePage = () => {
     };
 
     return (
-        <div className="words-page-container">
+        <div className="words-page-container" style={{ minHeight: "100vh" }}>
             {chosenWordsList === "choose" && <ChooseWordsPage onChoose={chooseWordsList} title={"Practice words"} setCategoryname={updateCategoryName} />}
             {chosenWordsList !== "choose" && <WordsPracticeQuestionPage quizId={quizId} pageTitle={categoryName} />}
         </div>

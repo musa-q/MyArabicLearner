@@ -37,7 +37,7 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
     }, []);
 
     return (
-        <div className="flash-cards-page-container">
+        <div className="flash-cards-page-container" style={{ minHeight: "100vh" }}>
             <div className="max-w-4xl mx-auto ">
                 <div className="back-button-container">
                     <Button

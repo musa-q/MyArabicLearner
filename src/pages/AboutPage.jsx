@@ -34,7 +34,7 @@ const AboutPage = ({ onNavigate }) => {
     ];
 
     return (
-        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8" style={{ minHeight: "100vh" }}>
             <div className="max-w-4xl mx-auto" style={{ maxWidth: '70%' }}>
                 <motion.div
                     className="text-center mb-16"

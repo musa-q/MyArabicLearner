@@ -52,7 +52,7 @@ const MaintenanceHomePage = () => {
     };
 
     return (
-        <div>
+        <div style={{ minHeight: "100vh" }}>
             {maintenanceType === null ? chooseMaintenanceType() : loadMaintenancePage()}
         </div>
     );

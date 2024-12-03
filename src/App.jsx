@@ -16,6 +16,7 @@ import AboutPage from './pages/AboutPage';
 import MaintenanceHomePage from './pages/maintenance/MaintenanceHomePage';
 import { Spinner } from 'react-bootstrap';
 import { authManager } from './utils';
+import Footer from './components/Footer';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -225,14 +226,17 @@ const App = () => {
         extraButtons={extraButtons}
       />
 
-      {isLoading ? (
-        <div className="text-center py-5 mt-5">
-          <Spinner animation="border" variant="purple" />
-          <p className="mt-2">Loading page...</p>
-        </div>
-      ) : (
-        renderPage()
-      )}
+      <main className="flex-grow pb-5">
+        {isLoading ? (
+          <div className="text-center py-5 mt-5">
+            <Spinner animation="border" variant="purple" />
+            <p className="mt-2">Loading page...</p>
+          </div>
+        ) : (
+          renderPage()
+        )}
+      </main>
+      <Footer onNavigate={navigateToPage} />
     </div>
   );
 };

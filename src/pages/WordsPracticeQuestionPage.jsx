@@ -137,7 +137,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     }
 
     return (
-        <Container className="py-4 mt-4 max-w-4xl mx-auto">
+        <Container className="py-4 mt-4 max-w-4xl mx-auto" style={{ minHeight: "100vh" }}>
             <motion.div {...fadeIn}>
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold gold text-purple-400 mb-3 display-4">
