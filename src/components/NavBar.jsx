@@ -72,10 +72,8 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                                     Logout
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
-                                <NavDropdown.Item
-                                    onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
-                                >
-                                    Follow the developer
+                                <NavDropdown.Item onClick={() => onNavigate('meet-team')}>
+                                    Meet the Team
                                 </NavDropdown.Item>
                             </>
                         ) : (
@@ -84,10 +82,8 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                                     Login
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
-                                <NavDropdown.Item
-                                    onClick={() => window.open('https://www.linkedin.com/in/musa-qureshi/', '_blank')}
-                                >
-                                    Follow the developer
+                                <NavDropdown.Item onClick={() => onNavigate('meet-team')}>
+                                    Meet the Team
                                 </NavDropdown.Item>
                             </>
                         )}

@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Github, Twitter, Mail, Linkedin } from 'lucide-react';
 import './Footer.css';
 
-const Footer = ({ onNavigate }) => {
+const Footer = ({ onNavigate, isLoggedIn }) => {
     const currentYear = new Date().getFullYear();
 
     const handleNavigate = (path) => {
@@ -41,7 +41,11 @@ const Footer = ({ onNavigate }) => {
                                 <a
                                     href="#"
                                     className="text-secondary text-decoration-none hover-purple"
-                                    onClick={() => handleNavigate('home')}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        handleNavigate('home');
+                                    }}
                                 >
                                     Home
                                 </a>
@@ -50,7 +54,11 @@ const Footer = ({ onNavigate }) => {
                                 <a
                                     href="#"
                                     className="text-secondary text-decoration-none hover-purple"
-                                    onClick={() => handleNavigate('about')}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        handleNavigate('about');
+                                    }}
                                 >
                                     About Us
                                 </a>
@@ -59,11 +67,48 @@ const Footer = ({ onNavigate }) => {
                                 <a
                                     href="#"
                                     className="text-secondary text-decoration-none hover-purple"
-                                    onClick={() => handleNavigate('quiz-results')}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        handleNavigate('meet-team');
+                                    }}
                                 >
-                                    Your Results
+                                    Meet the Team
                                 </a>
                             </li>
+                            {isLoggedIn ? (
+                                <>
+                                    <li className="mb-2">
+                                        <a
+                                            href="#"
+                                            className="text-secondary text-decoration-none hover-purple"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                handleNavigate('quiz-results');
+                                            }}
+                                        >
+                                            Your Results
+                                        </a>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li className="mb-2">
+                                        <a
+                                            href="#"
+                                            className="text-secondary text-decoration-none hover-purple"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                handleNavigate('');
+                                            }}
+                                        >
+                                            Login
+                                        </a>
+                                    </li>
+                                </>
+                            )}
                             {/* <li className="mb-2">
                                 <a
                                     href="#"
@@ -127,7 +172,7 @@ const Footer = ({ onNavigate }) => {
                     <Col>
                         <hr className="border-secondary" />
                         <p className="text-center text-secondary mb-0">
-                            {currentYear} My Arabic Learner. All rights reserved.
+                            {currentYear} My Arabic Learner
                         </p>
                     </Col>
                 </Row>

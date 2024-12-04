@@ -20,7 +20,7 @@ const TypingAnimation = ({ text }) => {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 1
+                duration: 0.5
             }
         }
     };
@@ -30,13 +30,16 @@ const TypingAnimation = ({ text }) => {
             style={{
                 display: 'flex',
                 flexDirection: 'row-reverse',
-                fontSize: '4rem',
+                // fontSize: '4rem',
                 fontWeight: 'bold',
                 overflow: 'visible',
                 unicodeBidi: 'bidi-override',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
                 alignItems: 'center',
                 gap: '0.3em',
+                width: '100%',
+                margin: '0 auto',
+                textAlign: 'center'
             }}
             variants={containerVariants}
             initial="hidden"
@@ -44,7 +47,7 @@ const TypingAnimation = ({ text }) => {
         >
             {words.map((word, index) => (
                 <motion.span
-                    className='noto-kufi-bold gold display-1'
+                    className='noto-kufi-regular gold display-3'
                     key={`${word}-${index}`}
                     variants={wordVariants}
                     style={{

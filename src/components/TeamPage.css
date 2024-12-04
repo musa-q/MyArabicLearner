@@ -1,0 +1,41 @@
+.team-image-placeholder {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--main-color-light);
+}
+
+.team-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.team-image:hover {
+    transform: scale(1.1);
+}
+
+.arabic-text {
+    /* font-family: 'Noto Sans Arabic', sans-serif; */
+    line-height: 1.6;
+    direction: rtl;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(111, 66, 193, 0.2);
+}
+
+@media (max-width: 768px) {
+    .team-image-placeholder {
+        width: 150px;
+        height: 150px;
+    }
+}

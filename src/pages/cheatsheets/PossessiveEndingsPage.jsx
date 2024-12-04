@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Book, CircleDot } from 'lucide-react';
 import { Container, Card } from 'react-bootstrap';
+import '../../fonts.css';
 
 const PossessiveEndingsPage = () => {
     const fadeIn = {

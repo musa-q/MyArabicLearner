@@ -17,6 +17,7 @@ import MaintenanceHomePage from './pages/maintenance/MaintenanceHomePage';
 import { Spinner } from 'react-bootstrap';
 import { authManager } from './utils';
 import Footer from './components/Footer';
+import TeamPage from './components/TeamPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -177,6 +178,8 @@ const App = () => {
         return <HomePage onNavigate={navigateToPage} username={username} />;
       case 'about':
         return <AboutPage onNavigate={navigateToPage} />;
+      case 'meet-team':
+        return <TeamPage onNavigate={navigateToPage} />;
       case 'wordsflashcard':
         return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz':
@@ -236,7 +239,7 @@ const App = () => {
           renderPage()
         )}
       </main>
-      <Footer onNavigate={navigateToPage} />
+      <Footer onNavigate={navigateToPage} isLoggedIn={isAuthenticated} />
     </div>
   );
 };

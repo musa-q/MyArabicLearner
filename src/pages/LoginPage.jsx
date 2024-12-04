@@ -88,7 +88,7 @@ const LoginPage = ({ onLogin, sessionExpired }) => {
             {!showTokenInput ? (
                 <div className="login-container">
                     <div className="login-header text-center">
-                        <h3 className="display-3">Login</h3>
+                        <h3 className="display-3">Login / Signup</h3>
                     </div>
                     <div className="login-body">
                         <Form onSubmit={handleLogin}>
