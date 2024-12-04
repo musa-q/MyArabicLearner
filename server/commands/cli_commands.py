@@ -100,3 +100,4 @@ def init_app(app):
     app.cli.add_command(find_user)
     app.cli.add_command(delete_user)
     app.cli.add_command(set_user_role)
+    app.cli.add_command(change_username)
