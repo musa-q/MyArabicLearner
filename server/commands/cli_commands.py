@@ -67,6 +67,33 @@ def set_user_role(email, role):
     else:
         click.echo(f"User with email {email} not found")
 
+@click.command('change-username')
+@click.argument('identifier')
+@click.argument('new_username')
+@with_appcontext
+def change_username(identifier, new_username):
+    """Change a user's username by their email or current username"""
+    existing_user = User.query.filter_by(username=new_username).first()
+    if existing_user:
+        click.echo(f"Username '{new_username}' is already taken.")
+        return
+
+    user = User.query.filter_by(email=identifier).first()
+    if not user:
+        user = User.query.filter_by(username=identifier).first()
+
+    if not user:
+        click.echo(f"No user found with identifier: {identifier}")
+
+    old_username = user.username
+    user.username = new_username
+    try:
+        db.session.commit()
+        click.echo(f"Username changed successfully from '{old_username}' to '{new_username}'")
+    except Exception as e:
+        db.session.rollback()
+        click.echo(f"Error changing username: {str(e)}")
+
 def init_app(app):
     """Initialize user CLI commands"""
     app.cli.add_command(list_users)
