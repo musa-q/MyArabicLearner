@@ -6,7 +6,7 @@
 }
 
 .input-field:hover {
-    border-color: #7f56d9;
+    border-color: var(--main-color-light);
     background-color: #3f3f46;
 }
 

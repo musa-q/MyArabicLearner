@@ -23,26 +23,22 @@ const VerbsPage = () => {
     useEffect(() => {
         if (!quizId) createQuiz();
 
-        // Find the input element within the container
         const focusInput = () => {
             if (containerRef.current) {
-                const input = containerRef.current.querySelector('input');
+                const input = containerRef.current.querySelector('ReactTransliterate');
                 if (input) {
                     input.focus();
                 }
             }
         };
 
-        // Initial focus
         focusInput();
 
         const handleGlobalKeyPress = (e) => {
-            // Ignore if user is typing in another input field
             if (e.target.tagName === 'INPUT') {
                 return;
             }
 
-            // If the pressed key is a letter, number, or common punctuation
             if (e.key.length === 1 || e.key === 'Backspace') {
                 e.preventDefault();
                 focusInput();
@@ -123,7 +119,7 @@ const VerbsPage = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setResultMessage(response.data.answer_response ? 'Correct! 🎉' : 'Incorrect - Try again!');
+            setResultMessage(response.data.answer_response ? 'Correct! 🎉' : 'Incorrect!');
             setShowNextButton(true);
         } catch (error) {
             console.error('Error checking answer:', error);
@@ -163,78 +159,98 @@ const VerbsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="text-center mb-4">
-                    <h1 className="text-3xl font-bold text-purple-400 mb-3 display-4 gold">
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-bold gold text-purple-400 mb-3 display-4">
                         Verb Conjugation Practice
                     </h1>
-                    <p className="text-gray-400 lead">Conjugate the verb correctly based on the pronoun and tense.</p>
+                    <p className="text-gray-300 lead">
+                        Conjugate the verb correctly based on the pronoun and tense.
+                    </p>
                 </div>
 
                 <Card className="bg-dark text-white border-purple-400">
                     <Card.Header className="d-flex align-items-center bg-gray-800">
                         <Book className="text-purple-400 me-2" size={20} />
-                        <h2 className="h5 mb-0">Current Question</h2>
+                        <h2 className="h5 mb-0 lead">Current Question</h2>
                     </Card.Header>
-                    <Card.Body className="text-center py-5">
-                        <h2 className="text-2xl mb-3 font-semibold">
+                    <Card.Body className="d-flex flex-column align-items-center py-5">
+                        <h2 className="text-2xl mb-3 font-semibold text-center">
                             {capitaliseWords(currentConjugation?.word.english)} ({currentConjugation?.word.arabic})
                         </h2>
                         <p className="text-sm text-gray-400 mb-4">
                             Pronoun: <b>{currentConjugation?.pronoun}</b> | Tense: <b>{currentConjugation?.tense}</b>
                         </p>
 
-                        <div className="max-w-lg mx-auto mb-4" ref={containerRef}>
+                        <div className="w-100" style={{ maxWidth: "500px" }}>
                             <ReactTransliterate
                                 value={currentAnswer}
                                 onChangeText={(text) => setCurrentAnswer(text)}
                                 lang="ar"
                                 onKeyDown={handleEnterKeyPress}
-                                className="input-field w-full p-3 mb-2 px-4 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 transition-all"
+                                className="input-field w-100 p-3 px-4 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
                                 placeholder="Type your answer here..."
                             />
-                        </div>
 
-                        <div className="flex justify-center space-x-4">
-                            {showNextButton ? (
+                            <div className="d-flex justify-content-center gap-3 mt-4">
+                                {showNextButton ? (
+                                    <Button
+                                        onClick={getNextQuestion}
+                                        className="flex-1"
+                                        variant="purple"
+                                    >
+                                        Next Question <ArrowRight className="ms-2 inline" size={16} />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        onClick={checkAnswer}
+                                        className="flex-1"
+                                        variant="purple"
+                                    >
+                                        Check Answer <CircleDot className="ms-2 inline" size={16} />
+                                    </Button>
+                                )}
+
                                 <Button
-                                    onClick={getNextQuestion}
-                                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white"
+                                    variant="outline-light"
+                                    onClick={() => setRevealAnswer(!revealAnswer)}
+                                    className="flex-1"
                                 >
-                                    Next Question <ArrowRight className="ms-2" />
+                                    <HelpCircle className="me-2 inline" size={16} />
+                                    {revealAnswer ? 'Hide Answer' : 'Show Answer'}
                                 </Button>
-                            ) : (
-                                <Button
-                                    onClick={checkAnswer}
-                                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white"
+                            </div>
+
+                            {resultMessage && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mt-4 p-3 rounded-lg text-center"
+                                    style={{
+                                        backgroundColor: resultMessage.includes("Correct") ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)",
+                                        color: resultMessage.includes("Correct") ? "#86efac" : "#fca5a5"
+                                    }}
                                 >
-                                    Check Answer <CircleDot className="ms-2" />
-                                </Button>
+                                    <div className="lead">
+                                        {resultMessage}
+                                    </div>
+                                </motion.div>
                             )}
 
-                            <Button
-                                variant="outline-light"
-                                onClick={() => setRevealAnswer(!revealAnswer)}
-                            >
-                                <HelpCircle className="me-2" />
-                                {revealAnswer ? 'Hide Answer' : 'Show Answer'}
-                            </Button>
+                            {revealAnswer && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="mt-4 p-3 rounded-lg text-center"
+                                >
+                                    <p className="mb-0">
+                                        <span className="lead">Answer: </span>
+                                        <span className="lead-ar">
+                                            {correctAnswer}
+                                        </span>
+                                    </p>
+                                </motion.div>
+                            )}
                         </div>
-
-                        {resultMessage && (
-                            <div className={`mt-4 p-2 rounded-lg ${resultMessage.includes('Correct') ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                                {resultMessage}
-                            </div>
-                        )}
-
-                        {revealAnswer && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-3 p-3 bg-gray-800 rounded-lg"
-                            >
-                                {correctAnswer}
-                            </motion.div>
-                        )}
                     </Card.Body>
                 </Card>
             </motion.div>

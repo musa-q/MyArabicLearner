@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from "framer-motion";
 import { Book, CircleDot, ArrowRight, HelpCircle } from 'lucide-react';
 import { Container, Card, Button, ListGroup } from 'react-bootstrap';
@@ -19,6 +19,44 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [showResultsPage, setShowResultsPage] = useState(false);
     const [loading, setLoading] = useState(true);
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        if (!quizId) createQuiz();
+
+        const focusInput = () => {
+            if (containerRef.current) {
+                const input = containerRef.current.querySelector('ReactTransliterate');
+                if (input) {
+                    input.focus();
+                }
+            }
+        };
+
+        focusInput();
+
+        const handleGlobalKeyPress = (e) => {
+            if (e.target.tagName === 'INPUT') {
+                return;
+            }
+
+            if (e.key.length === 1 || e.key === 'Backspace') {
+                e.preventDefault();
+                focusInput();
+                if (e.key === 'Backspace') {
+                    setCurrentAnswer(prev => prev.slice(0, -1));
+                } else {
+                    setCurrentAnswer(prev => prev + e.key);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleGlobalKeyPress);
+
+        return () => {
+            window.removeEventListener('keydown', handleGlobalKeyPress);
+        };
+    }, [quizId]);
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -159,63 +197,65 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                             <Book className="text-purple-400 me-2" size={20} />
                             <h2 className="h5 mb-0 lead">Current Question</h2>
                         </Card.Header>
-                        <Card.Body className="text-center py-6">
-                            <h2 className="text-2xl mb-4 font-semibold">
+                        <Card.Body className="d-flex flex-column align-items-center py-5">
+                            <h2 className="text-2xl mb-4 font-semibold text-center">
                                 {capitaliseWords(currentQuestion)}
                             </h2>
 
-                            <div className="max-w-lg mx-auto">
-                                <div className="mb-4">
-                                    <ReactTransliterate
-                                        value={currentAnswer}
-                                        onChangeText={(text) => setCurrentAnswer(text)}
-                                        lang="ar"
-                                        onKeyDown={handleEnterKeyPress}
-                                        className="input-field w-full p-3 px-4 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
-                                        placeholder="Type your answer here..."
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-3">
-                                    <div className="flex space-x-3">
-                                        {showNextButton ? (
-                                            <Button
-                                                onClick={nextQuestion}
-                                                className="flex-1 py-2 bg-purple-500 hover:bg-purple-600 transition-colors"
-                                            >
-                                                Next Question <ArrowRight className="ms-2 inline" size={16} />
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                onClick={checkAnswer}
-                                                className="flex-1 py-2 bg-purple-500 hover:bg-purple-600 transition-colors"
-                                            >
-                                                Check Answer <CircleDot className="ms-2 inline" size={16} />
-                                            </Button>
-                                        )}
+                            <div className="w-100" style={{ maxWidth: "500px" }}>
+                                <ReactTransliterate
+                                    value={currentAnswer}
+                                    onChangeText={(text) => setCurrentAnswer(text)}
+                                    lang="ar"
+                                    onKeyDown={handleEnterKeyPress}
+                                    className="input-field w-100 p-3 px-4 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
+                                    placeholder="Type your answer here..."
+                                />
 
-                                        {showHintButton && (
-                                            <Button
-                                                variant="outline-light"
-                                                onClick={() => setRevealAnswer(!revealAnswer)}
-                                                className="flex-1"
-                                            >
-                                                <HelpCircle className="me-2 inline" size={16} />
-                                                {revealAnswer ? 'Hide Answer' : 'Show Answer'}
-                                            </Button>
-                                        )}
-                                    </div>
+                                <div className="d-flex justify-content-center gap-3 mt-4">
+                                    {showNextButton ? (
+                                        <Button
+                                            onClick={nextQuestion}
+                                            className="flex-1"
+                                            variant="purple"
+                                        >
+                                            Next Question <ArrowRight className="ms-2 inline" size={16} />
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={checkAnswer}
+                                            className="flex-1"
+                                            variant="purple"
+                                        >
+                                            Check Answer <CircleDot className="ms-2 inline" size={16} />
+                                        </Button>
+                                    )}
+
+                                    {showHintButton && (
+                                        <Button
+                                            variant="outline-light"
+                                            onClick={() => setRevealAnswer(!revealAnswer)}
+                                            className="flex-1"
+                                        >
+                                            <HelpCircle className="me-2 inline" size={16} />
+                                            {revealAnswer ? 'Hide Answer' : 'Show Answer'}
+                                        </Button>
+                                    )}
                                 </div>
 
                                 {resultMessage && (
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className={`mt-4 p-3 rounded-lg ${resultMessage.includes("Correct")
-                                            ? "bg-green-500/20 text-green-300"
-                                            : "bg-red-500/20 text-red-300"
-                                            }`}
+                                        className="mt-4 p-3 rounded-lg text-center"
+                                        style={{
+                                            backgroundColor: resultMessage.includes("Correct") ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)",
+                                            color: resultMessage.includes("Correct") ? "#86efac" : "#fca5a5"
+                                        }}
                                     >
-                                        {resultMessage}
+                                        <div className="lead">
+                                            {resultMessage}
+                                        </div>
                                     </motion.div>
                                 )}
 
@@ -223,17 +263,20 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="mt-4 p-3 bg-gray-700/50 rounded-lg"
+                                        className="mt-4 p-3 rounded-lg text-center"
                                     >
-                                        <p className="text-gray-300 mb-0">
-                                            <span className="font-semibold">Answer:</span> {hint}
+                                        <p className="mb-0">
+                                            <span className="lead">Answer: </span>
+                                            <span className="lead-ar">
+                                                {hint}
+                                            </span>
                                         </p>
                                     </motion.div>
                                 )}
-
                             </div>
                         </Card.Body>
                     </Card>
+
                 </motion.div>
 
                 <motion.div
@@ -242,11 +285,6 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                     transition={{ delay: 0.4 }}
                     className="text-center text-gray-400"
                 >
-                    <p className="text-sm mt-2">
-                        Press <kbd className="px-2 py-1 bg-gray-700 rounded">Enter</kbd> to check/next
-                        {" | "}
-                        <kbd className="px-2 py-1 bg-gray-700 rounded">Ctrl</kbd> to reveal answer
-                    </p>
                 </motion.div>
             </motion.div>
         </Container>
