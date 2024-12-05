@@ -36,6 +36,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
                         <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
+                        <Nav.Link onClick={() => handleNavigate('tutorial')}>Tutorial</Nav.Link>
                         {isLoggedIn ? (
                             <>
                                 <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>

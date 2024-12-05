@@ -57,7 +57,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                 setShowNextButton(true);
                 setShowHintButton(false);
             } else {
-                setResultMessage("Incorrect - Try again!");
+                setResultMessage("Incorrect!");
                 setShowNextButton(true);
             }
         } catch (error) {

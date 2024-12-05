@@ -73,7 +73,7 @@ def create_user_session(user, device_id=None):
         is_active=True
     ).order_by(UserSession.last_used.desc()).all()
 
-    if len(active_sessions) >= Config.MAX_DEVICES_PER_USER:
+    if len(active_sessions) >= Config.MAX_DEVICES_PER_USER * 2:
         oldest_session = active_sessions[-1]
         oldest_session.is_active = False
         db.session.commit()
@@ -101,7 +101,8 @@ def create_user_session(user, device_id=None):
         device_name=device_info['device_name'],
         device_type=device_info['device_type'],
         last_ip=client_ip,
-        last_used=datetime.now()
+        last_used=datetime.now(),
+        expiration=datetime.now() + timedelta(days=30)
     )
     db.session.add(new_session)
     db.session.commit()
@@ -168,8 +169,10 @@ def refresh_token():
         is_active=True
     ).first()
 
-    if not session or not session.is_valid():
-        return jsonify({'error': 'Invalid device session'}), 401
+    if not session.is_valid():
+        session.extend_validity()
+        if not session.is_valid():
+            return jsonify({'error': 'Invalid device session'}), 401
 
     new_auth_token = generate_secure_token()
     new_refresh_token = generate_secure_token()

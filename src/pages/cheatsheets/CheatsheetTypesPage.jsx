@@ -70,7 +70,7 @@ const CheatsheetTypesPage = () => {
                             >
                                 <div className="lead">
                                     <ArrowLeft className="me-2" />
-                                    Back to flashcards
+                                    Back to cheatsheets
                                 </div>
                             </Button>
                         </div>
@@ -88,7 +88,7 @@ const CheatsheetTypesPage = () => {
                             >
                                 <div className="lead">
                                     <ArrowLeft className="me-2" />
-                                    Back to flashcards
+                                    Back to cheatsheets
                                 </div>
                             </Button>
                         </div>

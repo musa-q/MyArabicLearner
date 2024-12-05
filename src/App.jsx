@@ -18,6 +18,7 @@ import { Spinner } from 'react-bootstrap';
 import { authManager } from './utils';
 import Footer from './components/Footer';
 import TeamPage from './components/TeamPage';
+import TutorialPage from './components/TutorialPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -27,7 +28,9 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
 
-  const publicPages = ['home', 'about', 'login'];
+  const publicPages = ['home', 'about', 'login', 'meet-team', 'tutorial'];
+
+  const REFRESH_INTERVAL = 1000 * 60 * 30;
 
   const getUserDetails = async () => {
     const token = localStorage.getItem('authToken');
@@ -66,13 +69,9 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (localStorage.getItem('sessionExpired') === 'true') {
-        handleSessionExpired();
-        return;
-      }
-
       if (!localStorage.getItem('deviceId')) {
-        localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
+        const deviceId = `web-${window.navigator.userAgent}-${window.screen.width}x${window.screen.height}`;
+        localStorage.setItem('deviceId', deviceId);
       }
 
       const authToken = localStorage.getItem('authToken');
@@ -81,29 +80,35 @@ const App = () => {
 
       if (authToken && refreshToken) {
         if (!authManager.initializeFromStorage()) {
-          // console.log('Auth state migration required, redirecting to login');
           setIsLoading(false);
           return;
         }
         setEmail(storedEmail);
-        authManager.initializeFromStorage();
         await getUserDetails();
+
+        const refreshInterval = setInterval(async () => {
+          try {
+            await authManager.refreshToken();
+          } catch (error) {
+            console.error('Token refresh failed:', error);
+            if (error.response?.status === 401) {
+              const retryCount = parseInt(localStorage.getItem('refreshRetryCount') || '0');
+              if (retryCount >= 5) {
+                handleLogout();
+              } else {
+                localStorage.setItem('refreshRetryCount', (retryCount + 1).toString());
+              }
+            }
+          }
+        }, REFRESH_INTERVAL);
+
+        return () => clearInterval(refreshInterval);
       } else {
         setIsLoading(false);
       }
     };
 
-    authManager.setupAxiosInterceptors(() => {
-      handleLogout();
-    });
-
     checkAuth();
-
-    return () => {
-      if (authManager.refreshTokenTimeout) {
-        clearTimeout(authManager.refreshTokenTimeout);
-      }
-    };
   }, []);
 
   const handleSessionExpired = () => {
@@ -180,6 +185,8 @@ const App = () => {
         return <AboutPage onNavigate={navigateToPage} />;
       case 'meet-team':
         return <TeamPage onNavigate={navigateToPage} />;
+      case 'tutorial':
+        return <TutorialPage />;
       case 'wordsflashcard':
         return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz':
