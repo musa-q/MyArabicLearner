@@ -44,6 +44,12 @@ const HomePage = ({ onNavigate, username }) => {
             description: 'Test your knowledge and track progress'
         },
         {
+            route: 'tutorial',
+            icon: 'bi-book',
+            title: 'Tutorial',
+            description: 'Learn the basics with our step-by-step guide'
+        },
+        {
             route: 'cheatsheet',
             icon: 'bi-journal-text',
             title: 'Cheatsheets',

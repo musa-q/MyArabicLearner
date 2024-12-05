@@ -44,6 +44,19 @@ const Footer = ({ onNavigate, isLoggedIn }) => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        handleNavigate('tutorial');
+                                    }}
+                                >
+                                    Tutorial
+                                </a>
+                            </li>
+                            <li className="mb-2">
+                                <a
+                                    href="#"
+                                    className="text-secondary text-decoration-none hover-purple"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
                                         handleNavigate('home');
                                     }}
                                 >
