@@ -69,6 +69,6 @@ class UserSession(db.Model):
         db.session.commit()
 
     def extend_validity(self):
-        self.expiration = datetime.now() + timedelta(days=30)
+        self.is_active = True
         self.last_used = datetime.now()
         db.session.commit()
