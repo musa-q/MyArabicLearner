@@ -102,7 +102,7 @@ def create_user_session(user, device_id=None):
         device_type=device_info['device_type'],
         last_ip=client_ip,
         last_used=datetime.now(),
-        expiration=datetime.now() + timedelta(days=30)
+        is_active=True
     )
     db.session.add(new_session)
     db.session.commit()
