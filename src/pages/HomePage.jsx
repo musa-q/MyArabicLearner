@@ -44,12 +44,6 @@ const HomePage = ({ onNavigate, username }) => {
             description: 'Test your knowledge and track progress'
         },
         {
-            route: 'tutorial',
-            icon: 'bi-book',
-            title: 'Tutorial',
-            description: 'Learn the basics with our step-by-step guide'
-        },
-        {
             route: 'cheatsheet',
             icon: 'bi-journal-text',
             title: 'Cheatsheets',
@@ -88,33 +82,48 @@ const HomePage = ({ onNavigate, username }) => {
                         the joy of learning Arabic through interactive lessons and exercises.
                     </p>
 
-                    {!username && (
+                    <div className="d-flex justify-content-center gap-3 flex-wrap">
+                        {!username && (
+                            <Button
+                                variant="purple"
+                                size="lg"
+                                className="mt-1"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    onNavigate('');
+                                }}
+                            >
+                                Get Started
+                            </Button>
+                        )}
+
                         <Button
                             variant="purple"
                             size="lg"
-                            className="mt-1 me-5"
+                            className="mt-1"
                             onClick={(e) => {
                                 e.preventDefault();
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                                onNavigate('');
+                                onNavigate('tutorial');
                             }}
                         >
-                            Get Started
+                            Tutorial
                         </Button>
-                    )}
 
-                    <Button
-                        variant="purple"
-                        size="lg"
-                        className="mt-1"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                            onNavigate('about');
-                        }}
-                    >
-                        Learn More
-                    </Button>
+                        <Button
+                            variant="purple"
+                            size="lg"
+                            className="mt-1"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                onNavigate('about');
+                            }}
+                        >
+                            Learn More
+                        </Button>
+                    </div>
                 </motion.div>
             </motion.div>
 
