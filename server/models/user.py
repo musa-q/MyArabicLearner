@@ -66,6 +66,7 @@ class UserSession(db.Model):
         self.last_used = datetime.now()
         if ip_address:
             self.last_ip = ip_address
+        self.is_active = True
         db.session.commit()
 
     def extend_validity(self):

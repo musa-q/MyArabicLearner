@@ -68,23 +68,13 @@ def get_client_ip():
     return ip
 
 def create_user_session(user, device_id=None):
-    active_sessions = UserSession.query.filter_by(
-        user_id=user.id,
-        is_active=True
-    ).order_by(UserSession.last_used.desc()).all()
-
-    if len(active_sessions) >= Config.MAX_DEVICES_PER_USER * 2:
-        oldest_session = active_sessions[-1]
-        oldest_session.is_active = False
-        db.session.commit()
-
-    device_info = get_device_info()
-    client_ip = get_client_ip()
-
     existing_session = UserSession.query.filter_by(
         user_id=user.id,
         device_identifier=device_id
     ).first()
+
+    device_info = get_device_info()
+    client_ip = get_client_ip()
 
     if existing_session:
         existing_session.is_active = True
@@ -94,6 +84,16 @@ def create_user_session(user, device_id=None):
         existing_session.device_type = device_info['device_type']
         db.session.commit()
         return existing_session
+
+    active_sessions = UserSession.query.filter_by(
+        user_id=user.id,
+        is_active=True
+    ).order_by(UserSession.last_used.desc()).all()
+
+    if len(active_sessions) >= Config.MAX_DEVICES_PER_USER:
+        oldest_session = active_sessions[-1]
+        oldest_session.is_active = False
+        db.session.commit()
 
     new_session = UserSession(
         user_id=user.id,
@@ -147,11 +147,8 @@ def refresh_token():
     refresh_token = data.get('refresh_token')
     device_id = data.get('device_id')
 
-    if not email:
-        return jsonify({'error': 'Email is required'}), 400
-
-    if not refresh_token or not device_id:
-        return jsonify({'error': 'Refresh token and device ID are required'}), 400
+    if not all([email, refresh_token, device_id]):
+        return jsonify({'error': 'Missing required fields'}), 400
 
     user = User.query.filter_by(email=email).first()
     if not user:
@@ -165,21 +162,19 @@ def refresh_token():
 
     session = UserSession.query.filter_by(
         user_id=user.id,
-        device_identifier=device_id,
-        is_active=True
+        device_identifier=device_id
     ).first()
 
-    if not session.is_valid():
-        session.extend_validity()
-        if not session.is_valid():
-            return jsonify({'error': 'Invalid device session'}), 401
+    if not session:
+        session = create_user_session(user, device_id)
+    else:
+        session.is_active = True
+        session.update_activity(get_client_ip())
 
     new_auth_token = generate_secure_token()
     new_refresh_token = generate_secure_token()
 
     user.set_auth_tokens(new_auth_token, new_refresh_token)
-    session.update_activity(get_client_ip())
-
     db.session.commit()
 
     return jsonify({
