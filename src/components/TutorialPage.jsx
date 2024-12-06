@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Modal, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Modal, Button, Spinner } from 'react-bootstrap';
 import { Book, Brain, MessageSquare, Bookmark, Clock, Medal, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TutorialPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedTutorial, setSelectedTutorial] = useState(null);
+    const [gifLoaded, setGifLoaded] = useState(false);
 
     const tutorials = [
         {
@@ -16,7 +17,7 @@ const TutorialPage = () => {
             modalContent: {
                 title: "How to Use Flashcards",
                 description: ["Our flashcard system helps you learn Arabic vocabulary effectively:", "1. Select a category from the available options", "2. Click through cards to see Arabic and English translations", "3. You can switch on or off the arabic transliteration"],
-                gifUrl: "/api/placeholder/600/400"
+                gifUrl: "/gifs/tutorial/flashcards.gif"
             }
         },
         {
@@ -27,7 +28,7 @@ const TutorialPage = () => {
             modalContent: {
                 title: "How to Take Quizzes",
                 description: ["Challenge yourself with our quiz system:", "1. Choose between Vocabulary or Verb Conjugation quizzes", "2. Select your preferred category", "3. Answer questions and submit your responses", "4. Review your results and learn from mistakes"],
-                gifUrl: "/api/placeholder/600/400"
+                gifUrl: "/gifs/tutorial/quiz.gif"
             }
         },
         {
@@ -38,7 +39,7 @@ const TutorialPage = () => {
             modalContent: {
                 title: "How to Use Cheatsheets",
                 description: ["Get quick access to important information:", "1. Browse available cheatsheet categories", "2. Click to view detailed information", "3. Use as quick reference during practice"],
-                gifUrl: "/api/placeholder/600/400"
+                gifUrl: "/gifs/tutorial/cheatsheets.gif"
             }
         },
         {
@@ -49,12 +50,13 @@ const TutorialPage = () => {
             modalContent: {
                 title: "How to Track Progress",
                 description: ["Keep track of your learning journey:", "1. View quiz results in the Results page", "2. Check detailed performance for each quiz", "3. Monitor improvement over time", "4. Review specific areas needing attention"],
-                gifUrl: "/api/placeholder/600/400"
+                gifUrl: "/gifs/tutorial/results.gif"
             }
         }
     ];
 
     const handleTutorialClick = (tutorial) => {
+        setGifLoaded(false);
         setSelectedTutorial(tutorial);
         setShowModal(true);
     };
@@ -117,12 +119,27 @@ const TutorialPage = () => {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="bg-gray-800 text-white">
-                            <img
-                                src={selectedTutorial.modalContent.gifUrl}
-                                alt={`Tutorial for ${selectedTutorial.title}`}
-                                className="w-full rounded-lg mb-4"
-                            />
-                            <div className="whitespace-pre-line">
+                            <div className="position-relative" style={{ maxHeight: '60vh', overflow: 'hidden' }}>
+                                {!gifLoaded && (
+                                    <div className="text-center py-4">
+                                        <Spinner animation="border" variant="purple" />
+                                    </div>
+                                )}
+                                <div className="d-flex justify-content-center">
+                                    <img
+                                        src={selectedTutorial.modalContent.gifUrl}
+                                        alt={`Tutorial for ${selectedTutorial.title}`}
+                                        className={`w-full rounded-lg mb-0 ${gifLoaded ? '' : 'd-none'}`}
+                                        style={{
+                                            maxWidth: '80%',
+                                            height: 'auto',
+                                            objectFit: 'contain'
+                                        }}
+                                        onLoad={() => setGifLoaded(true)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-4">
                                 {selectedTutorial.modalContent.description.map((line, index) => (
                                     <p key={index} className="mb-2">{line}</p>
                                 ))}
