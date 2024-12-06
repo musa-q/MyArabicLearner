@@ -69,7 +69,7 @@ const TutorialPage = () => {
                 transition={{ duration: 0.6 }}
                 className="text-center mb-5"
             >
-                <h1 className="display-4 mb-4 text-purple-400">How to Use My Arabic Learner</h1>
+                <h1 className="display-4 mb-4 gold">How to Use My Arabic Learner</h1>
                 <p className="lead text-gray-300">
                     Learn how to make the most of our features with these detailed tutorials.
                     Click on any card to see a demonstration.
