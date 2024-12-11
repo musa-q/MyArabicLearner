@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import request
-from ..models import User, db
+from ..models import User, UserSession, db
 import requests
 import os
 
@@ -8,28 +8,42 @@ GEOIP_DB_PATH = os.path.join(os.path.dirname(__file__), 'GeoLite2-City.mmdb')
 
 class UserUtils:
     @staticmethod
-    def get_user_id_from_request():
+    def get_user_session_from_request():
         auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            return None
+        device_id = request.headers.get('X-Device-ID')
+
+        if not auth_header or not device_id:
+            return None, None
 
         try:
             token = auth_header.split(" ")[1]
         except IndexError:
-            return None
+            return None, None
 
-        user = User.query.filter_by(auth_token=token).first()
-        if not user or not user.is_token_valid():
-            return None
+        session = UserSession.query.filter_by(
+            auth_token=token,
+            device_identifier=device_id,
+            is_active=True
+        ).first()
 
-        return user.id
+        if not session or not session.is_token_valid():
+            return None, None
+
+        user = User.query.get(session.user_id)
+        if not user:
+            return None, None
+
+        return user, session
 
     @staticmethod
-    def validate_user_token(token):
-        user = User.query.filter_by(auth_token=token).first()
-        if not user or not user.is_token_valid():
-            return False
-        return True
+    def validate_session_token(token, device_id):
+        session = UserSession.query.filter_by(
+            auth_token=token,
+            device_identifier=device_id,
+            is_active=True
+        ).first()
+
+        return session and session.is_token_valid()
 
     @staticmethod
     def get_geolocation(ip_address):

@@ -16,6 +16,8 @@ def generate_secure_token():
     return secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
 
 def send_auth_email(email, token):
+    print(token)
+    return
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
@@ -154,27 +156,28 @@ def refresh_token():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    if user.refresh_token != refresh_token:
-        return jsonify({'error': 'Invalid refresh token'}), 401
-
-    if not user.can_refresh():
-        return jsonify({'error': 'Expired refresh token'}), 401
-
     session = UserSession.query.filter_by(
         user_id=user.id,
-        device_identifier=device_id
+        device_identifier=device_id,
+        refresh_token=refresh_token,
+        is_active=True
     ).first()
 
     if not session:
-        session = create_user_session(user, device_id)
-    else:
-        session.is_active = True
-        session.update_activity(get_client_ip())
+        return jsonify({'error': 'Invalid refresh token'}), 401
+
+    if datetime.now() > session.refresh_token_expiration:
+        return jsonify({'error': 'Expired refresh token'}), 401
 
     new_auth_token = generate_secure_token()
     new_refresh_token = generate_secure_token()
 
-    user.set_auth_tokens(new_auth_token, new_refresh_token)
+    session.auth_token = new_auth_token
+    session.refresh_token = new_refresh_token
+    session.token_expiration = datetime.now() + Config.ACCESS_TOKEN_TIME
+    session.refresh_token_expiration = datetime.now() + Config.REFRESH_TOKEN_TIME
+    session.update_activity(get_client_ip())
+
     db.session.commit()
 
     return jsonify({
@@ -207,7 +210,11 @@ def verify():
 
     auth_token = generate_secure_token()
     refresh_token = generate_secure_token()
-    user.set_auth_tokens(auth_token, refresh_token)
+
+    session.auth_token = auth_token
+    session.refresh_token = refresh_token
+    session.token_expiration = datetime.now() + Config.ACCESS_TOKEN_TIME
+    session.refresh_token_expiration = datetime.now() + Config.REFRESH_TOKEN_TIME
 
     db.session.commit()
     user_utils.update_last_login(user)
@@ -221,15 +228,13 @@ def verify():
 
 @auth_bp.route('/logout', methods=['POST'])
 @require_auth()
-def logout(user_id, *args):
-    user = User.query.filter_by(id=user_id).first()
-    if user:
-        user.auth_token = None
-        user.token_expiration = None
+def logout(user_id, session, *args):
+    if session:
+        session.invalidate()
         db.session.commit()
         return jsonify({'logged_out': True, 'message': 'Logged out successfully'}), 200
 
-    return jsonify({'logged_out': False, 'error': 'Email is required'}), 400
+    return jsonify({'logged_out': False, 'error': 'Invalid session'}), 400
 
 @auth_bp.route('/logout-all', methods=['POST'])
 @require_auth(allowed_roles=['admin'])

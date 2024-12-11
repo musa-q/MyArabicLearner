@@ -7,19 +7,18 @@ def require_auth(allowed_roles=None):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user_id = user_utils.get_user_id_from_request()
-            if not user_id:
-                return jsonify({'error': 'Unauthorized'}), 401
+            user, session = user_utils.get_user_session_from_request()
 
-            user = User.query.get(user_id)
-            if user is None:
-                return jsonify({'error': 'User not found'}), 404
+            if not user or not session:
+                return jsonify({'error': 'Unauthorized'}), 401
 
             if allowed_roles:
                 if not any(role in user.role for role in allowed_roles):
                     return jsonify({'error': 'Access denied'}), 403
 
-            return f(user_id, *args, **kwargs)
+            session.update_activity(request.remote_addr)
+
+            return f(user.id, session, *args, **kwargs)
 
         return decorated_function
     return decorator

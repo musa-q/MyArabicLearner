@@ -18,7 +18,7 @@ export const extractSubcategory = (fullphraseing) => {
     return parts[1] ? parts[1].trim() : null;
 };
 
-const AUTH_VERSION = '2';
+const AUTH_VERSION = '3';
 
 const createAuthManager = () => {
     let refreshTokenTimeout = null;
@@ -26,6 +26,15 @@ const createAuthManager = () => {
     let failedRequests = [];
     let requestInterceptor = null;
     let responseInterceptor = null;
+
+    const getDeviceId = () => {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = `web-${window.navigator.userAgent}-${window.screen.width}x${window.screen.height}-${Date.now()}`;
+            localStorage.setItem('deviceId', deviceId);
+        }
+        return deviceId;
+    };
 
     const migrateStorageIfNeeded = () => {
         const currentVersion = localStorage.getItem('auth_version');
@@ -41,33 +50,34 @@ const createAuthManager = () => {
 
     const setTokens = (authToken, refreshToken, email) => {
         if (!authToken || !refreshToken || !email) {
-            // console.error('Missing required token data:', { authToken, refreshToken, email });
             return;
         }
 
-        localStorage.setItem('authToken', authToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        const deviceId = getDeviceId();
+        localStorage.setItem(`authToken_${deviceId}`, authToken);
+        localStorage.setItem(`refreshToken_${deviceId}`, refreshToken);
         localStorage.setItem('email', email);
-        localStorage.setItem('tokenCreatedAt', Date.now().toString());
+        localStorage.setItem(`tokenCreatedAt_${deviceId}`, Date.now().toString());
         localStorage.setItem('auth_version', AUTH_VERSION);
         setupRefreshTimer();
     };
 
     const clearTokens = () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('tokenCreatedAt');
+        const deviceId = getDeviceId();
+        localStorage.removeItem(`authToken_${deviceId}`);
+        localStorage.removeItem(`refreshToken_${deviceId}`);
+        localStorage.removeItem(`tokenCreatedAt_${deviceId}`);
         if (refreshTokenTimeout) {
             clearTimeout(refreshTokenTimeout);
         }
     };
 
     const getTimeUntilRefresh = () => {
-        const tokenCreatedAt = parseInt(localStorage.getItem('tokenCreatedAt') || '0');
+        const deviceId = getDeviceId();
+        const tokenCreatedAt = parseInt(localStorage.getItem(`tokenCreatedAt_${deviceId}`) || '0');
         const now = Date.now();
         const tokenAge = now - tokenCreatedAt;
         const refreshTime = REFRESH_INTERVAL || 55 * 60 * 1000;
-        // const refreshTime = 10 * 1000;
         return Math.max(0, refreshTime - tokenAge);
     };
 
@@ -77,38 +87,24 @@ const createAuthManager = () => {
         }
 
         const timeUntilRefresh = getTimeUntilRefresh();
-        // console.log(`Setting up refresh timer for ${timeUntilRefresh / 1000} seconds`);
-
         refreshTokenTimeout = setTimeout(() => {
-            // console.log('Refresh timer triggered');
             refreshToken();
         }, timeUntilRefresh);
     };
 
     const refreshToken = async () => {
         if (isRefreshing) {
-            // console.log('Already refreshing, waiting...');
             return new Promise((resolve) => {
                 failedRequests.push(resolve);
             });
         }
 
-        // console.log('Starting token refresh...');
         isRefreshing = true;
+        const deviceId = getDeviceId();
 
         try {
-            const refreshToken = localStorage.getItem('refreshToken');
-            const deviceId = localStorage.getItem('deviceId');
+            const refreshToken = localStorage.getItem(`refreshToken_${deviceId}`);
             const email = localStorage.getItem('email');
-            const authVersion = localStorage.getItem('auth_version');
-
-            // console.log('Storage state:', {
-            //     email,
-            //     deviceId,
-            //     authVersion,
-            //     refreshTokenPresent: refreshToken,
-            //     authTokenPresent: localStorage.getItem('authToken')
-            // });
 
             if (!refreshToken || !deviceId || !email) {
                 const missing = [];
@@ -124,15 +120,15 @@ const createAuthManager = () => {
                 device_id: deviceId
             });
 
-            // console.log('Refresh response:', response.data);
-
             if (response.data.token && response.data.refresh_token) {
                 setTokens(response.data.token, response.data.refresh_token, email);
+                failedRequests.forEach(callback => callback(response.data.token));
                 return response.data.token;
             } else {
                 throw new Error('Invalid token response format');
             }
         } catch (error) {
+            failedRequests.forEach(callback => callback(null));
             console.error('Token refresh failed:', error.response?.data || error);
             if (error.response?.status === 401 || error.response?.status === 403) {
                 localStorage.setItem('sessionExpired', 'true');
@@ -151,9 +147,11 @@ const createAuthManager = () => {
         requestInterceptor = axios.interceptors.request.use(
             config => {
                 if (!config.url.includes('/auth/login') && !config.url.includes('/auth/refresh-token')) {
-                    const token = localStorage.getItem('authToken');
+                    const deviceId = getDeviceId();
+                    const token = localStorage.getItem(`authToken_${deviceId}`);
                     if (token) {
                         config.headers.Authorization = `Bearer ${token}`;
+                        config.headers['X-Device-ID'] = deviceId;
                     }
                 }
                 return config;
@@ -173,14 +171,12 @@ const createAuthManager = () => {
                     originalRequest._retry = true;
 
                     try {
-                        // console.log('Attempting token refresh...');
                         const newToken = await refreshToken();
                         if (newToken) {
                             originalRequest.headers.Authorization = `Bearer ${newToken}`;
                             return axios(originalRequest);
                         }
                     } catch (refreshError) {
-                        // console.error('Token refresh failed:', refreshError);
                         clearTokens();
                         onLogout();
                         return Promise.reject(refreshError);
@@ -196,8 +192,9 @@ const createAuthManager = () => {
             return false;
         }
 
-        const authToken = localStorage.getItem('authToken');
-        const refreshToken = localStorage.getItem('refreshToken');
+        const deviceId = getDeviceId();
+        const authToken = localStorage.getItem(`authToken_${deviceId}`);
+        const refreshToken = localStorage.getItem(`refreshToken_${deviceId}`);
 
         if (authToken && refreshToken) {
             setupRefreshTimer();
@@ -214,7 +211,8 @@ const createAuthManager = () => {
         refreshToken,
         setupAxiosInterceptors,
         initializeFromStorage,
-        migrateStorageIfNeeded
+        migrateStorageIfNeeded,
+        getDeviceId
     };
 };
 

@@ -15,13 +15,13 @@ def get_admin_navbar_buttons():
 
 @home_bp.route('/homepage', methods=['POST'])
 @require_auth()
-def homepage(user_id, *args, **kwargs):
+def homepage(user_id, session, *args, **kwargs):
     user = User.query.get(user_id)
     extra_buttons = None
     if user.role == 'basic':
         other_info = 'This is a basic user'
     elif user.role == 'admin':
-        other_info = f"'Authorization': Bearer {user.auth_token}"
+        other_info = f"'Authorization': Bearer {session.auth_token}"
         extra_buttons = get_admin_navbar_buttons()
 
     return jsonify({'username': user.username, 'other_info': other_info, 'extra_buttons': extra_buttons}), 200
