@@ -30,8 +30,6 @@ const App = () => {
 
   const publicPages = ['home', 'about', 'login', 'meet-team', 'tutorial'];
 
-  const REFRESH_INTERVAL = 1000 * 60 * 30;
-
   useEffect(() => {
     authManager.setupAxiosInterceptors(() => {
       handleSessionExpired();

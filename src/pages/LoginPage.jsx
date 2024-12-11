@@ -71,11 +71,8 @@ const LoginPage = ({ onLogin, sessionExpired }) => {
                 'device_id': deviceId
             });
 
-            localStorage.setItem('email', email);
-            authManager.setTokens(response.data.token, response.data.refresh_token, email);
-
+            onLogin(response.data.token, response.data.refresh_token, email || storedEmail);
             setMessage(response.data.message);
-            onLogin(response.data.token, response.data.refresh_token, email);
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {
