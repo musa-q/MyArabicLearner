@@ -20,7 +20,7 @@ const TeamPage = ({ onNavigate }) => {
                 ar: "موسى هو يلي بيحوّل فكرتنا لواقع من خلال البرمجة. هو مسؤول عن بناء المنصة وصيانتها، وبيتأكد إنو تجربة التعلم سلسة لكل المستخدمين."
             },
             icon: <Code size={32} />,
-            linkedInLink: "https://www.linkedin.com/in/musa-q/"
+            linkedInLink: "https://www.linkedin.com/in/musa-qureshi/"
         },
         {
             name: "Mohammed",
@@ -35,7 +35,7 @@ const TeamPage = ({ onNavigate }) => {
                 ar: "محمد بيتأكد من جودة وأصالة المحتوى العربي. هو بيطوّر قوائم المفردات وبيتحقق من إنو كل المحتوى اللغوي بيعكس بدقة اللهجة الشامية كما بتنحكى اليوم."
             },
             icon: <Book size={32} />,
-            linkedInLink: "https://www.linkedin.com/in/mohammed-sa/"
+            linkedInLink: "https://www.linkedin.com/in/mohammed-sa%E2%80%99deh-0a9979244/"
         }
     ];
 

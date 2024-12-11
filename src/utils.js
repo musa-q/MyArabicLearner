@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from './config';
+import { API_URL, REFRESH_INTERVAL } from './config';
 
 export const capitaliseWords = (phrase) => {
     if (!phrase) return '';
@@ -66,7 +66,7 @@ const createAuthManager = () => {
         const tokenCreatedAt = parseInt(localStorage.getItem('tokenCreatedAt') || '0');
         const now = Date.now();
         const tokenAge = now - tokenCreatedAt;
-        const refreshTime = 55 * 60 * 1000;
+        const refreshTime = REFRESH_INTERVAL || 55 * 60 * 1000;
         // const refreshTime = 10 * 1000;
         return Math.max(0, refreshTime - tokenAge);
     };

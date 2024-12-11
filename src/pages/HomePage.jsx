@@ -54,7 +54,7 @@ const HomePage = ({ onNavigate, username }) => {
     return (
         <Container fluid className="px-4">
             <motion.div
-                className="text-center pt-3 pb-5"
+                className="text-center pt-2 pb-5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}

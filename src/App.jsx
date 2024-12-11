@@ -32,6 +32,12 @@ const App = () => {
 
   const REFRESH_INTERVAL = 1000 * 60 * 30;
 
+  useEffect(() => {
+    authManager.setupAxiosInterceptors(() => {
+      handleSessionExpired();
+    });
+  }, []);
+
   const getUserDetails = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -40,8 +46,6 @@ const App = () => {
     }
 
     try {
-      // console.log('Making homepage request with token:', token.substring(0, 10) + '...'); // Debug log
-
       const response = await axios.post(`${API_URL}/homepage`,
         {},
         {
@@ -58,9 +62,14 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching user details:', error);
       if (error.response?.status === 401) {
-        authManager.clearTokens();
-        setIsAuthenticated(false);
-        setEmail('');
+        try {
+          await authManager.refreshToken();
+          await getUserDetails();
+        } catch (refreshError) {
+          authManager.clearTokens();
+          setIsAuthenticated(false);
+          setEmail('');
+        }
       }
     } finally {
       setIsLoading(false);
@@ -79,30 +88,23 @@ const App = () => {
       const storedEmail = localStorage.getItem('email');
 
       if (authToken && refreshToken) {
-        if (!authManager.initializeFromStorage()) {
-          setIsLoading(false);
-          return;
-        }
-        setEmail(storedEmail);
-        await getUserDetails();
-
-        const refreshInterval = setInterval(async () => {
-          try {
-            await authManager.refreshToken();
-          } catch (error) {
-            console.error('Token refresh failed:', error);
-            if (error.response?.status === 401) {
-              const retryCount = parseInt(localStorage.getItem('refreshRetryCount') || '0');
-              if (retryCount >= 5) {
-                handleLogout();
-              } else {
-                localStorage.setItem('refreshRetryCount', (retryCount + 1).toString());
-              }
-            }
+        try {
+          if (!authManager.initializeFromStorage()) {
+            setIsLoading(false);
+            return;
           }
-        }, REFRESH_INTERVAL);
 
-        return () => clearInterval(refreshInterval);
+          setEmail(storedEmail);
+          await getUserDetails();
+
+        } catch (error) {
+          console.error('Auth check failed:', error);
+          if (error.response?.status === 401) {
+            handleSessionExpired();
+          }
+        } finally {
+          setIsLoading(false);
+        }
       } else {
         setIsLoading(false);
       }
@@ -129,19 +131,21 @@ const App = () => {
   };
 
   const handleLogin = async (token, refresh_token, userEmail) => {
-    // console.log('Login response:', { token, userEmail });
-
     if (!token || !userEmail) {
-      // console.error('Missing login data:', { token, userEmail });
       return;
     }
 
-    if (!localStorage.getItem('deviceId')) {
-      localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
-    }
-
     try {
+      if (!localStorage.getItem('deviceId')) {
+        localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
+      }
+
       authManager.setTokens(token, refresh_token, userEmail);
+
+      if (!authManager.initializeFromStorage()) {
+        throw new Error('Failed to initialize auth from storage');
+      }
+
       setEmail(userEmail);
       await getUserDetails();
       navigateToPage('home');
