@@ -22,13 +22,15 @@ const CheckVocabPage = () => {
     }, []);
 
     const fetchCategories = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/flashcards/get-all-category-names`,
                 {},
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -39,7 +41,8 @@ const CheckVocabPage = () => {
     };
 
     const fetchFlashcards = async (categoryId) => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/flashcards/get-category-flashcards`,
                 {
@@ -47,7 +50,8 @@ const CheckVocabPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -87,7 +91,8 @@ const CheckVocabPage = () => {
     };
 
     const handleSaveFlashcard = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/maintenance/update-flashcard`,
                 {
@@ -99,7 +104,8 @@ const CheckVocabPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -119,7 +125,8 @@ const CheckVocabPage = () => {
     };
 
     const handleAddFlashcard = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/maintenance/add-flashcard`,
                 {
@@ -130,7 +137,8 @@ const CheckVocabPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );

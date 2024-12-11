@@ -72,7 +72,9 @@ const LoginPage = ({ onLogin, sessionExpired }) => {
             });
 
             onLogin(response.data.token, response.data.refresh_token, email || storedEmail);
-            setMessage(response.data.message);
+            setMessage('Login successful!');
+            // Force a page reload to ensure all auth state is fresh
+            window.location.reload();
         } catch (error) {
             setMessage(error.response ? error.response.data.error : 'An error occurred');
         } finally {

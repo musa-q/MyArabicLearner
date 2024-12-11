@@ -18,14 +18,16 @@ const EditCategoriesPage = () => {
     }, []);
 
     const fetchCategories = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(
                 `${API_URL}/flashcards/get-all-category-names`,
                 {},
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -71,7 +73,8 @@ const EditCategoriesPage = () => {
     };
 
     const handleSaveCategory = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(
                 `${API_URL}/maintenance/update-category`,
@@ -81,7 +84,8 @@ const EditCategoriesPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -107,7 +111,8 @@ const EditCategoriesPage = () => {
             return;
         }
 
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(
                 `${API_URL}/maintenance/add-category`,
@@ -116,7 +121,8 @@ const EditCategoriesPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -134,7 +140,8 @@ const EditCategoriesPage = () => {
     };
 
     const handleConfirmDelete = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(
                 `${API_URL}/maintenance/delete-category`,
@@ -143,7 +150,8 @@ const EditCategoriesPage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );

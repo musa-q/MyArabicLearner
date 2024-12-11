@@ -3,6 +3,7 @@ import ChooseWordsPage from './ChooseWordsPage';
 import WordsPracticeQuestionPage from './WordsPracticeQuestionPage';
 import axios from 'axios';
 import { API_URL } from '../config';
+import { authManager } from '../utils';
 
 // Renders either choose page or flash cards
 const WordsPracticePage = () => {
@@ -19,7 +20,8 @@ const WordsPracticePage = () => {
     };
 
     const createQuiz = async (listChoice) => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/quiz/create-vocab-quiz`,
                 {
@@ -27,7 +29,8 @@ const WordsPracticePage = () => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );

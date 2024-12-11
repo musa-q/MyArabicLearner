@@ -6,7 +6,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { API_URL } from '../config';
-
+import { authManager } from '../utils';
 
 const AppFeedback = ({ show, handleClose }) => {
     const [rating, setRating] = useState(null);
@@ -25,7 +25,8 @@ const AppFeedback = ({ show, handleClose }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setSubmitting(true);
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
 
         try {
             const response = await axios.post(`${API_URL}/feedback/send-feedback`,
@@ -35,7 +36,8 @@ const AppFeedback = ({ show, handleClose }) => {
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );

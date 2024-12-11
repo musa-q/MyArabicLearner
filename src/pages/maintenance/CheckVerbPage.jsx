@@ -15,13 +15,15 @@ const CheckVerbPage = () => {
     }, []);
 
     const fetchVerbs = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/maintenance/get-all-verbs`,
                 {},
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -32,12 +34,14 @@ const CheckVerbPage = () => {
     };
 
     const fetchConjugations = async (verbId) => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/maintenance/get-verb-conjugations?verb_id=${verbId}`, {},
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );
@@ -68,7 +72,8 @@ const CheckVerbPage = () => {
     };
 
     const handleSaveConjugation = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(`${API_URL}/maintenance/update-conjugation`, {
                 id: editConjugation.id,
@@ -76,7 +81,8 @@ const CheckVerbPage = () => {
             },
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
                     }
                 }
             );

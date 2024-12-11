@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Book, Clock, Eye, Award } from 'lucide-react';
 import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
+import { authManager } from '../utils';
 
 const AllQuizResultsPage = () => {
     const [quizResults, setQuizResults] = useState([]);
@@ -19,10 +20,15 @@ const AllQuizResultsPage = () => {
 
     const loadUserData = async () => {
         try {
-            const token = localStorage.getItem('authToken');
-            const response = await axios.post(`${API_URL}/quiz/get-completed-quizzes`,
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`); const response = await axios.post(`${API_URL}/quiz/get-completed-quizzes`,
                 { quiz_type: quizType },
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
             setQuizResults(response.data.completed_quizzes);
             setDataLoaded(true);
@@ -34,10 +40,17 @@ const AllQuizResultsPage = () => {
 
     const fetchQuizDetails = async (quiz_id) => {
         try {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
+
             const response = await axios.post(`${API_URL}/quiz/get-quiz-details`,
                 { quiz_id, quiz_type: quizType },
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
             setSelectedQuizDetails(response.data.quiz_data);
             setShowModal(true);

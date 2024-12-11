@@ -37,7 +37,8 @@ const App = () => {
   }, []);
 
   const getUserDetails = async () => {
-    const token = localStorage.getItem('authToken');
+    const deviceId = authManager.getDeviceId();
+    const token = localStorage.getItem(`authToken_${deviceId}`);
     if (!token) {
       setIsLoading(false);
       return;
@@ -76,13 +77,9 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!localStorage.getItem('deviceId')) {
-        const deviceId = `web-${window.navigator.userAgent}-${window.screen.width}x${window.screen.height}`;
-        localStorage.setItem('deviceId', deviceId);
-      }
-
-      const authToken = localStorage.getItem('authToken');
-      const refreshToken = localStorage.getItem('refreshToken');
+      const deviceId = authManager.getDeviceId();
+      const authToken = localStorage.getItem(`authToken_${deviceId}`);
+      const refreshToken = localStorage.getItem(`refreshToken_${deviceId}`);
       const storedEmail = localStorage.getItem('email');
 
       if (authToken && refreshToken) {
@@ -157,16 +154,17 @@ const App = () => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const deviceId = authManager.getDeviceId();
+      const token = localStorage.getItem(`authToken_${deviceId}`);
       if (token) {
-        await axios.post(`${API_URL}/auth/logout`);
+        await axios.post(`${API_URL}/auth/logout`, {
+          device_id: deviceId
+        });
       }
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       authManager.clearTokens();
-      localStorage.removeItem('email');
-      localStorage.removeItem('deviceId');
       setIsAuthenticated(false);
       setEmail('');
       setUsername(null);

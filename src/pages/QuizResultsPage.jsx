@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Container, Badge, Spinner, Table, Button } from 'react-bootstrap';
 import { motion } from "framer-motion";
 import { Book, Clock, Award, ArrowLeft } from 'lucide-react';
-import { capitaliseWords } from '../utils';
+import { authManager, capitaliseWords } from '../utils';
 import { API_URL } from '../config';
 import './QuizResultsPage.css';
 
@@ -20,10 +20,16 @@ const QuizResultsPage = ({ quiz_type }) => {
 
     const getUserResults = async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
             const response = await axios.post(`${API_URL}/quiz/get-results`,
                 { quiz_type: resultsQuizType },
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
             setResultsDetails(response.data.results);
             setDataLoaded(true);

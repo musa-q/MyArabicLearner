@@ -6,6 +6,7 @@ import axios from 'axios';
 import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
 import { ArrowLeft } from 'lucide-react';
+import { authManager } from '../utils';
 
 const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
     const [flashcards, setFlashcards] = useState([]);
@@ -13,7 +14,8 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
             try {
                 const response = await axios.post(`${API_URL}/flashcards/get-category-flashcards`,
                     {
@@ -21,7 +23,8 @@ const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
                     },
                     {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token}`,
+                            'X-Device-ID': deviceId,
                         }
                     }
                 );

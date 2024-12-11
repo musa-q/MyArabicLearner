@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Book, CircleDot, ArrowRight, HelpCircle } from 'lucide-react';
 import { Container, Card, Button, ListGroup } from 'react-bootstrap';
 import { ReactTransliterate } from "react-transliterate";
-import { capitaliseWords } from '../utils';
+import { capitaliseWords, authManager } from '../utils';
 import QuizResultsPage from './QuizResultsPage';
 import axios from 'axios';
 import './WordsPracticeQuestionPage.css';
@@ -77,7 +77,9 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
         const guess = processText(currentAnswer);
 
         try {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
+
             const response = await axios.post(
                 `${API_URL}/quiz/send-answer`,
                 {
@@ -85,7 +87,10 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                     user_answer: guess,
                 },
                 {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
                 }
             );
 
@@ -108,7 +113,9 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
+
             const response = await axios.post(
                 `${API_URL}/quiz/get-next-question`,
                 {
@@ -116,7 +123,10 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                     quiz_id: quizId
                 },
                 {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
                 }
             );
 

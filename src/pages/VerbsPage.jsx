@@ -6,7 +6,7 @@ import { ReactTransliterate } from 'react-transliterate';
 import axios from 'axios';
 import QuizResultsPage from './QuizResultsPage';
 import { API_URL } from '../config';
-import { capitaliseWords } from '../utils';
+import { capitaliseWords, authManager } from '../utils';
 
 const VerbsPage = () => {
     const [quizId, setQuizId] = useState(null);
@@ -58,12 +58,18 @@ const VerbsPage = () => {
     }, [quizId]);
 
     const createQuiz = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
             const response = await axios.post(
                 `${API_URL}/quiz/create-verb-conjugation-quiz`,
                 {},
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
             setQuizId(response.data.quiz_id);
             getNextQuestion(response.data.quiz_id);
@@ -74,12 +80,19 @@ const VerbsPage = () => {
 
     const getNextQuestion = async () => {
         setLoading(true);
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
+
         try {
             const response = await axios.post(
                 `${API_URL}/quiz/get-next-question`,
                 { quiz_type: 'VerbConjugationQuiz' },
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
 
             if (response.data.all_answered) {
@@ -108,7 +121,8 @@ const VerbsPage = () => {
     };
 
     const checkAnswer = async () => {
-        const token = localStorage.getItem('authToken');
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
         const guess = currentAnswer.trim().toLowerCase();
         if (!guess) return;
 
@@ -116,7 +130,12 @@ const VerbsPage = () => {
             const response = await axios.post(
                 `${API_URL}/quiz/send-answer`,
                 { quiz_type: 'VerbConjugationQuiz', user_answer: guess },
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
             );
 
             setResultMessage(response.data.answer_response ? 'Correct! 🎉' : 'Incorrect!');

@@ -6,6 +6,7 @@ import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
 import { motion } from "framer-motion";
 import { extractCategory, extractSubcategory } from '../utils';
+import { authManager } from '../utils';
 
 const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     const [fileList, setFileList] = useState([]);
@@ -37,7 +38,8 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
 
     useEffect(() => {
         const fetchFileList = async () => {
-            const token = localStorage.getItem('authToken');
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
             setIsLoading(true);
             setError(null);
             try {
@@ -46,7 +48,8 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                     {},
                     {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token}`,
+                            'X-Device-ID': deviceId,
                         }
                     }
                 );
