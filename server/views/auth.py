@@ -16,6 +16,8 @@ def generate_secure_token():
     return secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
 
 def send_auth_email(email, token):
+    print(token)
+    return
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
@@ -236,14 +238,16 @@ def logout(user_id, session, *args):
 
 @auth_bp.route('/logout-all', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def logout_all(*args):
+def logout_all(user_id, session, *args):
     try:
-        num_deleted = UserSession.query.delete()
-
-        User.query.update({User.auth_token: None, User.token_expiration: None})
+        num_deleted = UserSession.query.filter(
+            UserSession.id != session.id  # keep admin's current session
+        ).delete()
 
         db.session.commit()
-        return jsonify({'message': f'All users logged out successfully. {num_deleted} sessions removed.'}), 200
+        return jsonify({
+            'message': f'All users logged out successfully. {num_deleted} sessions removed.'
+        }), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
