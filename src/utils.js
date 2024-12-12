@@ -164,7 +164,7 @@ const createAuthManager = () => {
             async error => {
                 const originalRequest = error.config;
 
-                const skipUrls = ['/auth/login', '/auth/refresh-token'];
+                const skipUrls = ['/auth/login', '/auth/refresh-token', '/auth/verify'];
                 if (error.response?.status === 401 && !originalRequest._retry &&
                     !skipUrls.some(url => originalRequest.url.includes(url))) {
 
