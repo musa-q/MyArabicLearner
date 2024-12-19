@@ -13,7 +13,7 @@ quiz_bp = Blueprint('quiz', __name__)
 
 @quiz_bp.route('/create-vocab-quiz', methods=['POST'])
 @require_auth()
-def create_vocab_quiz(user_id):
+def create_vocab_quiz(user_id, *args):
     data = request.get_json()
     category_id = data.get('category_id')
     num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
@@ -62,7 +62,7 @@ def create_vocab_quiz(user_id):
 
 @quiz_bp.route('/create-verb-conjugation-quiz', methods=['POST'])
 @require_auth()
-def create_verb_conjugation_quiz(user_id):
+def create_verb_conjugation_quiz(user_id, *args):
     data = request.get_json()
     num_questions = data.get('num_questions', Config.NUMBER_OF_QUIZ_QUESTIONS)
 
@@ -241,7 +241,7 @@ def create_verb_conjugation_quiz(user_id):
 
 @quiz_bp.route('/get-next-question', methods=['POST'])
 @require_auth()
-def get_quiz_next_question(user_id):
+def get_quiz_next_question(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id', None)
@@ -277,7 +277,7 @@ def get_quiz_next_question(user_id):
 
 @quiz_bp.route('/send-answer', methods=['POST'])
 @require_auth()
-def send_answer_from_client(user_id):
+def send_answer_from_client(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     user_answer = data.get('user_answer')
@@ -293,7 +293,7 @@ def send_answer_from_client(user_id):
 
 @quiz_bp.route('/check-quiz-finished', methods=['POST'])
 @require_auth()
-def check_quiz_finished(user_id):
+def check_quiz_finished(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -302,7 +302,7 @@ def check_quiz_finished(user_id):
 
 @quiz_bp.route('/get-results', methods=['POST'])
 @require_auth()
-def get_results(user_id):
+def get_results(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -315,7 +315,7 @@ def get_results(user_id):
 
 @quiz_bp.route('/get-completed-quizzes', methods=['POST'])
 @require_auth()
-def get_completed_quizzes(user_id):
+def get_completed_quizzes(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
 
@@ -332,7 +332,7 @@ def get_completed_quizzes(user_id):
 
 @quiz_bp.route('/get-quiz-details', methods=['POST'])
 @require_auth()
-def get_quiz_details(user_id):
+def get_quiz_details(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     quiz_id = data.get('quiz_id')
@@ -377,3 +377,56 @@ def get_quiz_details(user_id):
         'quiz_type': quiz_type,
         'quiz_data': quiz_data
     }), 200
+
+@quiz_bp.route('/category-best-scores', methods=['POST'])
+@require_auth()
+def get_category_best_scores(user_id, *args):
+    """
+    Get the best score for each vocabulary category for the authenticated user.
+    Returns a list of categories with their highest achieved scores.
+    """
+    try:
+        # Get all categories
+        categories = VocabCategory.query.all()
+
+        best_scores = []
+        for category in categories:
+            # Query to get the highest scoring quiz for this category
+            best_quiz = VocabQuiz.query.filter_by(
+                user_id=user_id,
+                category_id=category.id
+            ).order_by(
+                desc(VocabQuiz.score * 100.0 / VocabQuiz.total_questions)
+            ).first()
+
+            category_data = {
+                'category_id': category.id,
+                'category_name': category.category_name,
+                'total_words': len(category.words),
+                'best_score': None,
+                'best_percentage': None,
+                'total_attempts': VocabQuiz.query.filter_by(
+                    user_id=user_id,
+                    category_id=category.id
+                ).count()
+            }
+
+            if best_quiz:
+                category_data.update({
+                    'best_score': best_quiz.score,
+                    'best_percentage': round((best_quiz.score / best_quiz.total_questions) * 100, 1),
+                    'quiz_date': best_quiz.date_taken.isoformat()
+                })
+
+            best_scores.append(category_data)
+
+        return jsonify({
+            'success': True,
+            'best_scores': best_scores
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

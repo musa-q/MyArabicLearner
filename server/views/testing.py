@@ -7,7 +7,7 @@ testing_bp = Blueprint('testing', __name__)
 
 @testing_bp.route('/add-verb', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def add_verb():
+def add_verb(*args):
     data = request.get_json()
     english_verb = data.get('english_verb')
     transliteration_verb = data.get('transliteration_verb')
@@ -36,7 +36,7 @@ def add_verb():
 
 @testing_bp.route('/add-verb-conjugation', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def add_verb_conjugation():
+def add_verb_conjugation(*args):
     data = request.get_json()
     verb_id = data.get('verb_id')
     tense = data.get('tense')
@@ -81,21 +81,21 @@ def add_verb_conjugation():
 
 @testing_bp.route('/view-verbs', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_verbs():
+def view_verbs(*args):
     verbs = Verb.query.all()
     verbs_list = [{'id': verb.id, 'english_verb': verb.english_verb, 'transliteration_verb': verb.transliteration_verb, 'arabic_verb': verb.arabic_verb} for verb in verbs]
     return jsonify(verbs_list), 200
 
 @testing_bp.route('/view-verb-conjugations', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_verb_conjugations():
+def view_verb_conjugations(*args):
     verb_conjugations = VerbConjugation.query.all()
     verb_conjugations_list = [{'id': conjugation.id, 'verb_id': conjugation.verb_id, 'tense': conjugation.tense, 'pronoun': conjugation.pronoun, 'conjugation': conjugation.conjugation} for conjugation in verb_conjugations]
     return jsonify(verb_conjugations_list), 200
 
 @testing_bp.route('/view-all-verb-conjugations-list', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_all_verb_conjugations_list():
+def view_all_verb_conjugations_list(*args):
     all_verbs = []
     verbs = Verb.query.all()
     for verb in verbs:
@@ -114,7 +114,7 @@ def view_all_verb_conjugations_list():
 
 @testing_bp.route('/add-vocab-category', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def add_vocab_category():
+def add_vocab_category(*args):
     data = request.get_json()
     category_name = data.get('category_name')
 
@@ -137,7 +137,7 @@ def add_vocab_category():
 
 @testing_bp.route('/add-vocab-word', methods=['POST'])
 @require_auth(allowed_roles=['admin'])
-def add_vocab_word():
+def add_vocab_word(*args):
     data = request.get_json()
     category_id = data.get('category_id')
     english = data.get('english')
@@ -176,21 +176,21 @@ def add_vocab_word():
 
 @testing_bp.route('/view-category-names', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_category_names():
+def view_category_names(*args):
     categories = VocabCategory.query.all()
     category_list = [{'id': category.id, 'category_name': category.category_name} for category in categories]
     return jsonify(category_list), 200
 
 @testing_bp.route('/view-all-vocab-words', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_all_vocab_words():
+def view_all_vocab_words(*args):
     vocab_words = VocabWord.query.all()
     vocab_words_list = [{'id': vocab_word.id, 'category_id': vocab_word.category_id, 'english': vocab_word.english, 'transliteration': vocab_word.transliteration, 'arabic': vocab_word.arabic} for vocab_word in vocab_words]
     return jsonify(vocab_words_list), 200
 
 @testing_bp.route('/view-all-category-words-list', methods=['GET'])
 @require_auth(allowed_roles=['admin'])
-def view_all_category_words_list():
+def view_all_category_words_list(*args):
     all_words = []
     categories = VocabCategory.query.all()
     for category in categories:

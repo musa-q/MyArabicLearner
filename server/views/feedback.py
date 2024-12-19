@@ -8,7 +8,7 @@ feedback_bp = Blueprint('feedback', __name__)
 
 @feedback_bp.route('/send-feedback', methods=['POST'])
 @require_auth()
-def submit_feedback(user_id):
+def submit_feedback(user_id, *args):
     data = request.json
 
     new_feedback = Feedback(
