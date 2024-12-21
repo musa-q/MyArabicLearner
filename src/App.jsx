@@ -27,8 +27,29 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
+  const [isHeroImageLoaded, setIsHeroImageLoaded] = useState(false);
 
   const publicPages = ['home', 'about', 'login', 'meet-team', 'tutorial'];
+
+
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      document.documentElement.style.setProperty('--hero-background', 'url("/background_image.png")');
+      setIsHeroImageLoaded(true);
+    };
+    img.src = '/background_image.png';
+
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'image';
+    preloadLink.href = '/background_image.png';
+    document.head.appendChild(preloadLink);
+
+    return () => {
+      document.head.removeChild(preloadLink);
+    };
+  }, []);
 
   useEffect(() => {
     authManager.setupAxiosInterceptors(() => {
@@ -203,7 +224,7 @@ const App = () => {
   };
 
   return (
-    <div className="dark-background light" data-bs-theme="dark">
+    <div className="dark-background" data-bs-theme="dark">
       <Helmet>
         <title>My Arabic Learner</title>
         <meta name="description" content="Ahlan wa Sahlan! This is your platform to learn and practice Arabic in the Levantine dialect. Explore our tools to improve your vocabulary and grammar!" />
@@ -236,7 +257,7 @@ const App = () => {
         extraButtons={extraButtons}
       />
 
-      <main className="flex-grow pb-5">
+      <main className="flex-grow">
         {isLoading ? (
           <div className="text-center py-5 mt-5">
             <Spinner animation="border" variant="purple" />

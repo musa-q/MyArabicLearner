@@ -187,7 +187,7 @@ const VerbsPage = () => {
                     </p>
                 </div>
 
-                <Card className="bg-dark text-white border-purple-400">
+                <Card className=" text-white border-purple-400">
                     <Card.Header className="d-flex align-items-center bg-gray-800">
                         <Book className="text-purple-400 me-2" size={20} />
                         <h2 className="h5 mb-0 lead">Current Question</h2>

@@ -226,7 +226,7 @@ const AllQuizResultsPage = () => {
                                         </td>
                                         <td className="align-middle">
                                             <Badge
-                                                bg={quiz.score === quiz.total_questions ? 'success' : 'primary'}
+                                                bg={quiz.score === quiz.total_questions ? 'success' : 'danger'}
                                                 className="px-3 py-2"
                                             >
                                                 {quiz.score} / {quiz.total_questions}
