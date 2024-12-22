@@ -196,7 +196,7 @@ const AllQuizResultsPage = () => {
                 transition={{ delay: 0.2 }}
             >
                 {quizResults.length > 0 ? (
-                    <div className="bg-gray-800 rounded-lg p-4">
+                    <div className="bg-gray-800 rounded-lg py-4 px-2">
                         <Table responsive bordered hover variant="dark" className="mb-0">
                             <thead className="bg-gray-900">
                                 <tr>

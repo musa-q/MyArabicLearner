@@ -56,19 +56,19 @@
     /* Component specific colors */
     --bs-card-bg: var(--clr-surface-tonal-a10);
     --bs-card-border-color: var(--clr-surface-tonal-a20);
-    --bs-card-color: var(--clr-surface-a50);
+    /* --bs-card-color: var(--clr-surface-a50); */
 
     --bs-modal-bg: var(--clr-surface-tonal-a10);
     --bs-modal-border-color: var(--clr-surface-tonal-a20);
 
     --bs-dropdown-bg: var(--clr-surface-tonal-a10);
     --bs-dropdown-border-color: var(--clr-surface-tonal-a20);
-    --bs-dropdown-link-color: var(--clr-surface-a50);
+    /* --bs-dropdown-link-color: var(--clr-surface-a50); */
     --bs-dropdown-link-hover-bg: var(--clr-surface-tonal-a20);
 
     --bs-input-bg: var(--clr-surface-tonal-a10);
     --bs-input-border-color: var(--clr-surface-tonal-a20);
-    --bs-input-color: var(--clr-surface-a50);
+    /* --bs-input-color: var(--clr-surface-a50); */
     --bs-input-placeholder-color: var(--clr-surface-a30);
 
     --bs-nav-tabs-border-color: var(--clr-surface-tonal-a20);
@@ -109,7 +109,7 @@
 [data-bs-theme="dark"] .form-control {
     background-color: var(--clr-surface-tonal-a10);
     border-color: var(--clr-surface-tonal-a20);
-    color: var(--clr-surface-a50);
+    /* color: var(--clr-surface-a50); */
 }
 
 [data-bs-theme="dark"] .form-control:focus {
