@@ -16,6 +16,9 @@ def generate_secure_token():
     return secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
 
 def send_auth_email(email, token):
+    if (Config.RUN_IN_DEVELOPMENT):
+        print(f"Login token: {token}")
+        return
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
