@@ -60,7 +60,7 @@ const TeamPage = ({ onNavigate }) => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: index * 0.2 }}
                         >
-                            <Card className="h-100 bg-dark text-white border-purple">
+                            <Card className="h-100  text-white border-purple">
                                 <Card.Body className="d-flex flex-column">
                                     <div className="text-center mb-4">
                                         {member.imageUrl === "" ? null : (

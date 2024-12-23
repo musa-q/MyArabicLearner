@@ -1,220 +1,279 @@
-import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col, Card } from 'react-bootstrap';
-import { motion } from 'framer-motion';
-import { Book, Brain, MessageSquare, Users } from 'lucide-react';
+import React from 'react';
+import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
+import { Book, Brain, MessageSquare } from 'lucide-react';
 import './HomePage.css';
 import '../fonts.css';
-import TypingAnimation from '../components/TypingAnimation';
 
 const HomePage = ({ onNavigate, username }) => {
-    const features = [
+    const sampleTitles = [
         {
-            icon: <Book className="text-purple-400" size={32} />,
-            title: "Learn Vocabulary",
-            description: "Master essential Arabic words through interactive flashcards"
+            main: "Learn Real-Life Arabic",
+            sub: "Not Textbook Arabic"
         },
         {
-            icon: <Brain className="text-purple-400" size={32} />,
-            title: "Practice Grammar",
-            description: "Build strong foundations with comprehensive grammar lessons"
+            main: "Arabic in Minutes",
+            sub: "Not Hours of Study"
         },
         {
-            icon: <MessageSquare className="text-purple-400" size={32} />,
-            title: "Interactive Quizzes",
-            description: "Test your knowledge with engaging quizzes"
+            main: "Real Arabic.",
+            sub: "Real Simple."
         },
         {
-            icon: <Users className="text-purple-400" size={32} />,
-            title: "Levantine Dialect",
-            description: "Learn authentic Arabic as spoken in the Levant region"
+            main: "Arabic Made Easy",
+            sub: "Speak Like a Local"
         }
     ];
 
-    const learningActivities = [
+    const examplePhrases = [
         {
-            route: 'wordsflashcard',
-            icon: 'bi-card-text',
-            title: 'Flashcards',
-            description: 'Practice vocabulary with interactive cards'
+            arabic: "مرحبا، كيف حالك؟",
+            transliteration: "Marhaba, keef halak?",
+            english: "Hello, how are you?",
+            context: "Daily Greetings"
         },
         {
-            route: 'quiz',
-            icon: 'bi-pencil-square',
-            title: 'Take a Quiz',
-            description: 'Test your knowledge and track progress'
+            arabic: "شو بتحب تاكل؟",
+            transliteration: "Shu bteheb tekol?",
+            english: "What do you like to eat?",
+            context: "Restaurant Conversations"
         },
         {
-            route: 'cheatsheet',
-            icon: 'bi-journal-text',
-            title: 'Cheatsheets',
-            description: 'Quick reference guides and notes'
+            arabic: "وين رايح؟",
+            transliteration: "Wein rayeh?",
+            english: "Where are you going?",
+            context: "Common Questions"
         }
     ];
+
+    const faqItems = [
+        {
+            question: "Is it really 100% free?",
+            answer: "Yes! All our learning resources including flashcards, quizzes, and practice materials are completely free to use."
+        },
+        {
+            question: "Which Arabic dialect do you teach?",
+            answer: "We focus on Levantine Arabic - the everyday language spoken across Jordan, Lebanon, Palestine, and Syria. This is the practical dialect you'll hear in real conversations."
+        },
+        {
+            question: "Do I need any previous Arabic experience?",
+            answer: "Not at all! We start from the basics and gradually build your skills through practical phrases and everyday conversations."
+        },
+        {
+            question: "How much time do I need to practice?",
+            answer: "You can learn at your own pace! Our bite-sized lessons and flashcards are designed for flexible learning, whether you have 5 minutes or an hour."
+        }
+    ];
+
+    const mainFeatures = [
+        {
+            icon: <Book size={32} className="gold" />,
+            title: "Interactive Flashcards",
+            description: "Master essential Arabic vocabulary through engaging practice sessions"
+        },
+        {
+            icon: <Brain size={32} className="gold" />,
+            title: "Practical Quizzes",
+            description: "Test your knowledge and track your learning progress"
+        },
+        {
+            icon: <MessageSquare size={32} className="gold" />,
+            title: "Real Levantine Arabic",
+            description: "Learn authentic Arabic as spoken across Jordan, Lebanon, Palestine, and Syria"
+        }
+    ];
+
+    const randomTitle = sampleTitles[Math.floor(Math.random() * sampleTitles.length)];
 
     return (
-        <Container fluid className="px-4">
-            <motion.div
-                className="text-center pt-2 pb-5"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                <motion.img
-                    src="/logo_main.svg"
-                    alt="My Arabic Learner Logo"
-                    className="homepage-logo"
-                    initial={{ scale: 0.7 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                />
+        <div className="homepage ">
+            {/* Hero Section */}
+            <div className="hero-section">
+                <Container>
+                    <Row className="justify-content-center text-center">
+                        <Col md={8} lg={6}>
+                            <img
+                                src="/logo_main.svg"
+                                alt="My Arabic Learner Logo"
+                                className="homepage-logo mb-4"
+                            />
 
-                <TypingAnimation text="أهلاً وسهلاً" />
+                            <h1 className="hero-title mb-3">
+                                {randomTitle.main}
+                                <div className="gold">
+                                    {randomTitle.sub}
+                                </div>
+                            </h1>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="mt-4"
-                >
-                    <h1 className="display-4 gold mb-3">Welcome to My Arabic Learner</h1>
-                    <p className="lead text-gray-300 mb-4">
-                        Your journey to mastering Levantine Arabic starts here. Join our community and discover
-                        the joy of learning Arabic through interactive lessons and exercises.
-                    </p>
+                            <p className="lead text-light mb-4">
+                                Start your journey to speaking Levantine Arabic through interactive lessons
+                                designed for practical, everyday conversations.
+                            </p>
 
-                    <div className="d-flex justify-content-center gap-3 flex-wrap">
-                        {!username && (
-                            <Button
-                                variant="purple"
-                                size="lg"
-                                className="mt-1"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    onNavigate('');
-                                }}
-                            >
-                                Get Started
-                            </Button>
-                        )}
-
-                        <Button
-                            variant="purple"
-                            size="lg"
-                            className="mt-1"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                                onNavigate('tutorial');
-                            }}
-                        >
-                            Tutorial
-                        </Button>
-
-                        <Button
-                            variant="purple"
-                            size="lg"
-                            className="mt-1"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                                onNavigate('about');
-                            }}
-                        >
-                            Learn More
-                        </Button>
-                    </div>
-                </motion.div>
-            </motion.div>
-
-            <motion.div
-                className="py-5"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-            >
-                <h2 className="text-center gold display-6 mb-5">Why Choose My Arabic Learner?</h2>
-                <Row className="g-4">
-                    {features.map((feature, index) => (
-                        <Col key={index} md={6} lg={3}>
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.2 }}
-                                className="h-100"
-                            >
-                                <Card className="h-100 bg-dark text-white border-purple d-flex">
-                                    <Card.Body className="text-center d-flex flex-column justify-content-between">
-                                        <div>
-                                            <div className="mb-3">
-                                                {feature.icon}
-                                            </div>
-                                            <Card.Title className="gold h5 mb-3">{feature.title}</Card.Title>
-                                            <Card.Text className="text-gray-300">{feature.description}</Card.Text>
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </motion.div>
+                            <div className="d-flex justify-content-center gap-4 pb-4">
+                                <span
+                                    className="text-light fs-5"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        onNavigate('wordsflashcard');
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    Click to Begin
+                                </span>
+                                <span
+                                    className="text-light fs-5"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        onNavigate('tutorial');
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    View Tutorial
+                                </span>
+                            </div>
                         </Col>
-                    ))}
-                </Row>
-            </motion.div>
-
-            {username ? (
-                <motion.div
-                    className="text-center py-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                >
-                    <h2 className="gold display-6 mb-4">Ready to Continue Learning?</h2>
-                    <Row className="justify-content-center g-4 mx-auto" style={{ maxWidth: '1200px' }}>
-                        {learningActivities.map((activity, index) => (
-                            <Col key={index} xs={12} md={4}>
-                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                    <Button
-                                        variant="purple"
-                                        size="lg"
-                                        className="w-100 py-4 learning-btn"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                            onNavigate(activity.route);
-                                        }}
-                                    >
-                                        <i className={`bi ${activity.icon} mb-2 fs-3`}></i>
-                                        <div className="fs-4">{activity.title}</div>
-                                        <small className="text-light-emphasis">{activity.description}</small>
-                                    </Button>
-                                </motion.div>
-                            </Col>
-                        ))}
                     </Row>
-                </motion.div>
-            ) : (
-                <motion.div
-                    className="text-center py-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                >
-                    <h2 className="gold display-6 mb-4">Start Your Arabic Journey Today</h2>
-                    <p className="lead text-gray-300 mb-4">
-                        Join our community of learners mastering Levantine Arabic with our interactive platform.
-                    </p>
-                    <Button
-                        variant="purple"
-                        size="lg"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                            onNavigate('');
-                        }}
-                    >
-                        Sign Up Now
-                    </Button>
-                </motion.div>
-            )}
-        </Container>
+                </Container>
+            </div>
+
+            {/* Demo Section */}
+            <div className="demo-section">
+                <Container className="py-5">
+                    <Row className="justify-content-center">
+                        <Col md={10} lg={8}>
+                            <h2 className="text-center display-4 mb-4">Common Arabic Phrases</h2>
+                            <p className="text-center lead mb-4">
+                                Here are some everyday phrases you'll learn to master
+                            </p>
+                            <div className="demo-card">
+                                <div className="demo-body">
+                                    <Carousel
+                                        interval={3500}
+                                        indicators={false}
+                                        className="phrase-carousel"
+                                        prevIcon={<div className="carousel-arrow">❮</div>}
+                                        nextIcon={<div className="carousel-arrow">❯</div>}
+                                    >
+                                        {examplePhrases.map((phrase, idx) => (
+                                            <Carousel.Item key={idx}>
+                                                <div className="demo-content text-center">
+                                                    <div className="context-label mb-4">
+                                                        {phrase.context}
+                                                    </div>
+                                                    <div className="gold noto-kufi-regular display-6 mb-3">
+                                                        {phrase.arabic}
+                                                    </div>
+                                                    <div className="lead translation">
+                                                        {phrase.english}
+                                                    </div>
+                                                    <div className="transliteration lead ">
+                                                        {phrase.transliteration}
+                                                    </div>
+                                                </div>
+                                            </Carousel.Item>
+                                        ))}
+                                    </Carousel>
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+
+            {/* Features Section */}
+            <div className="features-section">
+                <Container className="py-5">
+                    <Row className="justify-content-center">
+                        <Col md={10} lg={8}>
+                            <h2 className="text-center display-4 mb-5">How You'll Learn</h2>
+                            <Row className="g-4">
+                                {mainFeatures.map((feature, idx) => (
+                                    <Col key={idx} md={4}>
+                                        <div className="feature-card py-4 px-3 text-center">
+                                            <div className="mb-3">{feature.icon}</div>
+                                            <h4 className="mb-3">{feature.title}</h4>
+                                            <p className='accent-color'>{feature.description}</p>
+                                        </div>
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="faq-section">
+                <Container className="py-5">
+                    <Row className="justify-content-center">
+                        <Col md={10} lg={8}>
+                            <h2 className="text-center display-4 mb-5">Common Questions</h2>
+                            <Row className="g-4">
+                                {faqItems.map((item, idx) => (
+                                    <Col key={idx} md={6}>
+                                        <div className="faq-card">
+                                            <h3 className="faq-question mb-3">{item.question}</h3>
+                                            <p className="accent-color mb-0">{item.answer}</p>
+                                        </div>
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+
+            {/* Final CTA Section */}
+            <div className="final-cta-section py-5">
+                <Container className="py-5">
+                    <Row className="justify-content-center">
+                        <Col md={8} className="text-center">
+                            <h2 className="display-4 text-light mb-4">Ready to Start Speaking Arabic?</h2>
+                            <div className="d-flex justify-content-center gap-3 flex-wrap">
+                                <Button
+                                    variant="outline-light"
+                                    size="lg"
+                                    className="main-cta-button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        onNavigate('wordsflashcard');
+                                    }}
+                                >
+                                    Try Flashcards
+                                </Button>
+                                <Button
+                                    variant="outline-light"
+                                    size="lg"
+                                    className="main-cta-button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        onNavigate('tutorial');
+                                    }}
+                                >
+                                    Watch Tutorial
+                                </Button>
+                                <Button
+                                    variant="outline-light"
+                                    size="lg"
+                                    className="main-cta-button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        onNavigate('about');
+                                    }}
+                                >
+                                    Learn More
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        </div>
     );
 };
 

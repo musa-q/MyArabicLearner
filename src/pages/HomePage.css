@@ -1,72 +1,232 @@
+.homepage {
+    min-height: 100vh;
+}
+
+.hero-section {
+    padding: 1.5rem 0;
+    position: relative;
+    background-color: var(--bg-color-main);
+    overflow: hidden;
+    will-change: transform;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--hero-background);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    /* filter: blur(1px); */
+    z-index: 1;
+}
+
+.hero-section>* {
+    position: relative;
+    z-index: 2;
+}
+
 .homepage-logo {
-    max-width: 300px;
+    max-width: 240px;
     height: auto;
-    margin: 2rem auto;
 }
 
-.text-gray-300 {
-    color: #D1D5DB;
-}
-
-.border-purple {
-    border: 1px solid #6f42c1;
-}
-
-.btn-purple {
-    background-color: #6f42c1;
-    border-color: #6f42c1;
+.hero-title {
+    font-size: 4rem;
+    font-weight: bold;
     color: white;
 }
 
-.btn-purple:hover {
-    background-color: #5a32a3;
-    border-color: #5a32a3;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(111, 66, 193, 0.4);
+.accent-color {
+    color: rgb(229, 229, 229);
 }
 
-.learning-btn {
+.demo-section {
+    background-color: var(--clr-surface-tonal-a10);
+    padding: 2rem 0;
+}
+
+.demo-card {
+    background-color: var(--clr-surface-tonal-a20);
+    border: 2px solid var(--clr-surface-tonal-a30);
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.demo-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30);
+
+}
+
+.demo-body {
+    padding: 2.5rem 1.5rem;
+}
+
+/* Carousel Specific Styles */
+.phrase-carousel {
+    position: relative;
+}
+
+.phrase-carousel .carousel-inner {
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+}
+
+.phrase-carousel .carousel-item {
+    padding: 1rem;
+}
+
+/* demo */
+.demo-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    min-height: 180px;
-    border: none;
-    background: linear-gradient(145deg, #592fa142, #592fa142);
+}
+
+.context-label {
+    background-color: var(--clr-primary-a20);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.arabic-text {
+    /* font-size: 2.5rem; */
+    /* margin: 1rem 0; */
+    /* color: white; */
+}
+
+.transliteration {
+    /* margin-bottom: 0.5rem; */
+    color: rgb(209, 209, 209);
+}
+
+.translation {
+    font-size: 1.5rem !important;
+    color: #ffffff;
+    margin-bottom: 0;
+}
+
+/* carousel */
+.carousel-arrow {
+    color: whitesmoke;
     transition: all 0.3s ease;
+    font-size: 2rem;
 }
 
-.learning-btn:hover {
-    background: linear-gradient(145deg, var(--main-color-dark), var(--main-color-dark));
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    /* opacity: 1; */
+    color: white;
+    text-decoration: none !important;
 }
 
-.learning-btn small {
-    display: block;
-    margin-top: 8px;
-    opacity: 0.8;
+/* features */
+
+.features-section {
+    background-color: var(--clr-surface-tonal-a00);
 }
 
-.card {
-    transition: transform 0.2s ease-in-out;
-    background-color: #212529;
+.feature-card {
+    background-color: var(--clr-surface-tonal-a10);
+    border: 2px solid var(--clr-surface-tonal-a20);
+    border-radius: 1rem;
+    color: white;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover {
+.feature-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30)
 }
+
+/* final cta section */
+.final-cta-section {
+    background-color: var(--clr-surface-tonal-a0);
+}
+
+
+.phrase-carousel .carousel-inner {
+    min-height: 200px;
+}
+
+/* FAQ Section */
+.faq-section {
+    background-color: var(--clr-surface-tonal-a10);
+}
+
+.faq-card {
+    background-color: var(--clr-surface-tonal-a20);
+    border: 2px solid var(--clr-surface-tonal-a30);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30);
+}
+
+.faq-question {
+    color: var(--clr-primary-a50);
+    font-size: 1.5rem;
+}
+
 
 @media (max-width: 768px) {
-    .homepage-logo {
-        max-width: 200px;
+    .faq-card {
+        padding: 1.25rem;
     }
 
-    .display-4 {
+    .faq-card h3 {
+        font-size: 1.25rem;
+    }
+
+    .hero-section {
+        min-height: 70vh;
+    }
+
+    .hero-section::before {
+        background-attachment: scroll;
+        background-image: var(--hero-background, url('/background_image.png'));
+    }
+
+    .homepage-logo {
+        max-width: 180px;
+    }
+
+    .hero-title {
         font-size: 2.5rem;
     }
 
-    .display-6 {
-        font-size: 1.75rem;
+    .hero-section,
+    .features-section,
+    .final-cta-section {
+        padding: 2rem 0;
+    }
+
+    .main-cta-button {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .phrase-carousel .carousel-inner {
+        min-height: 250px;
     }
 }

@@ -40,7 +40,7 @@ const VerbConjugationPage = () => {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="mb-5"
             >
-                <Card className="bg-dark text-white">
+                <Card className=" text-white">
                     <Card.Body className="p-0">
                         <Table className="table-dark mb-0" hover>
                             <thead className="text-purple-400 border-purple-400">
@@ -72,7 +72,7 @@ const VerbConjugationPage = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="mb-5"
             >
-                <Card className="bg-dark text-white">
+                <Card className=" text-white">
                     <Card.Header className="d-flex align-items-center">
                         <Book className="text-purple-400 me-2" size={20} />
                         <h2 className="h5 mb-0 display-6">Quick Guide</h2>

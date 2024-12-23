@@ -48,7 +48,7 @@ const PossessiveEndingsPage = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <Card className="h-100 bg-dark text-white border-purple-400">
+                        <Card className="h-100  text-white border-purple-400">
                             <Card.Body>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div className="d-flex align-items-center">
@@ -72,7 +72,7 @@ const PossessiveEndingsPage = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="mb-5"
             >
-                <Card className="bg-dark text-white">
+                <Card className=" text-white">
                     <Card.Header className="d-flex align-items-center">
                         <Book className="text-purple-400 me-2" size={20} />
                         <h2 className="h5 mb-0 display-6">Quick Guide</h2>

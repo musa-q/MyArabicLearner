@@ -12,50 +12,49 @@ const AboutPage = ({ onNavigate }) => {
 
     const features = [
         {
-            icon: <Book className="h-8 w-8 mb-4 text-purple-400" />,
+            icon: <Book className="mb-4" />,
             title: "Comprehensive Resources",
             description: "Access cheat sheets and flashcards covering essential grammar and vocabulary"
         },
         {
-            icon: <Brain className="h-8 w-8 mb-4 text-purple-400" />,
+            icon: <Brain className="mb-4" />,
             title: "Interactive Learning",
             description: "Practice with quizzes and track your progress over time"
         },
         {
-            icon: <MessageSquare className="h-8 w-8 mb-4 text-purple-400" />,
+            icon: <MessageSquare className="mb-4" />,
             title: "AI Conversation Partner",
             description: "Coming soon: Practice conversations with our AI chatbot"
         },
         {
-            icon: <Users className="h-8 w-8 mb-4 text-purple-400" />,
+            icon: <Users className="mb-4" />,
             title: "Community Focus",
             description: "Learn the Levantine dialect used across Jordan, Lebanon, Palestine, and Syria"
         }
     ];
 
     return (
-        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8" style={{ minHeight: "100vh" }}>
-            <div className="max-w-4xl mx-auto" style={{ maxWidth: '70%' }}>
+        <div className="min-h-screen px-4" style={{ minHeight: "100vh" }}>
+            <div className=" mx-auto" style={{ maxWidth: '70%' }}>
                 <motion.div
-                    className="text-center mb-16"
+                    className="text-center"
                     {...fadeIn}
                 >
-                    <h1 className="text-4xl font-bold pt-5 mb-4 gold display-4">
+                    <h1 className="pt-5 mb-4 gold display-4">
                         About My Arabic Learner
                     </h1>
-                    <p className="text-xl text-gray-300 lead text-gray-300">
+                    <p className="lead">
                         Your journey to mastering Levantine Arabic starts here
                     </p>
                 </motion.div>
 
                 <motion.div
-                    className="mb-16"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                 >
                     <div className="">
-                        <p className="text-lg text-gray-300 leading-relaxed text-center pb-3 lead">
+                        <p className="text-center pb-3 lead">
                             Whether you're just starting out or want to level up your Arabic conversations,
                             we're here to make learning Levantine Arabic easy, fun, and practical. Our platform
                             combines modern learning techniques with traditional language education to create
@@ -65,7 +64,7 @@ const AboutPage = ({ onNavigate }) => {
                 </motion.div>
 
                 <motion.div
-                    className="grid md:grid-cols-2 gap-8 mb-16"
+                    className=""
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.6 }}
@@ -73,14 +72,16 @@ const AboutPage = ({ onNavigate }) => {
                     {features.map((feature, index) => (
                         <motion.div
                             key={index}
-                            className="p-6 hover:shadow-xl duration-300 py-2"
+                            className="py-2"
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.98 }}
                         >
                             <div className="text-center">
-                                {feature.icon}
-                                <h3 className="text-xl font-semibold mb-2 gold display-6">{feature.title}</h3>
-                                <p className="text-gray-300 lead">{feature.description}</p>
+                                <div className="purple-color-a20">
+                                    {feature.icon}
+                                </div>
+                                <h3 className="mb-2 gold display-6">{feature.title}</h3>
+                                <p className="lead">{feature.description}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -92,15 +93,15 @@ const AboutPage = ({ onNavigate }) => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                 >
-                    <div className="p-8 pt-4 mb-4">
-                        <h2 className="text-2xl mb-4 gold display-6">Ready to Begin?</h2>
-                        <p className="text-lg text-gray-300 mb-6 lead">
+                    <div className="pt-4 mb-4">
+                        <h2 className="mb-4 gold display-6">Ready to Begin?</h2>
+                        <p className="lead">
                             Start your journey into the beautiful world of Levantine Arabic today!
                         </p>
                         <Button
                             variant="outline-light"
                             type="button"
-                            className="button text-white mt-4 py-3 px-8 duration-300 mb-3"
+                            className="main-cta-button mt-4"
                             style={{ maxWidth: '300px' }}
                             onClick={() => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });

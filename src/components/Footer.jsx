@@ -11,8 +11,13 @@ const Footer = ({ onNavigate, isLoggedIn }) => {
     };
 
     return (
-        <footer className="bg-dark text-light py-5">
+        <footer className="footer-bg text-light mt-5 py-5">
             <Container>
+                <Row>
+                    <Col className='mb-3'>
+                        <hr className="border-secondary" />
+                    </Col>
+                </Row>
                 <Row className="mb-4">
                     <Col md={4} className="mb-4 mb-md-0">
                         <h4 className="text-purple mb-3">About My Arabic Learner</h4>
@@ -175,9 +180,12 @@ const Footer = ({ onNavigate, isLoggedIn }) => {
                                 <Mail className="icon" size={20} />
                             </a>
                         </div>
-                        <p className="text-secondary">
-                            Contact us: myarabiclearner@gmail.com
-                        </p>
+                        <div className="text-secondary">
+                            Contact us: &nbsp;
+                            <div className='hover-purple' style={{ display: 'inline', cursor: 'pointer' }}>
+                                myarabiclearner@gmail.com
+                            </div>
+                        </div>
                     </Col>
                 </Row>
 

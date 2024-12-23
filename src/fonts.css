@@ -23,7 +23,7 @@
 }
 
 .gold {
-    color: #d5ca6b;
+    color: var(--gold-primary-a0);
 }
 
 .unselectable {
