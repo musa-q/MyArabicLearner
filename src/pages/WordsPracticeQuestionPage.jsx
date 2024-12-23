@@ -10,6 +10,7 @@ import './WordsPracticeQuestionPage.css';
 import { API_URL } from '../config';
 
 const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
+    const [currentQuestionId, setCurrentQuestionId] = useState(null);
     const [revealAnswer, setRevealAnswer] = useState(false);
     const [showHintButton, setShowHintButton] = useState(true);
     const [showNextButton, setShowNextButton] = useState(false);
@@ -19,6 +20,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [showResultsPage, setShowResultsPage] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const containerRef = useRef(null);
 
     useEffect(() => {
@@ -69,12 +71,15 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
     };
 
     const checkAnswer = async () => {
+        if (isSubmitting) return;
+
         if (!currentAnswer?.trim()) {
             setResultMessage("Please provide an answer!");
             return;
         }
 
         const guess = processText(currentAnswer);
+        setIsSubmitting(true);
 
         try {
             const deviceId = authManager.getDeviceId();
@@ -85,6 +90,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                 {
                     quiz_type: 'VocabQuiz',
                     user_answer: guess,
+                    question_id: currentQuestionId
                 },
                 {
                     headers: {
@@ -105,7 +111,9 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             }
         } catch (error) {
             console.error('Error sending answer:', error);
-            setResultMessage("Error checking answer. Please try again.");
+            if (error.response?.status === 400 && error.response?.data?.error === 'Question already answered or not found') {
+                nextQuestion();
+            }
         }
     };
 
@@ -136,6 +144,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                 return;
             }
 
+            setCurrentQuestionId(data.question.question_id);
             setHint(data.hint);
             setCurrentQuestion(data.question.english);
             setCurrentAnswer("");
@@ -143,6 +152,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             setShowHintButton(true);
             setRevealAnswer(false);
             setShowNextButton(false);
+            setIsSubmitting(false);
         } catch (error) {
             console.error("Error fetching question:", error);
             setResultMessage("Error loading question. Please try again.");

@@ -10,6 +10,7 @@ import { capitaliseWords, authManager } from '../utils';
 
 const VerbsPage = () => {
     const [quizId, setQuizId] = useState(null);
+    const [currentQuestionId, setCurrentQuestionId] = useState(null);
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [currentConjugation, setCurrentConjugation] = useState(null);
@@ -18,6 +19,7 @@ const VerbsPage = () => {
     const [showNextButton, setShowNextButton] = useState(false);
     const [showResultsPage, setShowResultsPage] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const containerRef = useRef(null);
 
     useEffect(() => {
@@ -101,8 +103,9 @@ const VerbsPage = () => {
             }
 
             const { question, hint } = response.data;
-            const { english_verb, arabic_verb, tense, pronoun } = question;
+            const { english_verb, arabic_verb, tense, pronoun, question_id } = question;
 
+            setCurrentQuestionId(question_id);
             setCurrentConjugation({
                 word: { english: english_verb, arabic: arabic_verb },
                 tense,
@@ -113,6 +116,7 @@ const VerbsPage = () => {
             setCurrentAnswer('');
             setRevealAnswer(false);
             setShowNextButton(false);
+            setIsSubmitting(false);
         } catch (error) {
             console.error('Error fetching next question:', error);
         } finally {
@@ -121,15 +125,23 @@ const VerbsPage = () => {
     };
 
     const checkAnswer = async () => {
+        if (isSubmitting) return;
+
         const deviceId = authManager.getDeviceId();
         const token = localStorage.getItem(`authToken_${deviceId}`);
         const guess = currentAnswer.trim().toLowerCase();
         if (!guess) return;
 
+        setIsSubmitting(true);
+
         try {
             const response = await axios.post(
                 `${API_URL}/quiz/send-answer`,
-                { quiz_type: 'VerbConjugationQuiz', user_answer: guess },
+                {
+                    quiz_type: 'VerbConjugationQuiz',
+                    user_answer: guess,
+                    question_id: currentQuestionId
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -142,6 +154,9 @@ const VerbsPage = () => {
             setShowNextButton(true);
         } catch (error) {
             console.error('Error checking answer:', error);
+            if (error.response?.status === 400 && error.response?.data?.error === 'Question already answered or not found') {
+                getNextQuestion();
+            }
         }
     };
 

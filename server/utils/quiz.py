@@ -121,29 +121,55 @@ class QuizUtils:
         elif quiz_type == 'VerbConjugationQuiz':
             return current_question_obj.verb_conjugation.conjugation
 
-    def answer_current_quiz_question(self, quiz_type: str, user_id: int, user_answer: str):
-        current_quiz = self.get_current_quiz(quiz_type, user_id)
-        if not current_quiz:
-            return False, None
-        current_question_obj, _ = self.get_next_question(quiz_type, user_id)
-        if not current_question_obj:
+    def normalize_arabic(self, text):
+        replacements = {
+            'أ': 'ا',
+            'إ': 'ا',
+            'آ': 'ا',
+            'ٱ': 'ا'
+        }
+
+        for old, new in replacements.items():
+            text = text.replace(old, new)
+        return text
+
+
+    def answer_current_quiz_question(self, quiz_type: str, user_id: int, user_answer: str, question_id: int):
+        if quiz_type == 'VocabQuiz':
+            current_question_obj = VocabQuizQuestion.query.filter_by(id=question_id).first()
+        elif quiz_type == 'VerbConjugationQuiz':
+            current_question_obj = VerbConjugationQuizQuestion.query.filter_by(id=question_id).first()
+        else:
+            return None, None
+
+        if not current_question_obj or current_question_obj.is_answered:
             return None, None
 
         try:
-            current_question_obj.is_answered =  True
+            current_quiz = current_question_obj.quiz
+            if current_quiz.user_id != user_id:
+                return None, None
+
+            current_question_obj.is_answered = True
             current_question_obj.user_answer = user_answer
+
+            normalized_user_answer = self.normalize_arabic(user_answer)
+
             if quiz_type == 'VocabQuiz':
-                if (user_answer == current_question_obj.word.arabic):
+                correct_answer = self.normalize_arabic(current_question_obj.word.arabic)
+                if normalized_user_answer == correct_answer:
                     current_question_obj.is_correct = True
                     current_quiz.score += 1
             elif quiz_type == 'VerbConjugationQuiz':
-                if (user_answer == current_question_obj.verb_conjugation.conjugation):
+                correct_answer = self.normalize_arabic(current_question_obj.verb_conjugation.conjugation)
+                if normalized_user_answer == correct_answer:
                     current_question_obj.is_correct = True
                     current_quiz.score += 1
 
             db.session.commit()
             return True, current_question_obj
         except:
+            db.session.rollback()
             return False, None
 
     def get_quiz_results(self, quiz_type: str, user_id: int):

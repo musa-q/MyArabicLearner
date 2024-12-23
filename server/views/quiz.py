@@ -281,12 +281,18 @@ def send_answer_from_client(user_id, *args):
     data = request.get_json()
     quiz_type = data.get('quiz_type', 'VocabQuiz')
     user_answer = data.get('user_answer')
+    question_id = data.get('question_id')
 
-    updated_answer, res = quiz_utils.answer_current_quiz_question(quiz_type, user_id, user_answer)
-    if updated_answer == False:
+    if not question_id:
+        return jsonify({'error': 'Question ID is required'}), 400
+
+    updated_answer, res = quiz_utils.answer_current_quiz_question(quiz_type, user_id, user_answer, question_id)
+
+    if updated_answer is False:
         return jsonify({'error': 'Unable to send answer'}), 500
-    if updated_answer == None:
-        return jsonify({'error': 'All questions answered'}), 500
+    if updated_answer is None:
+        return jsonify({'error': 'Question already answered or not found'}), 400
+
     answer_response = res.is_correct
 
     return jsonify({'answer_response': answer_response, 'question_id': res.id}), 200
