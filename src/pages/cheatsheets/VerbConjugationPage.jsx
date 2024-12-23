@@ -26,10 +26,10 @@ const VerbConjugationPage = () => {
                 className="text-center mb-5"
                 {...fadeIn}
             >
-                <h1 className="display-4 mb-4 text-purple-400 gold">
+                <h1 className="display-4 mb-4gold">
                     Verb Conjugation in Arabic
                 </h1>
-                <p className="lead text-gray-300">
+                <p className="lead">
                     Master verb tenses in Levantine Arabic
                 </p>
             </motion.div>
@@ -43,7 +43,7 @@ const VerbConjugationPage = () => {
                 <Card className=" text-white">
                     <Card.Body className="p-0">
                         <Table className="table-dark mb-0" hover>
-                            <thead className="text-purple-400 border-purple-400">
+                            <thead >
                                 <tr>
                                     <th className="text-center h5 py-3">Pronoun</th>
                                     <th className="text-center h5 py-3">Past</th>
@@ -74,10 +74,10 @@ const VerbConjugationPage = () => {
             >
                 <Card className=" text-white">
                     <Card.Header className="d-flex align-items-center">
-                        <Book className="text-purple-400 me-2" size={20} />
+                        <Book className="me-2" size={20} />
                         <h2 className="h5 mb-0 display-6">Quick Guide</h2>
                     </Card.Header>
-                    <Card.Body className="text-gray-300">
+                    <Card.Body>
                         <p className="lead">
                             In Levantine Arabic, verbs are conjugated differently based on the pronoun and tense.
                             The examples above show the conjugation of the verb "نام" (nama) meaning "to sleep" in the past, present, and future tenses.

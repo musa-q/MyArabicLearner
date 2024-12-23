@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { motion } from "framer-motion";
-import { BookOpen, ScrollText, ArrowLeft } from 'lucide-react';
+import { BookOpen, ScrollText, ArrowLeft, Hammer, XCircle, Sigma } from 'lucide-react';
 import { Container, Button } from 'react-bootstrap';
 import PossessiveEndingsPage from './PossessiveEndingsPage';
 import VerbConjugationPage from './VerbConjugationPage';
+import SentenceConstructionPage from './SentenceConstructionPage';
+import NegationPage from './NegationPage';
+import PluralisationCheatsheet from './PluralisationCheatsheet';
 
 const CheatsheetTypesPage = () => {
     const [cheatsheetType, setCheatsheetType] = useState(null);
@@ -20,6 +23,24 @@ const CheatsheetTypesPage = () => {
             title: 'Verb Conjugation',
             description: 'Master Arabic verb conjugations',
             icon: ScrollText
+        },
+        {
+            id: 'SentenceConstructionPage',
+            title: 'Constructing A Sentence',
+            description: 'Learn how to make basic sentences in Arabic',
+            icon: Hammer
+        },
+        {
+            id: 'NegationPage',
+            title: 'Negation',
+            description: 'How to make negative statements',
+            icon: XCircle
+        },
+        {
+            id: 'PluralisationCheatsheet',
+            title: 'Plurals in Arabic',
+            description: 'Master regular and irregular plurals',
+            icon: Sigma
         },
     ];
 
@@ -93,6 +114,60 @@ const CheatsheetTypesPage = () => {
                             </Button>
                         </div>
                         <VerbConjugationPage />
+                    </div>
+                );
+            case 'SentenceConstructionPage':
+                return (
+                    <div>
+                        <div className="mb-0 px-4 m-3">
+                            <Button
+                                onClick={handleBack}
+                                className="flex items-center text-decoration-none text-white"
+                                variant="link"
+                            >
+                                <div className="lead">
+                                    <ArrowLeft className="me-2" />
+                                    Back to cheatsheets
+                                </div>
+                            </Button>
+                        </div>
+                        <SentenceConstructionPage />
+                    </div>
+                );
+            case 'NegationPage':
+                return (
+                    <div>
+                        <div className="mb-0 px-4 m-3">
+                            <Button
+                                onClick={handleBack}
+                                className="flex items-center text-decoration-none text-white"
+                                variant="link"
+                            >
+                                <div className="lead">
+                                    <ArrowLeft className="me-2" />
+                                    Back to cheatsheets
+                                </div>
+                            </Button>
+                        </div>
+                        <NegationPage />
+                    </div>
+                );
+            case 'PluralisationCheatsheet':
+                return (
+                    <div>
+                        <div className="mb-0 px-4 m-3">
+                            <Button
+                                onClick={handleBack}
+                                className="flex items-center text-decoration-none text-white"
+                                variant="link"
+                            >
+                                <div className="lead">
+                                    <ArrowLeft className="me-2" />
+                                    Back to cheatsheets
+                                </div>
+                            </Button>
+                        </div>
+                        <PluralisationCheatsheet />
                     </div>
                 );
             default:

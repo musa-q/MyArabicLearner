@@ -27,10 +27,10 @@ const PossessiveEndingsPage = () => {
                 className="text-center mb-5"
                 {...fadeIn}
             >
-                <h1 className="gold display-4 mb-4 text-purple-400">
+                <h1 className="gold display-4 mb-4">
                     Possessive Endings in Arabic
                 </h1>
-                <p className="lead text-gray-300">
+                <p className="lead">
                     Master the art of showing possession in Levantine Arabic
                 </p>
             </motion.div>
@@ -48,16 +48,16 @@ const PossessiveEndingsPage = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <Card className="h-100  text-white border-purple-400">
+                        <Card className="h-100 text-white">
                             <Card.Body>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div className="d-flex align-items-center">
-                                        <CircleDot className="text-purple-400 me-2" size={20} />
+                                        <CircleDot className="me-2" size={20} />
                                         <h3 className="h4 mb-0 display-6">{item.pronoun}</h3>
                                     </div>
-                                    <span className="h3 text-purple-400 mb-0 h4 mb-0 display-6">{item.ending}</span>
+                                    <span className="h3 mb-0 h4 mb-0 display-6">{item.ending}</span>
                                 </div>
-                                <Card.Text className="text-gray-300 lead">
+                                <Card.Text className="lead">
                                     {item.example}
                                 </Card.Text>
                             </Card.Body>
@@ -74,10 +74,10 @@ const PossessiveEndingsPage = () => {
             >
                 <Card className=" text-white">
                     <Card.Header className="d-flex align-items-center">
-                        <Book className="text-purple-400 me-2" size={20} />
+                        <Book className="me-2" size={20} />
                         <h2 className="h5 mb-0 display-6">Quick Guide</h2>
                     </Card.Header>
-                    <Card.Body className="text-gray-300 lead">
+                    <Card.Body className="lead">
                         <p>
                             In Jordanian Arabic, possessive endings are attached to nouns to show ownership or belonging.
                             These endings change based on who owns the item.

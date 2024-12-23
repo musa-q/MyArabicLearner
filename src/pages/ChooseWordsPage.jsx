@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search, BookOpen, ArrowLeft } from 'lucide-react';
-import { Container, Spinner, Button } from 'react-bootstrap';
+import { Container, Spinner, Button, Card } from 'react-bootstrap';
 import axios from 'axios';
 import { capitaliseWords } from '../utils';
 import { API_URL } from '../config';
@@ -81,27 +81,25 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full"
             >
-                <button
+                <Card
                     onClick={(e) => {
                         e.preventDefault();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         handleCategoryClick(category.id, category.category_name);
                     }}
-                    className="w-full p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-200
-                             flex items-center justify-between group border border-gray-700 hover:border-purple-500"
+                    style={{ cursor: 'pointer' }}
+                    className="mb-2"
                 >
-                    <div className="flex items-center w-full">
-                        <BookOpen className="w-5 h-5 text-purple-400" />
-                        <span className="text-left text-lg text-gray-200 ms-2 lead">
+                    <Card.Body className="d-flex align-items-center">
+                        <BookOpen className="me-2" size={20} />
+                        <span className="lead">
                             {capitaliseWords(displayText)}
                         </span>
-                    </div>
-                </button>
+                    </Card.Body>
+                </Card>
             </motion.div>
         );
-
     };
 
     if (isLoading) {
@@ -117,10 +115,10 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
     if (error) {
         return (
             <div className="text-center p-8">
-                <p className="text-red-400 mb-4">{error}</p>
+                <p className="mb-4">{error}</p>
                 <button
                     onClick={() => window.location.reload()}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg"
+                    className="text-white px-4 py-2 rounded-lg"
                 >
                     Try Again
                 </button>
@@ -143,7 +141,6 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                     {/* Search Bar Toggle */}
                     <div className="relative mb-6 pb-4">
                         <Search
-                            className="text-gray-500"
                             onClick={(e) => {
                                 e.preventDefault();
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -171,7 +168,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                     <CategoryCard key={category.id} category={category} />
                                 ))
                             ) : (
-                                <p className="text-center text-gray-400 lead">No categories found.</p>
+                                <p className="text-center lead">No categories found.</p>
                             )
                         ) : (
                             selectedGroup ? (
@@ -202,8 +199,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                     <motion.div
                                         key={group}
                                         whileHover={{ scale: 1.01 }}
-                                        className="bg-gray-800 p-4 rounded-lg cursor-pointer
-                                                 border border-gray-700 hover:border-purple-500 mb-3"
+                                        className="p-4 rounded-lg cursor-pointer border mb-3"
                                         onClick={(e) => {
                                             e.preventDefault();
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -215,7 +211,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                                 <h3 className="text-xl font-semibold mb-1 display-6">
                                                     {capitaliseWords(group)}
                                                 </h3>
-                                                <p className="text-gray-400 text-sm lead">
+                                                <p className="text-sm lead">
                                                     {categories.length} categories
                                                 </p>
                                             </div>
