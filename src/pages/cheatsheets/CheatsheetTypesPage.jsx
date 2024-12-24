@@ -51,24 +51,29 @@ const CheatsheetTypesPage = () => {
     const CheatsheetTypeCard = ({ cheatsheetType }) => {
         const Icon = cheatsheetType.icon;
 
+        const handleClick = () => {
+            window.scrollTo(0, 0);
+            setCheatsheetType(cheatsheetType.id);
+        };
+
         return (
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gray-800 p-4 rounded-lg cursor-pointer border border-gray-700 hover:border-purple-500 mb-3"
+                className="p-4 rounded-lg cursor-pointer border mb-3"
             >
                 <div
-                    onClick={() => setCheatsheetType(cheatsheetType.id)}
+                    onClick={() => handleClick()}
                 >
                     <Container className="d-flex justify-content-start">
                         <div style={{ padding: '20px', marginRight: '10px' }}>
-                            <Icon className="text-purple-400" />
+                            <Icon />
                         </div>
                         <div>
                             <h3 className="text-xl font-semibold mb-1 display-6">
                                 {cheatsheetType.title}
                             </h3>
-                            <p className="text-gray-400 text-sm lead">
+                            <p className="text-sm lead">
                                 {cheatsheetType.description}
                             </p>
                         </div>
@@ -78,101 +83,42 @@ const CheatsheetTypesPage = () => {
         );
     };
 
+    const BackButton = () => (
+        <div className="mb-0 px-4 mt-3">
+            <Button
+                onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setCheatsheetType(null);
+                }}
+                className="flex items-center text-decoration-none text-white"
+                variant="link"
+            >
+                <div className="lead">
+                    <ArrowLeft className="me-2" />
+                    Back to cheatsheets
+                </div>
+            </Button>
+        </div>
+    );
+
     const renderContent = () => {
-        switch (cheatsheetType) {
-            case 'PossessiveEndings':
-                return (
-                    <div>
-                        <div className="mb-0 px-4 mt-3">
-                            <Button
-                                onClick={handleBack}
-                                className="flex items-center text-decoration-none text-white"
-                                variant="link"
-                            >
-                                <div className="lead">
-                                    <ArrowLeft className="me-2" />
-                                    Back to cheatsheets
-                                </div>
-                            </Button>
-                        </div>
-                        <PossessiveEndingsPage />
-                    </div>
-                );
-            case 'VerbConjugation':
-                return (
-                    <div>
-                        <div className="mb-0 px-4 m-3">
-                            <Button
-                                onClick={handleBack}
-                                className="flex items-center text-decoration-none text-white"
-                                variant="link"
-                            >
-                                <div className="lead">
-                                    <ArrowLeft className="me-2" />
-                                    Back to cheatsheets
-                                </div>
-                            </Button>
-                        </div>
-                        <VerbConjugationPage />
-                    </div>
-                );
-            case 'SentenceConstructionPage':
-                return (
-                    <div>
-                        <div className="mb-0 px-4 m-3">
-                            <Button
-                                onClick={handleBack}
-                                className="flex items-center text-decoration-none text-white"
-                                variant="link"
-                            >
-                                <div className="lead">
-                                    <ArrowLeft className="me-2" />
-                                    Back to cheatsheets
-                                </div>
-                            </Button>
-                        </div>
-                        <SentenceConstructionPage />
-                    </div>
-                );
-            case 'NegationPage':
-                return (
-                    <div>
-                        <div className="mb-0 px-4 m-3">
-                            <Button
-                                onClick={handleBack}
-                                className="flex items-center text-decoration-none text-white"
-                                variant="link"
-                            >
-                                <div className="lead">
-                                    <ArrowLeft className="me-2" />
-                                    Back to cheatsheets
-                                </div>
-                            </Button>
-                        </div>
-                        <NegationPage />
-                    </div>
-                );
-            case 'PluralisationCheatsheet':
-                return (
-                    <div>
-                        <div className="mb-0 px-4 m-3">
-                            <Button
-                                onClick={handleBack}
-                                className="flex items-center text-decoration-none text-white"
-                                variant="link"
-                            >
-                                <div className="lead">
-                                    <ArrowLeft className="me-2" />
-                                    Back to cheatsheets
-                                </div>
-                            </Button>
-                        </div>
-                        <PluralisationCheatsheet />
-                    </div>
-                );
-            default:
-                return null;
-        }
+        const components = {
+            PossessiveEndings: PossessiveEndingsPage,
+            VerbConjugation: VerbConjugationPage,
+            SentenceConstructionPage: SentenceConstructionPage,
+            NegationPage: NegationPage,
+            PluralisationCheatsheet: PluralisationCheatsheet
+        };
+
+        const Component = components[cheatsheetType];
+
+        return Component ? (
+            <div>
+                <BackButton />
+                <Component />
+            </div>
+        ) : null;
     };
 
     if (cheatsheetType) {

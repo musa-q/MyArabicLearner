@@ -70,6 +70,11 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
         return word.trim().toLowerCase();
     };
 
+    const handleClick = () => {
+        window.scrollTo(0, 0);
+        setCheatsheetType(cheatsheetType.id);
+    };
+
     const checkAnswer = async () => {
         if (isSubmitting) return;
 
@@ -153,6 +158,8 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             setRevealAnswer(false);
             setShowNextButton(false);
             setIsSubmitting(false);
+
+            handleClick();
         } catch (error) {
             console.error("Error fetching question:", error);
             setResultMessage("Error loading question. Please try again.");
