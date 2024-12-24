@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from ..models import db, User
+from ..models import db, User, Feedback
 
 @click.command('list-users')
 @with_appcontext
@@ -94,6 +94,22 @@ def change_username(identifier, new_username):
         db.session.rollback()
         click.echo(f"Error changing username: {str(e)}")
 
+@click.command('list-feedback')
+@with_appcontext
+def list_feedback():
+    """List all feedback entries in the database"""
+    feedback = Feedback.query.all()
+    if not feedback:
+        click.echo("No feedback found.")
+        return
+
+    click.echo("Feedback entries:")
+    for f in feedback:
+        click.echo(f"ID: {f.id}, Rating: {f.rating}")
+        click.echo(f"Time: {f.timestamp}")
+        click.echo(f"Message: {f.message}")
+        click.echo("-" * 40)
+
 def init_app(app):
     """Initialize user CLI commands"""
     app.cli.add_command(list_users)
@@ -101,3 +117,4 @@ def init_app(app):
     app.cli.add_command(delete_user)
     app.cli.add_command(set_user_role)
     app.cli.add_command(change_username)
+    app.cli.add_command(list_feedback)

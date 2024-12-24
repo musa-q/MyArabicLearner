@@ -10,7 +10,6 @@ import { authManager } from '../utils';
 
 const AppFeedback = ({ show, handleClose }) => {
     const [rating, setRating] = useState(null);
-    const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
@@ -42,9 +41,8 @@ const AppFeedback = ({ show, handleClose }) => {
                 }
             );
 
-            if (!response.ok) {
-                console.error('Error submitting form');
-            }
+            setRating(null);
+            setMessage('');
         } catch (error) {
             console.error(error);
         } finally {
@@ -74,15 +72,6 @@ const AppFeedback = ({ show, handleClose }) => {
                                 />
                             ))}
                         </div>
-                    </Form.Group>
-                    <Form.Group controlId="formEmail" className="mb-3">
-                        <Form.Label>Email Address (optional)</Form.Label>
-                        <Form.Control
-                            type="email"
-                            placeholder="Enter email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
                     </Form.Group>
                     <Form.Group controlId="formMessage">
                         <Form.Label>Message</Form.Label>
