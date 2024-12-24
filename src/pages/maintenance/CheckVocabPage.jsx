@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Form, Button, Table, Modal } from 'react-bootstrap';
 import { API_URL } from '../../config';
-import { capitaliseWords } from '../../utils';
+import { authManager } from '../../utils';
 
 const CheckVocabPage = () => {
     const [categories, setCategories] = useState([]);

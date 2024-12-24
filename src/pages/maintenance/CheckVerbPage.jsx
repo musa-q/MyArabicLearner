@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Form, Table, Button, Modal } from 'react-bootstrap';
 import { API_URL } from '../../config';
+import { authManager } from '../../utils';
 
 const CheckVerbPage = () => {
     const [verbs, setVerbs] = useState([]);
