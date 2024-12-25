@@ -205,7 +205,6 @@
 
     .hero-section::before {
         background-attachment: scroll;
-        background-image: var(--hero-background, url('/background_image.png'));
     }
 
     .homepage-logo {
