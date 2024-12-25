@@ -33,22 +33,40 @@ const App = () => {
 
 
   useEffect(() => {
-    const img = new Image();
-    img.onload = () => {
-      document.documentElement.style.setProperty('--hero-background', 'url("/background_image.png")');
-      setIsHeroImageLoaded(true);
-    };
-    img.src = '/background_image.png';
+    let isMounted = true;
 
-    const preloadLink = document.createElement('link');
-    preloadLink.rel = 'preload';
-    preloadLink.as = 'image';
-    preloadLink.href = '/background_image.png';
-    document.head.appendChild(preloadLink);
+    const loadImage = async () => {
+      try {
+        const [smallImg, largeImg] = await Promise.all([
+          loadSingleImage('/background_image-640.webp'),
+          loadSingleImage('/background_image-1920.webp')
+        ]);
 
-    return () => {
-      document.head.removeChild(preloadLink);
+        if (!isMounted) return;
+
+        document.documentElement.style.setProperty('--hero-background', 'url("/background_image-640.webp")');
+        setIsHeroImageLoaded(true);
+
+        requestAnimationFrame(() => {
+          if (!isMounted) return;
+          document.documentElement.style.setProperty('--hero-background', 'url("/background_image-1920.webp")');
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      }
     };
+
+    const loadSingleImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    };
+
+    loadImage();
+    return () => { isMounted = false; };
   }, []);
 
   useEffect(() => {
@@ -148,28 +166,37 @@ const App = () => {
 
   const handleLogin = async (token, refresh_token, userEmail) => {
     if (!token || !userEmail) {
+      console.error('Missing required login data');
       return;
     }
 
     try {
-      if (!localStorage.getItem('deviceId')) {
-        localStorage.setItem('deviceId', `web-${Math.random().toString(36).substr(2, 9)}`);
-      }
+      authManager.clearTokens();
 
       authManager.setTokens(token, refresh_token, userEmail);
 
-      if (!authManager.initializeFromStorage()) {
+      const initialized = authManager.initializeFromStorage();
+      if (!initialized) {
         throw new Error('Failed to initialize auth from storage');
       }
 
       setEmail(userEmail);
-      await getUserDetails();
-      navigateToPage('home');
+      try {
+        await getUserDetails();
+        setIsAuthenticated(true);
+        navigateToPage('home');
+      } catch (userDetailsError) {
+        console.error('Failed to fetch user details:', userDetailsError);
+        authManager.clearTokens();
+        setEmail('');
+        throw new Error('Failed to fetch user details');
+      }
     } catch (error) {
       console.error('Login process failed:', error);
       authManager.clearTokens();
       setEmail('');
       setIsAuthenticated(false);
+      alert('Login failed. Please try again.');
     }
   };
 
