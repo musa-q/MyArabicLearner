@@ -10,6 +10,9 @@ from email.mime.text import MIMEText
 import uuid
 from user_agents import parse
 import ipaddress
+from argon2 import PasswordHasher
+import jwt as pyjwt
+from datetime import datetime, timedelta
 
 auth_bp = Blueprint('auth', __name__)
 def generate_secure_token():
@@ -70,7 +73,87 @@ def get_client_ip():
         ip = request.remote_addr
     return ip
 
+ph = PasswordHasher()
+
+def hash_token(token):
+    return ph.hash(token)
+
+def verify_token(stored_hash, provided_token):
+    try:
+        ph.verify(stored_hash, provided_token)
+        return True
+    except:
+        return False
+
+
+def generate_jwt_token(user_id, device_id, exp_minutes=30):
+    payload = {
+        'user_id': user_id,
+        'device_id': device_id,
+        'iat': datetime.utcnow(),
+        'exp': datetime.utcnow() + timedelta(minutes=exp_minutes),
+        'jti': secrets.token_urlsafe(16)
+    }
+    return pyjwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+
+def is_suspicious_device(device_id):
+    if not device_id:
+        return True
+
+    if device_id in Config.BLOCKED_DEVICE_IDS:
+        return True
+
+    recent_sessions = UserSession.query.filter(
+        UserSession.device_identifier == device_id,
+        UserSession.last_used >= datetime.now() - timedelta(hours=24)
+    ).count()
+
+    if recent_sessions > Config.MAX_SESSIONS_PER_DEVICE_PER_DAY:
+        return True
+
+    return False
+
+def is_suspicious_ip(ip_address):
+    if not ip_address:
+        return True
+
+    try:
+        ip = ipaddress.ip_address(ip_address)
+
+        if Config.RUN_IN_DEVELOPMENT:
+            if ip_address in ['127.0.0.1', '::1']:
+                return False
+
+            if ip.is_private:
+                return False
+
+        if ip_address in Config.BLOCKED_IPS:
+            return True
+
+        recent_requests = UserSession.query.filter(
+            UserSession.last_ip == ip_address,
+            UserSession.last_used >= datetime.now() - timedelta(hours=1)
+        ).count()
+
+        if recent_requests > Config.MAX_REQUESTS_PER_IP_PER_HOUR:
+            return True
+
+        # if is_ip_from_blocked_country(ip_address):
+        #     return True
+
+    except ValueError:
+        return True
+
+    return False
+
+
 def create_user_session(user, device_id=None):
+    if is_suspicious_device(device_id):
+        raise Exception("Suspicious device detected")
+
+    if is_suspicious_ip(get_client_ip()):
+        raise Exception("Suspicious IP detected")
+
     existing_session = UserSession.query.filter_by(
         user_id=user.id,
         device_identifier=device_id
@@ -111,15 +194,29 @@ def create_user_session(user, device_id=None):
     db.session.commit()
     return new_session
 
+def validate_login_request(request_data):
+    email = request_data.get('email', '').strip().lower()
+    if not email or '@' not in email:
+        raise ValueError('Invalid email format')
+
+    if len(email) > 255:
+        raise ValueError('Email too long')
+
+    username = request_data.get('username', '').strip()
+    if username and (len(username) < 3 or len(username) > 50):
+        raise ValueError('Invalid username length')
+
+    return email, username
+
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email')
-    username = data.get('username', None)
-    device_id = data.get('device_id')
 
-    if not email:
-        return jsonify({'error': 'Email is required'}), 400
+    try:
+        email, username = validate_login_request(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
     user = User.query.filter_by(email=email).first()
 
@@ -132,7 +229,9 @@ def login():
         db.session.commit()
 
     login_token = generate_secure_token()
-    user.login_token = login_token
+    hashed_token_login_token = hash_token(login_token)
+
+    user.login_token = hashed_token_login_token
     user.login_token_expiration = datetime.utcnow() + timedelta(minutes=15)
     db.session.commit()
 
@@ -147,10 +246,10 @@ def login():
 def refresh_token():
     data = request.get_json()
     email = data.get('email')
-    refresh_token = data.get('refresh_token')
+    provided_refresh_token = data.get('refresh_token')
     device_id = data.get('device_id')
 
-    if not all([email, refresh_token, device_id]):
+    if not all([email, provided_refresh_token, device_id]):
         return jsonify({'error': 'Missing required fields'}), 400
 
     user = User.query.filter_by(email=email).first()
@@ -160,21 +259,26 @@ def refresh_token():
     session = UserSession.query.filter_by(
         user_id=user.id,
         device_identifier=device_id,
-        refresh_token=refresh_token,
         is_active=True
     ).first()
 
     if not session:
+        return jsonify({'error': 'Invalid session'}), 401
+
+    try:
+        if not verify_token(session.refresh_token, provided_refresh_token):
+            return jsonify({'error': 'Invalid refresh token'}), 401
+    except Exception:
         return jsonify({'error': 'Invalid refresh token'}), 401
 
     if datetime.now() > session.refresh_token_expiration:
         return jsonify({'error': 'Expired refresh token'}), 401
 
-    new_auth_token = generate_secure_token()
-    new_refresh_token = generate_secure_token()
+    new_auth_token = generate_jwt_token(user.id, device_id)
+    new_refresh_token = generate_jwt_token(user.id, device_id, exp_minutes=1440)
 
-    session.auth_token = new_auth_token
-    session.refresh_token = new_refresh_token
+    session.auth_token = hash_token(new_auth_token)
+    session.refresh_token = hash_token(new_refresh_token)
     session.token_expiration = datetime.now() + Config.ACCESS_TOKEN_TIME
     session.refresh_token_expiration = datetime.now() + Config.REFRESH_TOKEN_TIME
     session.update_activity(get_client_ip())
@@ -190,30 +294,33 @@ def refresh_token():
 def verify():
     data = request.get_json()
     email = data.get('email')
-    token = data.get('token')
+    provided_token = data.get('token')
     device_id = data.get('device_id')
 
-    if not email or not token:
+    if not email or not provided_token:
         return jsonify({'error': 'Email and token are required'}), 400
 
     user = User.query.filter_by(email=email).first()
 
-    if (not user or
-        not user.login_token or
-        user.login_token != token or
-        datetime.now() > user.login_token_expiration):
+    if not user or not user.login_token or datetime.now() > user.login_token_expiration:
         return jsonify({'error': 'Invalid or expired token'}), 401
+
+    try:
+        if not verify_token(user.login_token, provided_token):
+            return jsonify({'error': 'Invalid token'}), 401
+    except Exception:
+        return jsonify({'error': 'Invalid token'}), 401
 
     user.login_token = None
     user.login_token_expiration = None
 
     session = create_user_session(user, device_id)
 
-    auth_token = generate_secure_token()
-    refresh_token = generate_secure_token()
+    auth_token = generate_jwt_token(user.id, device_id, exp_minutes=30)
+    refresh_token = generate_jwt_token(user.id, device_id, exp_minutes=1440)
 
-    session.auth_token = auth_token
-    session.refresh_token = refresh_token
+    session.auth_token = hash_token(auth_token)
+    session.refresh_token = hash_token(refresh_token)
     session.token_expiration = datetime.now() + Config.ACCESS_TOKEN_TIME
     session.refresh_token_expiration = datetime.now() + Config.REFRESH_TOKEN_TIME
 
