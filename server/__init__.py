@@ -22,6 +22,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    print("🔧 Environment:", "DEVELOPMENT" if app.config['RUN_IN_DEVELOPMENT'] else "PRODUCTION")
+
     db.init_app(app)
     migrate = Migrate(app, db)
     limiter.init_app(app)

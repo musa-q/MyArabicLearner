@@ -19,7 +19,7 @@ class Config:
     EMAIL = os.getenv('EMAIL', 'test@test.com')
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD', 'test123')
 
-    RUN_IN_DEVELOPMENT = os.getenv('RUN_IN_DEVELOPMENT', True)
+    RUN_IN_DEVELOPMENT = os.getenv('RUN_IN_DEVELOPMENT', 'True').lower() == 'true'
     if (RUN_IN_DEVELOPMENT):
         NUMBER_OF_QUIZ_QUESTIONS = 3
     else:
