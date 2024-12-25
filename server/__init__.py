@@ -13,7 +13,7 @@ limiter = Limiter(
     default_limits=[
         "1000 per day",
         "50 per hour",
-        "3 per second"
+        "5 per second"
     ],
     storage_uri="memory://"
 )
