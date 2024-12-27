@@ -6,6 +6,7 @@ from .config import Config
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from .backup import schedule_backup
 
 db = SQLAlchemy()
 limiter = Limiter(
@@ -61,6 +62,11 @@ def create_app():
     app.register_blueprint(maintenance_bp, url_prefix='/maintenance')
 
     route_specific_limits()
+
+    if not app.config['RUN_IN_DEVELOPMENT'] and os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        schedule_backup()
+    else:
+        print("Backup scheduler disabled in development")
 
     with app.app_context():
         db.create_all()

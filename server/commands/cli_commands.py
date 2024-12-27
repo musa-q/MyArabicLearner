@@ -1,6 +1,7 @@
 import click
 from flask.cli import with_appcontext
 from ..models import db, User, Feedback
+from .backup import register_backup_commands
 
 @click.command('list-users')
 @with_appcontext
@@ -112,6 +113,7 @@ def list_feedback():
 
 def init_app(app):
     """Initialize user CLI commands"""
+    register_backup_commands(app)
     app.cli.add_command(list_users)
     app.cli.add_command(find_user)
     app.cli.add_command(delete_user)
