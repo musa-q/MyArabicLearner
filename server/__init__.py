@@ -63,7 +63,7 @@ def create_app():
 
     route_specific_limits()
 
-    if not app.config['RUN_IN_DEVELOPMENT'] and os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    if not app.config['RUN_IN_DEVELOPMENT']:
         schedule_backup()
     else:
         print("Backup scheduler disabled in development")
