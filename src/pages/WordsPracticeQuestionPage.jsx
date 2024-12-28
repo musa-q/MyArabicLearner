@@ -72,7 +72,6 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
 
     const handleClick = () => {
         window.scrollTo(0, 0);
-        setCheatsheetType(cheatsheetType.id);
     };
 
     const checkAnswer = async () => {
