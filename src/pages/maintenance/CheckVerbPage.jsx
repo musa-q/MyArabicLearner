@@ -10,6 +10,14 @@ const CheckVerbPage = () => {
     const [conjugations, setConjugations] = useState([]);
     const [editConjugation, setEditConjugation] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newConjugation, setNewConjugation] = useState({
+        tense: '',
+        pronoun: '',
+        conjugation: ''
+    });
+    const tenses = ['past', 'present', 'future'];
+    const pronouns = ['i', 'you_m', 'you_f', 'he', 'she', 'we', 'they'];
 
     useEffect(() => {
         fetchVerbs();
@@ -72,6 +80,15 @@ const CheckVerbPage = () => {
         setEditConjugation(null);
     };
 
+    const handleCloseAddModal = () => {
+        setShowAddModal(false);
+        setNewConjugation({
+            tense: '',
+            pronoun: '',
+            conjugation: ''
+        });
+    };
+
     const handleSaveConjugation = async () => {
         const deviceId = authManager.getDeviceId();
         const token = localStorage.getItem(`authToken_${deviceId}`);
@@ -102,8 +119,41 @@ const CheckVerbPage = () => {
         }
     };
 
+    const handleAddConjugation = async () => {
+        const deviceId = authManager.getDeviceId();
+        const token = localStorage.getItem(`authToken_${deviceId}`);
+        try {
+            const response = await axios.post(`${API_URL}/maintenance/add-conjugation`,
+                {
+                    verb_id: selectedVerb,
+                    tense: newConjugation.tense,
+                    pronoun: newConjugation.pronoun,
+                    conjugation: newConjugation.conjugation
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'X-Device-ID': deviceId,
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                fetchConjugations(selectedVerb);
+                handleCloseAddModal();
+            }
+        } catch (error) {
+            console.error('Error adding conjugation:', error);
+        }
+    };
+
     const handleInputChange = (e) => {
         setEditConjugation({ ...editConjugation, conjugation: e.target.value });
+    };
+
+    const handleNewConjugationChange = (e) => {
+        const { name, value } = e.target;
+        setNewConjugation(prev => ({ ...prev, [name]: value }));
     };
 
     return (
@@ -118,6 +168,14 @@ const CheckVerbPage = () => {
                     ))}
                 </Form.Control>
             </Form.Group>
+
+            {selectedVerb && (
+                <div className="mb-3">
+                    <Button variant="primary" onClick={() => setShowAddModal(true)}>
+                        Add New Conjugation
+                    </Button>
+                </div>
+            )}
 
             {conjugations.length > 0 && (
                 <Table striped bordered hover className='mb-5'>
@@ -144,6 +202,7 @@ const CheckVerbPage = () => {
                 </Table>
             )}
 
+            {/* Edit Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Conjugation</Modal.Title>
@@ -174,6 +233,62 @@ const CheckVerbPage = () => {
                     </Button>
                     <Button variant="primary" onClick={handleSaveConjugation}>
                         Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Add Modal */}
+            <Modal show={showAddModal} onHide={handleCloseAddModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add New Conjugation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Tense</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="tense"
+                                value={newConjugation.tense}
+                                onChange={handleNewConjugationChange}
+                            >
+                                <option value="">Choose a tense</option>
+                                {tenses.map(tense => (
+                                    <option key={tense} value={tense}>{tense}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Pronoun</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="pronoun"
+                                value={newConjugation.pronoun}
+                                onChange={handleNewConjugationChange}
+                            >
+                                <option value="">Choose a pronoun</option>
+                                {pronouns.map(pronoun => (
+                                    <option key={pronoun} value={pronoun}>{pronoun}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Conjugation</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="conjugation"
+                                value={newConjugation.conjugation}
+                                onChange={handleNewConjugationChange}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseAddModal}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleAddConjugation}>
+                        Add Conjugation
                     </Button>
                 </Modal.Footer>
             </Modal>

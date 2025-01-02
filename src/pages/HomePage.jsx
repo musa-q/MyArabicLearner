@@ -67,8 +67,8 @@ const HomePage = ({ onNavigate, username }) => {
     const mainFeatures = [
         {
             icon: <Book size={32} className="gold" />,
-            title: "Interactive Flashcards",
-            description: "Master essential Arabic vocabulary through engaging practice sessions"
+            title: "Interactive Tools",
+            description: "Master essential Arabic vocabulary and grammar through engaging practice sessions"
         },
         {
             icon: <Brain size={32} className="gold" />,
@@ -115,7 +115,7 @@ const HomePage = ({ onNavigate, username }) => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        onNavigate('wordsflashcard');
+                                        onNavigate('tools');
                                     }}
                                     style={{ cursor: 'pointer' }}
                                 >
@@ -239,10 +239,10 @@ const HomePage = ({ onNavigate, username }) => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        onNavigate('wordsflashcard');
+                                        onNavigate('tools');
                                     }}
                                 >
-                                    Try Flashcards
+                                    Practice Now
                                 </Button>
                                 <Button
                                     variant="outline-light"

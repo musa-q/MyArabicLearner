@@ -109,3 +109,21 @@ def delete_category_route(*args):
         data['category_id']
     )
     return jsonify({'success': success, 'message': message})
+
+@maintenance_bp.route('/add-conjugation', methods=['POST'])
+@require_auth(allowed_roles=['admin'])
+def add_conjugation(*args):
+    data = request.json
+    if not all(key in data for key in ['verb_id', 'tense', 'pronoun', 'conjugation']):
+        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+
+    new_conjugation = VerbConjugation(
+        verb_id=data['verb_id'],
+        tense=data['tense'],
+        pronoun=data['pronoun'],
+        conjugation=data['conjugation']
+    )
+    db.session.add(new_conjugation)
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Conjugation added successfully'}), 200

@@ -5,7 +5,7 @@ import { Container, Spinner, Button } from 'react-bootstrap';
 import WordsPracticePage from './WordsPracticePage';
 import VerbsPage from './VerbsPage';
 
-const QuizTypesPage = () => {
+const QuizTypesPage = ({ onNavigate }) => {
     const [selectedQuizType, setSelectedQuizType] = useState(null);
 
     const quizTypes = [
@@ -55,7 +55,7 @@ const QuizTypesPage = () => {
     };
 
     if (selectedQuizType) {
-        return selectedQuizType === 'VocabQuiz' ? <WordsPracticePage /> : <VerbsPage />;
+        return selectedQuizType === 'VocabQuiz' ? onNavigate('vocab-quiz') : onNavigate('verb-quiz');
     }
 
     return (
