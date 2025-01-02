@@ -2,16 +2,16 @@ from flask import Blueprint, request, jsonify
 from ..models import db, Verb, VerbConjugation
 from ..decorators import require_auth
 
-verbs_visualiser_bp = Blueprint('verbs_visualiser', __name__)
+visualisers_bp = Blueprint('visualisers', __name__)
 
-@verbs_visualiser_bp.route('/get-verbs', methods=['POST'])
+@visualisers_bp.route('/get-verbs', methods=['POST'])
 @require_auth()
 def get_verbs(*args):
     verbs = Verb.query.all()
     verb_list = [{'id': verb.id, 'verb': f"{verb.english_verb} ({verb.arabic_verb})"} for verb in verbs]
     return jsonify(verb_list), 200
 
-@verbs_visualiser_bp.route('/get-verb-table', methods=['POST'])
+@visualisers_bp.route('/get-verb-table', methods=['POST'])
 @require_auth()
 def get_verb_table(*args):
     data = request.get_json()

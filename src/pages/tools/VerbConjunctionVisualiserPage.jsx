@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from "framer-motion";
 import { Container, Form, Table, Card } from 'react-bootstrap';
-import { API_URL } from '../config';
-import { authManager, capitaliseWords } from '../utils';
+import { API_URL } from '../../config';
+import { authManager, capitaliseWords } from '../../utils';
 
 const pronounMapping = {
     'i': 'أنا',
@@ -12,7 +12,6 @@ const pronounMapping = {
     'he': 'هو',
     'she': 'هي',
     'we': 'إحنا',
-    'you (plural)': 'أنتم',
     'they': 'هم'
 };
 
@@ -29,7 +28,7 @@ const VerbConjunctionVisualiserPage = () => {
         const deviceId = authManager.getDeviceId();
         const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
-            const response = await axios.post(`${API_URL}/verbs-visualiser/get-verbs`, {},
+            const response = await axios.post(`${API_URL}/visualisers/get-verbs`, {},
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -47,7 +46,7 @@ const VerbConjunctionVisualiserPage = () => {
         const deviceId = authManager.getDeviceId();
         const token = localStorage.getItem(`authToken_${deviceId}`);
         try {
-            const response = await axios.post(`${API_URL}/verbs-visualiser/get-verb-table`, { verbId: verbId },
+            const response = await axios.post(`${API_URL}/visualisers/get-verb-table`, { verbId: verbId },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,

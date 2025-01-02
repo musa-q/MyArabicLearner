@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, BookOpen, Eye } from 'lucide-react';
+import { BookOpen, ClipboardPlus, ClipboardList } from 'lucide-react';
 import { Container, Button } from 'react-bootstrap';
 
 const ToolsPage = ({ onNavigate }) => {
@@ -14,7 +14,13 @@ const ToolsPage = ({ onNavigate }) => {
             id: 'verbconjugationvisualiser',
             title: 'Verb Conjugation Visualiser',
             description: 'Visualise the conjugation of Arabic verbs',
-            icon: Eye
+            icon: ClipboardPlus
+        },
+        {
+            id: 'vocabvisualiser',
+            title: 'Vocab Visualiser',
+            description: 'Visualise the vocabulary of Arabic words',
+            icon: ClipboardList
         },
 
     ];

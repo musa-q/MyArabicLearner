@@ -50,7 +50,7 @@ def create_app():
 
         limiter.limit("3 per hour")(feedback_bp)
 
-    from .views import home_bp, testing_bp, users_bp, quiz_bp, flashcards_bp, dev_bp, auth_bp, feedback_bp, maintenance_bp, verbs_visualiser_bp
+    from .views import home_bp, testing_bp, users_bp, quiz_bp, flashcards_bp, dev_bp, auth_bp, feedback_bp, maintenance_bp, visualisers_bp
     app.register_blueprint(home_bp)
     app.register_blueprint(testing_bp, url_prefix='/testing')
     app.register_blueprint(users_bp, url_prefix='/user')
@@ -60,7 +60,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(feedback_bp, url_prefix='/feedback')
     app.register_blueprint(maintenance_bp, url_prefix='/maintenance')
-    app.register_blueprint(verbs_visualiser_bp, url_prefix='/verbs-visualiser')
+    app.register_blueprint(visualisers_bp, url_prefix='/visualisers')
 
     route_specific_limits()
 

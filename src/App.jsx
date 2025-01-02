@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import HomePage from './pages/HomePage';
-import WordsFlashcardsPage from './pages/WordsFlashcardsPage';
+import WordsFlashcardsPage from './pages/tools/WordsFlashcardsPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavBar from './components/NavBar';
 import './components/Scrollbar.css';
@@ -19,8 +19,11 @@ import { authManager } from './utils';
 import Footer from './components/Footer';
 import TeamPage from './components/TeamPage';
 import TutorialPage from './components/TutorialPage';
-import ToolsPage from './pages/ToolsPage';
-import VerbConjunctionVisualiserPage from './pages/VerbConjunctionVisualiserPage';
+import ToolsPage from './pages/tools/ToolsPage';
+import VerbConjunctionVisualiserPage from './pages/tools/VerbConjunctionVisualiserPage';
+import VocabVisualiserPage from './pages/tools/VocabVisualiserPage';
+import WordsPracticePage from './pages/WordsPracticePage';
+import VerbsPage from './pages/VerbsPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -241,10 +244,16 @@ const App = () => {
         return isAuthenticated ? <ToolsPage onNavigate={navigateToPage} /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'verbconjugationvisualiser':
         return isAuthenticated ? <VerbConjunctionVisualiserPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
+      case 'vocabvisualiser':
+        return isAuthenticated ? <VocabVisualiserPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'wordsflashcard':
         return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz':
-        return isAuthenticated ? <QuizTypesPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
+        return isAuthenticated ? <QuizTypesPage onNavigate={navigateToPage} /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
+      case 'vocab-quiz':
+        return isAuthenticated ? <WordsPracticePage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
+      case 'verb-quiz':
+        return isAuthenticated ? <VerbsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz-results':
         return isAuthenticated ? <AllQuizResultsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'cheatsheet':
