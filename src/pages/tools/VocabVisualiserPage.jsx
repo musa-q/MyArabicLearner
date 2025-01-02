@@ -68,7 +68,7 @@ const VocabVisualiserPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8" style={{ minHeight: "100vh" }}>
+        <div className="max-w-4xl mx-auto px-2" style={{ minHeight: "100vh" }}>
             <Container>
                 <motion.div
                     className="text-center mb-5"
@@ -105,35 +105,37 @@ const VocabVisualiserPage = () => {
 
                     <Card className="text-white">
                         <Card.Body className="p-0">
-                            <Table className="table-dark mb-0" hover striped>
-                                <thead>
-                                    <tr>
-                                        <th className="text-center h5 py-3">English</th>
-                                        <th className="text-center h5 py-3">Arabic</th>
-                                        <th className="text-center h5 py-3">Transliteration</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {words.length > 0 ? (
-                                        words.map((word, index) => (
-                                            <tr key={index} style={{ 'cursor': 'pointer' }}>
-                                                <td className="text-center py-3 lead">{capitaliseWords(word.english)}</td>
-                                                <td className="text-center py-3 lead arabic-text">{word.arabic}</td>
-                                                <td className="text-center py-3 lead">{word.transliteration}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
+                            <div className="table-responsive">
+                                <Table className="table-dark mb-0" hover striped style={{ minWidth: '100%', tableLayout: 'fixed' }}>
+                                    <thead>
                                         <tr>
-                                            <td colSpan="3" className="text-center py-3 lead">Choose a category to view words</td>
+                                            <th className="text-center h5 py-3" style={{ width: '33.33%' }}>English</th>
+                                            <th className="text-center h5 py-3" style={{ width: '33.33%' }}>Arabic</th>
+                                            <th className="text-center h5 py-3" style={{ width: '33.33%' }}>Transliteration</th>
                                         </tr>
-                                    )}
-                                </tbody>
-                            </Table>
+                                    </thead>
+                                    <tbody>
+                                        {words.length > 0 ? (
+                                            words.map((word, index) => (
+                                                <tr key={index} style={{ cursor: 'pointer' }}>
+                                                    <td className="text-center py-3" style={{ fontSize: '0.9rem' }}>{capitaliseWords(word.english)}</td>
+                                                    <td className="text-center py-3 arabic-text" >{word.arabic}</td>
+                                                    <td className="text-center py-3" style={{ fontSize: '0.9rem' }}>{word.transliteration}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="3" className="text-center py-3">Choose a category to view words</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </Table>
+                            </div>
                         </Card.Body>
                     </Card>
                 </motion.div>
-            </Container >
-        </div >
+            </Container>
+        </div>
     );
 };
 

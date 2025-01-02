@@ -86,7 +86,7 @@ const VerbConjunctionVisualiserPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8" style={{ minHeight: "100vh" }}>
+        <div className="max-w-4xl mx-auto px-2" style={{ minHeight: "100vh" }}>
             <Container >
                 <motion.div
                     className="text-center mb-5"
@@ -117,32 +117,34 @@ const VerbConjunctionVisualiserPage = () => {
 
                     <Card className="text-white">
                         <Card.Body className="p-0">
-                            <Table className="table-dark mb-0" hover striped>
-                                <thead>
-                                    <tr>
-                                        <th className="text-center h5 py-3">Past</th>
-                                        <th className="text-center h5 py-3">Present</th>
-                                        <th className="text-center h5 py-3">Future</th>
-                                        <th className="text-center h5 py-3">Pronoun</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {conjugations.length > 0 ? (
-                                        renderConjugations().map((row, index) => (
-                                            <tr key={index}>
-                                                <td className="text-center py-3 lead">{row.past}</td>
-                                                <td className="text-center py-3 lead">{row.present}</td>
-                                                <td className="text-center py-3 lead">{row.future}</td>
-                                                <td className="text-center py-3 lead">{row.pronoun}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
+                            <div className="table-responsive">
+                                <Table className="table-dark mb-0" hover striped>
+                                    <thead>
                                         <tr>
-                                            <td colSpan="4" className="text-center py-3 lead">Choose A Verb</td>
+                                            <th className="text-center h5 py-3">Past</th>
+                                            <th className="text-center h5 py-3">Present</th>
+                                            <th className="text-center h5 py-3">Future</th>
+                                            <th className="text-center h5 py-3">Pronoun</th>
                                         </tr>
-                                    )}
-                                </tbody>
-                            </Table>
+                                    </thead>
+                                    <tbody>
+                                        {conjugations.length > 0 ? (
+                                            renderConjugations().map((row, index) => (
+                                                <tr key={index}>
+                                                    <td className="text-center py-3 lead">{row.past}</td>
+                                                    <td className="text-center py-3 lead">{row.present}</td>
+                                                    <td className="text-center py-3 lead">{row.future}</td>
+                                                    <td className="text-center py-3 lead">{row.pronoun}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="4" className="text-center py-3 lead">Choose A Verb</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </Table>
+                            </div>
                         </Card.Body>
                     </Card>
                 </motion.div>
