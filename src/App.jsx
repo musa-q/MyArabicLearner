@@ -19,6 +19,8 @@ import { authManager } from './utils';
 import Footer from './components/Footer';
 import TeamPage from './components/TeamPage';
 import TutorialPage from './components/TutorialPage';
+import ToolsPage from './pages/ToolsPage';
+import VerbConjunctionVisualiserPage from './pages/VerbConjunctionVisualiserPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -235,6 +237,10 @@ const App = () => {
         return <TeamPage onNavigate={navigateToPage} />;
       case 'tutorial':
         return <TutorialPage />;
+      case 'tools':
+        return isAuthenticated ? <ToolsPage onNavigate={navigateToPage} /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
+      case 'verbconjugationvisualiser':
+        return isAuthenticated ? <VerbConjunctionVisualiserPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'wordsflashcard':
         return isAuthenticated ? <WordsFlashcardsPage /> : <LoginPage onLogin={handleLogin} sessionExpired={localStorage.getItem('sessionExpired') === 'true'} />;
       case 'quiz':

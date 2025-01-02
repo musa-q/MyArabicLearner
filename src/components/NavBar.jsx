@@ -43,7 +43,7 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                             <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
                             {isLoggedIn ? (
                                 <>
-                                    <Nav.Link onClick={() => handleNavigate('wordsflashcard')}>Flashcards</Nav.Link>
+                                    <Nav.Link onClick={() => handleNavigate('tools')}>Tools</Nav.Link>
                                     <Nav.Link onClick={() => handleNavigate('quiz')}>Quizzes</Nav.Link>
                                     <Nav.Link onClick={() => handleNavigate('cheatsheet')}>Cheatsheets</Nav.Link>
                                     {createExtraButtons}
