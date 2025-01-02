@@ -139,7 +139,7 @@ const VerbConjunctionVisualiserPage = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="4" className="text-center py-3 lead">No data available</td>
+                                            <td colSpan="4" className="text-center py-3 lead">Choose A Verb</td>
                                         </tr>
                                     )}
                                 </tbody>
