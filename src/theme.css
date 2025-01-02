@@ -171,13 +171,15 @@
     border-bottom-color: var(--clr-surface-tonal-a30);
 }
 
-[data-bs-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd) {
-    --bs-table-accent-bg: var(--clr-surface-tonal-a20);
+[data-bs-theme="dark"] .table-striped>tbody>tr {
+    --bs-table-accent-bg: var(--clr-surface-tonal-a10);
+    --bs-table-striped-bg: var(--clr-surface-tonal-a20);
     /* color: var(--clr-surface-a50); */
 }
 
 [data-bs-theme="dark"] .table-hover>tbody>tr:hover {
-    --bs-table-accent-bg: var(--clr-surface-tonal-a30);
+    --bs-table-accent-bg: var(--clr-surface-tonal-a50);
+    --bs-table-hover-bg: var(--clr-primary-a20);
     /* color: var(--clr-surface-a50); */
 }
 
