@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ChooseWordsPage from './ChooseWordsPage';
+import ChooseWordsPage from '../ChooseWordsPage';
 import FlashCardsPage from './FlashCardsPage';
 
 const WordsFlashcardsPage = () => {

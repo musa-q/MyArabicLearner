@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import FlashCards from '../components/FlashCards';
+import FlashCards from '../../components/FlashCards';
 import './FlashCardsPage.css'
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
-import { capitaliseWords } from '../utils';
-import { API_URL } from '../config';
+import { capitaliseWords } from '../../utils';
+import { API_URL } from '../../config';
 import { ArrowLeft } from 'lucide-react';
-import { authManager } from '../utils';
+import { authManager } from '../../utils';
 
 const FlashCardsPage = ({ wordsList, category_name, onBack }) => {
     const [flashcards, setFlashcards] = useState([]);

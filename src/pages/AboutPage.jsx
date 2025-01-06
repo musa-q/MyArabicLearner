@@ -105,7 +105,7 @@ const AboutPage = ({ onNavigate }) => {
                             style={{ maxWidth: '300px' }}
                             onClick={() => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                                onNavigate('wordsflashcard');
+                                onNavigate('tools');
                             }}
                         >
                             <div className="lead">
