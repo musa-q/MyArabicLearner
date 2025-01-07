@@ -67,6 +67,8 @@ const createAuthManager = () => {
         localStorage.removeItem(`authToken_${deviceId}`);
         localStorage.removeItem(`refreshToken_${deviceId}`);
         localStorage.removeItem(`tokenCreatedAt_${deviceId}`);
+        localStorage.removeItem('sessionExpired');
+        localStorage.removeItem('email');
         if (refreshTokenTimeout) {
             clearTimeout(refreshTokenTimeout);
         }

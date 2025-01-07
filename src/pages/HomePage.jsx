@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
-import { Book, Brain, MessageSquare } from 'lucide-react';
+import { Container, Row, Col, Button, Carousel, Form } from 'react-bootstrap';
+import { Book, Brain, MessageSquare, SmilePlus } from 'lucide-react';
 import './HomePage.css';
 import '../fonts.css';
 
@@ -66,14 +66,14 @@ const HomePage = ({ onNavigate, username }) => {
 
     const mainFeatures = [
         {
-            icon: <Book size={32} className="gold" />,
-            title: "Interactive Tools",
-            description: "Master essential Arabic vocabulary and grammar through engaging practice sessions"
+            icon: <SmilePlus size={32} className="gold" />,
+            title: "100% Free",
+            description: "Access all learning materials and tools without any cost or subscription"
         },
         {
-            icon: <Brain size={32} className="gold" />,
-            title: "Practical Quizzes",
-            description: "Test your knowledge and track your learning progress"
+            icon: <Book size={32} className="gold" />,
+            title: "Interactive Tools and Quizzes",
+            description: "Master and track your vocabulary and grammer progress through engaging practice sessions"
         },
         {
             icon: <MessageSquare size={32} className="gold" />,
@@ -87,146 +87,207 @@ const HomePage = ({ onNavigate, username }) => {
     return (
         <div className="homepage ">
             {/* Hero Section */}
-            <div className="hero-section">
+            <div className="hero-section pb-5">
                 <Container>
-                    <Row className="justify-content-center text-center">
-                        <Col md={8} lg={6}>
-                            <img
-                                src="/logo_main.svg"
-                                alt="My Arabic Learner Logo"
-                                className="homepage-logo mb-4"
-                            />
-
-                            <h1 className="hero-title mb-3">
-                                {randomTitle.main}
-                                <div className="gold">
-                                    {randomTitle.sub}
-                                </div>
-                            </h1>
-
-                            <p className="lead text-light mb-4">
-                                Start your journey to speaking Levantine Arabic through interactive lessons
-                                designed for practical, everyday conversations.
-                            </p>
-
-                            <div className="d-flex justify-content-center gap-4 pb-4">
-                                <span
-                                    className="text-light fs-5"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        onNavigate('tools');
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    Click to Begin
-                                </span>
-                                <span
-                                    className="text-light fs-5"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        onNavigate('tutorial');
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    View Tutorial
-                                </span>
+                    <Row>
+                        <Col md={7} className="text-section">
+                            <div className="text-center">
+                                <img
+                                    src="/logo_main.svg"
+                                    alt="My Arabic Learner Logo"
+                                    className="hero-logo"
+                                    style={{ maxWidth: '100px' }}
+                                />
                             </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+                            <div className="pb-2">
+                                <h1 className="hero-title mb-3 text-center">
+                                    {randomTitle.main}
+                                    <div className="gold">
+                                        {randomTitle.sub}
+                                    </div>
+                                </h1>
 
-            {/* Demo Section */}
-            <div className="demo-section">
-                <Container className="py-5">
-                    <Row className="justify-content-center">
-                        <Col md={10} lg={8}>
-                            <h2 className="text-center display-4 mb-4">Common Arabic Phrases</h2>
-                            <p className="text-center lead mb-4">
-                                Here are some everyday phrases you'll learn to master
-                            </p>
-                            <div className="demo-card">
-                                <div className="demo-body">
-                                    <Carousel
-                                        interval={3500}
-                                        indicators={false}
-                                        className="phrase-carousel"
-                                        prevIcon={<div className="carousel-arrow">❮</div>}
-                                        nextIcon={<div className="carousel-arrow">❯</div>}
-                                    >
-                                        {examplePhrases.map((phrase, idx) => (
-                                            <Carousel.Item key={idx}>
-                                                <div className="demo-content text-center">
-                                                    <div className="context-label mb-4">
-                                                        {phrase.context}
-                                                    </div>
-                                                    <div className="gold noto-kufi-regular display-6 mb-3">
-                                                        {phrase.arabic}
-                                                    </div>
-                                                    <div className="lead translation">
-                                                        {phrase.english}
-                                                    </div>
-                                                    <div className="transliteration lead ">
-                                                        {phrase.transliteration}
-                                                    </div>
+                                <p className="lead text-light mb-4 text-center">
+                                    Learn Levantine Arabic effortlessly—free lessons and learning tools designed for for real-life conversations
+                                </p>
+                            </div>
+
+                            {/* Signup Box */}
+                            <Row className="signup-row justify-content-center">
+                                <div className="signup-box">
+                                    {!username ? (
+                                        <Form className="w-100">
+                                            <Row className="mb-3">
+                                                <Form.Group controlId="formBasicEmail">
+                                                    <Form.Control
+                                                        type="email"
+                                                        placeholder="Email"
+                                                        className="py-2"
+                                                        required
+                                                    />
+                                                </Form.Group>
+                                            </Row>
+
+                                            <div className="d-flex justify-content-center w-100 mb-2">
+                                                <Button
+                                                    className='button w-100 py-3 lead'
+                                                    size="lg"
+                                                    variant="primary"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        localStorage.setItem('email', e.target.form.elements.formBasicEmail.value);
+                                                        onNavigate('');
+                                                    }}
+                                                >
+                                                    I Want To Speak Arabic Today!
+                                                </Button>
+                                            </div>
+                                            <Row>
+                                                <div className="text-light text-center small">
+                                                    We will never share your email with anyone
                                                 </div>
-                                            </Carousel.Item>
-                                        ))}
-                                    </Carousel>
+                                            </Row>
+                                        </Form>
+                                    ) : (
+                                        <div className="text-center w-100">
+                                            <div className="display-6 gold mb-4 pb-2">
+                                                Welcome Back, {username}!
+                                            </div>
+                                            <Button
+                                                variant="primary"
+                                                size="lg"
+                                                className="w-100 py-3 lead"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    onNavigate('tools');
+                                                }}
+                                            >
+                                                I Want To Continue Learning!
+                                            </Button>
+
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
+                            </Row>
+
+                            <Row>
+                                <div className="social-proof pt-5">
+                                    <div className="d-flex">
+                                        <p className="mb-0 me-2 lead">Used by students and teachers worldwide on</p>
+                                        <a href="https://preply.com" target="_blank" rel="noopener noreferrer">
+                                            <img
+                                                src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Preply-logo.png"
+                                                alt="Preply Logo"
+                                                className="preply-logo"
+                                                style={{ height: '30px' }}
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </Row>
+                        </Col>
+
+                        <Col md={5} className="image-section">
+                            <img
+                                src="/hero_img.webp"
+                                // src="/logo_main.svg"
+                                alt="My Arabic Learner Logo"
+                                className="hero-image  pt-4"
+                            />
+                            <img
+                            />
                         </Col>
                     </Row>
+
                 </Container>
-            </div>
+            </div >
 
             {/* Features Section */}
-            <div className="features-section">
-                <Container className="py-5">
-                    <Row className="justify-content-center">
-                        <Col md={10} lg={8}>
-                            <h2 className="text-center display-4 mb-5">How You'll Learn</h2>
-                            <Row className="g-4">
-                                {mainFeatures.map((feature, idx) => (
-                                    <Col key={idx} md={4}>
-                                        <div className="feature-card py-4 px-3 text-center">
-                                            <div className="mb-3">{feature.icon}</div>
-                                            <h4 className="mb-3">{feature.title}</h4>
-                                            <p className='accent-color'>{feature.description}</p>
-                                        </div>
-                                    </Col>
-                                ))}
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+            < div className="features-section" >
+                <Row className="justify-content-center">
+                    <Col xs={12} md={10} lg={10}>
+                        <h2 className="text-center display-4 mb-5">Here's Why My Arabic Learner:</h2>
+                        <Row className="g-4">
+                            {mainFeatures.map((feature, idx) => (
+                                <Col key={idx} xs={12} sm={6} md={4}>
+                                    <div className="feature-card py-4 px-3 text-center">
+                                        <div className="mb-3">{feature.icon}</div>
+                                        <h4 className="mb-3">{feature.title}</h4>
+                                        <p className='accent-color'>{feature.description}</p>
+                                    </div>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Col>
+                </Row>
+
+            </div >
+
+
 
             {/* FAQ Section */}
-            <div className="faq-section">
-                <Container className="py-5">
-                    <Row className="justify-content-center">
-                        <Col md={10} lg={8}>
-                            <h2 className="text-center display-4 mb-5">Common Questions</h2>
-                            <Row className="g-4">
-                                {faqItems.map((item, idx) => (
-                                    <Col key={idx} md={6}>
-                                        <div className="faq-card">
-                                            <h3 className="faq-question mb-3">{item.question}</h3>
-                                            <p className="accent-color mb-0">{item.answer}</p>
-                                        </div>
-                                    </Col>
-                                ))}
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+            < div className="faq-section" >
+                <Row className="justify-content-center">
+                    <Col xs={12} md={10} lg={8}>
+                        <h2 className="text-center display-4 mb-5">Common Questions</h2>
+                        <Row className="g-4">
+                            {faqItems.map((item, idx) => (
+                                <Col key={idx} xs={12} sm={6}>
+                                    <div className="faq-card">
+                                        <h3 className="faq-question mb-3">{item.question}</h3>
+                                        <p className="accent-color mb-0">{item.answer}</p>
+                                    </div>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Col>
+                </Row>
+            </div >
+
+            {/* Demo Section */}
+            < div className="demo-section" >
+                <Row className="justify-content-center">
+                    <Col xs={12} md={10} lg={8}>
+                        <h2 className="text-center display-4 mb-4">Common Arabic Phrases</h2>
+                        <p className="text-center lead mb-4">
+                            Here are some everyday phrases you'll learn to master
+                        </p>
+                        <div className="demo-card">
+                            <div className="demo-body">
+                                <Carousel
+                                    interval={3500}
+                                    indicators={false}
+                                    className="phrase-carousel"
+                                    prevIcon={<div className="carousel-arrow">❮</div>}
+                                    nextIcon={<div className="carousel-arrow">❯</div>}
+                                >
+                                    {examplePhrases.map((phrase, idx) => (
+                                        <Carousel.Item key={idx}>
+                                            <div className="demo-content text-center">
+                                                <div className="context-label mb-3">
+                                                    {phrase.context}
+                                                </div>
+                                                <div className="gold noto-kufi-regular display-6 mb-2">
+                                                    {phrase.arabic}
+                                                </div>
+                                                <div className="lead translation">
+                                                    {phrase.english}
+                                                </div>
+                                                <div className="transliteration lead">
+                                                    {phrase.transliteration}
+                                                </div>
+                                            </div>
+                                        </Carousel.Item>
+                                    ))}
+                                </Carousel>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </div >
 
             {/* Final CTA Section */}
-            <div className="final-cta-section py-5">
+            < div className="final-cta-section py-5" >
                 <Container className="py-5">
                     <Row className="justify-content-center">
                         <Col md={8} className="text-center">
@@ -272,8 +333,8 @@ const HomePage = ({ onNavigate, username }) => {
                         </Col>
                     </Row>
                 </Container>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

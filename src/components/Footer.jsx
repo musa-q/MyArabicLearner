@@ -26,6 +26,12 @@ const Footer = ({ onNavigate, isLoggedIn }) => {
                     </Row>
                     <Row className="mb-4">
                         <Col md={4} className="mb-4 mb-md-0">
+                            <img
+                                src="/logo_main.svg"
+                                alt="My Arabic Learner Logo"
+                                height="100"
+                                className="mb-3"
+                            />
                             <h4 className="text-purple mb-3">About My Arabic Learner</h4>
                             <p className="text-secondary">
                                 Your trusted platform for learning Levantine Arabic through interactive lessons,

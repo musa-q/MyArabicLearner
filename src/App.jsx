@@ -297,11 +297,34 @@ const App = () => {
         onLogout={handleLogout}
         username={username}
         extraButtons={extraButtons}
+        currentPage={currentPage}
       />
 
       <main className="flex-grow">
         {isLoading ? (
-          <div className="text-center py-5 mt-5">
+          <div className="text-center py-5 mt-5" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src="/logo_main.svg"
+              alt="Loading Logo"
+              style={{
+                height: "100px",
+                margin: 'auto',
+                paddingBottom: '2em',
+                animation: 'jump 3s infinite'
+              }}
+            />
+            <style>
+              {`
+                @keyframes jump {
+                  0%, 50%, 100% {
+                    transform: translateY(0);
+                  }
+                  75% {
+                    transform: translateY(-30px);
+                  }
+                }
+              `}
+            </style>
             <Spinner animation="border" variant="purple" />
             <p className="mt-2">Loading page...</p>
           </div>
