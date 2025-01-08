@@ -116,7 +116,11 @@ const HomePage = ({ onNavigate, username }) => {
                             <Row className="signup-row justify-content-center">
                                 <div className="signup-box">
                                     {!username ? (
-                                        <Form className="w-100">
+                                        <Form className="w-100" onSubmit={(e) => {
+                                            e.preventDefault();
+                                            localStorage.setItem('email', e.target.elements.formBasicEmail.value);
+                                            onNavigate('');
+                                        }}>
                                             <Row className="mb-3">
                                                 <Form.Group controlId="formBasicEmail">
                                                     <Form.Control
