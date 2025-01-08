@@ -19,9 +19,9 @@ def generate_secure_token():
     return secrets.token_urlsafe(16).replace('-', 'g').replace('_', '9')
 
 def send_auth_email(email, token):
-    if (Config.RUN_IN_DEVELOPMENT):
-        print(f"Login token: {token}")
-        return
+    # if (Config.RUN_IN_DEVELOPMENT):
+    #     print(f"Login token: {token}")
+    #     return
     sender_email = Config.EMAIL
     password = Config.EMAIL_PASSWORD
 
@@ -30,7 +30,7 @@ def send_auth_email(email, token):
     html_content = f"""
     <html>
         <body style="font-family: sans-serif;">
-            <img src="https://i.ibb.co/25NHfYy/myarabiclearner-logo.png" width="100" alt="My Arabic Learner Logo" style="display: block; margin: 30px auto;">
+            <img src="https://www.myarabiclearner.com/myarabiclearner_logo.png" width="100" alt="My Arabic Learner Logo" style="display: block; margin: 30px auto;">
             <h2 style="text-align: center; color: #2E86C1;">Your Login Token</h2>
             <p style="text-align: center;">
                 Your login token is valid for 15 minutes. Do NOT share this with anyone.
