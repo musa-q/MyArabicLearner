@@ -7,7 +7,7 @@ import logo from '/logo_main.svg';
 import AppFeedback from './AppFeedback';
 import './NavBar.css';
 
-const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) => {
+const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons, currentPage }) => {
     const [expanded, setExpanded] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
 
@@ -39,8 +39,12 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                     </div>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
-                            <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
+                            {currentPage === 'home' && !isLoggedIn ? null : (
+                                <>
+                                    <Nav.Link onClick={() => handleNavigate('home')}>Home</Nav.Link>
+                                    <Nav.Link onClick={() => handleNavigate('about')}>About</Nav.Link>
+                                </>
+                            )}
                             {isLoggedIn ? (
                                 <>
                                     <Nav.Link onClick={() => handleNavigate('tools')}>Tools</Nav.Link>
@@ -50,7 +54,9 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons }) 
                                 </>
                             ) : (
                                 <>
-                                    <Nav.Link onClick={() => handleNavigate('')}>Login</Nav.Link>
+                                    {currentPage === 'home' ? null : (
+                                        <Nav.Link onClick={() => handleNavigate('')}>Login</Nav.Link>
+                                    )}
                                 </>
                             )}
                         </Nav>

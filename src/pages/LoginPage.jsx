@@ -94,8 +94,11 @@ const LoginPage = ({ onLogin, sessionExpired }) => {
                                 <Form.Control
                                     type="email"
                                     placeholder="Enter email"
-                                    value={storedEmail || email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email || storedEmail || ''}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        setStoredEmail(null);
+                                    }}
                                     required
                                 />
                             </Form.Group>
