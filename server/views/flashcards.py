@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from ..models import db, VocabCategory, VocabWord
 from ..utils import utils
-from ..decorators import require_auth
+from ..decorators import *
 
 flashcards_bp = Blueprint('flashcards', __name__)
 
 @flashcards_bp.route('/get-all-category-names', methods=['POST'])
 @require_auth()
+@track_activity('flashcards')
 def get_all_category_names(*args):
     categories = VocabCategory.query.all()
     category_list = [{'id': category.id, 'category_name': category.category_name} for category in categories]

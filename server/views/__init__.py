@@ -8,5 +8,6 @@ from .auth import auth_bp
 from .feedback import feedback_bp
 from .maintenance import maintenance_bp
 from .visualisers import visualisers_bp
+from .analytics import analytics_bp
 
-__all__ = ['home_bp', 'testing_bp', 'users_bp', 'quiz_bp', 'flashcards_bp', 'dev_bp', 'auth_bp', 'feedback_bp', 'maintenance_bp', 'visualisers_bp']
+__all__ = ['home_bp', 'testing_bp', 'users_bp', 'quiz_bp', 'flashcards_bp', 'dev_bp', 'auth_bp', 'feedback_bp', 'maintenance_bp', 'visualisers_bp', 'analytics_bp']

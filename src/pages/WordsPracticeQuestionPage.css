@@ -24,3 +24,12 @@
 .input-field:focus::placeholder {
     opacity: 0.5;
 }
+
+.progress {
+    border-radius: 8px;
+    background-color: #2d2d2d;
+}
+
+.progress-bar {
+    transition: all 1s linear;
+}

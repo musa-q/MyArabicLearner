@@ -7,6 +7,7 @@ from .vocab_word import VocabWord
 from .vocab_quiz import VocabQuiz, VocabQuizQuestion
 from .verb_quiz import VerbConjugationQuiz, VerbConjugationQuizQuestion
 from .feedback import Feedback
+from .user_activity import UserActivity
 
 __all__ = [
     'db',
@@ -21,4 +22,5 @@ __all__ = [
     'VerbConjugationQuiz',
     'VerbConjugationQuizQuestion',
     'Feedback',
+    'UserActivity',
 ]

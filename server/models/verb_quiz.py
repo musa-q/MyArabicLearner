@@ -5,8 +5,10 @@ class VerbConjugationQuiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
+    total_points = db.Column(db.Integer, nullable=False)
     total_questions = db.Column(db.Integer, nullable=False)
     date_taken = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    quiz_finished = db.Column(db.Boolean, nullable=False, default=False)
 
     questions = db.relationship('VerbConjugationQuizQuestion', cascade='all, delete-orphan', backref='quiz', lazy=True)
 
@@ -22,6 +24,7 @@ class VerbConjugationQuizQuestion(db.Model):
     is_correct = db.Column(db.Boolean, nullable=False)
     is_answered = db.Column(db.Boolean, nullable=False)
     user_answer = db.Column(db.String, nullable=True)
+    points = db.Column(db.Integer, nullable=False)
 
     verb_conjugation = db.relationship('VerbConjugation', backref=db.backref('quiz_questions', lazy=True))
 

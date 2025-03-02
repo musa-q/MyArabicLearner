@@ -35,7 +35,11 @@ const MyNavBar = ({ onNavigate, isLoggedIn, onLogout, username, extraButtons, cu
                                 متعلمو العربية
                             </div>
                         </Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(expanded ? false : true)} />
+                        {
+                            currentPage === 'home' && !isLoggedIn ? null : (
+                                <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(expanded ? false : true)} />
+                            )
+                        }
                     </div>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">

@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from "framer-motion";
-import { Book, CircleDot, ArrowRight, HelpCircle } from 'lucide-react';
-import { Container, Card, Button, ListGroup } from 'react-bootstrap';
+import { Book, CircleDot, ArrowRight, HelpCircle, AlertCircle } from 'lucide-react';
+import { Container, Card, Button, ListGroup, ProgressBar } from 'react-bootstrap';
 import { ReactTransliterate } from "react-transliterate";
 import { capitaliseWords, authManager } from '../utils';
 import QuizResultsPage from './QuizResultsPage';
@@ -9,200 +9,294 @@ import axios from 'axios';
 import './WordsPracticeQuestionPage.css';
 import { API_URL } from '../config';
 
+const INITIAL_TIME = 15;
+const ERROR_MESSAGES = {
+    NO_ANSWER: "Please provide an answer!",
+    NETWORK_ERROR: "Network error occurred. Please try again.",
+    LOAD_ERROR: "Error loading question. Please try again.",
+    UNAUTHORIZED: "Your session has expired. Please login again.",
+};
+
 const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
-    const [currentQuestionId, setCurrentQuestionId] = useState(null);
-    const [revealAnswer, setRevealAnswer] = useState(false);
-    const [showHintButton, setShowHintButton] = useState(true);
-    const [showNextButton, setShowNextButton] = useState(false);
-    const [currentAnswer, setCurrentAnswer] = useState(null);
-    const [resultMessage, setResultMessage] = useState("");
-    const [hint, setHint] = useState(null);
-    const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [showResultsPage, setShowResultsPage] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [quizState, setQuizState] = useState({
+        currentQuestionId: null,
+        currentQuestion: null,
+        currentAnswer: "",
+        hint: null,
+        points: 0,
+        streak: 0,
+        timeRemaining: INITIAL_TIME,
+    });
+
+    const [uiState, setUiState] = useState({
+        loading: true,
+        isSubmitting: false,
+        showHintButton: true,
+        showNextButton: false,
+        showResultsPage: false,
+        revealAnswer: false,
+        resultMessage: "",
+        error: null,
+    });
+
+    const timerRef = useRef(null);
     const containerRef = useRef(null);
+    const abortControllerRef = useRef(null);
 
-    useEffect(() => {
-        if (!quizId) createQuiz();
+    const makeRequest = useCallback(async (url, data) => {
+        try {
+            abortControllerRef.current?.abort();
+            abortControllerRef.current = new AbortController();
 
-        const focusInput = () => {
-            if (containerRef.current) {
-                const input = containerRef.current.querySelector('ReactTransliterate');
-                if (input) {
-                    input.focus();
+            const deviceId = authManager.getDeviceId();
+            const token = localStorage.getItem(`authToken_${deviceId}`);
+
+            if (!token) {
+                throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
+            }
+
+            // console.log('Making request to:', url, 'with data:', data); // Debug log
+
+            const response = await axios({
+                url: `${API_URL}${url}`,
+                method: 'POST',
+                data,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'X-Device-ID': deviceId,
+                },
+                signal: abortControllerRef.current.signal,
+                timeout: 5000,
+            });
+
+            // console.log('Response received:', response.data); // Debug log
+            return response.data;
+        } catch (error) {
+            // console.error('Request error:', error); // Debug log
+
+            if (axios.isCancel(error)) {
+                // console.log('Request cancelled');
+                return null;
+            }
+
+            if (error.response?.status === 401) {
+                setUiState(prev => ({ ...prev, error: ERROR_MESSAGES.UNAUTHORIZED }));
+                return null;
+            }
+
+            throw error;
+        }
+    }, []);
+
+    const startTimer = useCallback(() => {
+        setQuizState(prev => ({ ...prev, timeRemaining: INITIAL_TIME }));
+
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+
+        timerRef.current = setInterval(() => {
+            setQuizState(prev => {
+                if (prev.timeRemaining <= 0) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+
+                    makeRequest('/quiz/send-answer', {
+                        quiz_type: 'VocabQuiz',
+                        user_answer: '',
+                        question_id: prev.currentQuestionId,
+                        time_remaining: 0,
+                        streak: 0,
+                        timeout: true
+                    });
+
+                    setUiState(prev => ({
+                        ...prev,
+                        resultMessage: "Time's up! ⏰",
+                        showNextButton: true,
+                        showHintButton: false
+                    }));
+                    return prev;
                 }
-            }
-        };
+                return { ...prev, timeRemaining: prev.timeRemaining - 1 };
+            });
+        }, 1000);
+    });
 
-        focusInput();
+    const checkAnswer = useCallback(async () => {
+        if (uiState.isSubmitting || quizState.timeRemaining === 0) return;
 
-        const handleGlobalKeyPress = (e) => {
-            if (e.target.tagName === 'INPUT') {
-                return;
-            }
-
-            if (e.key.length === 1 || e.key === 'Backspace') {
-                e.preventDefault();
-                focusInput();
-                if (e.key === 'Backspace') {
-                    setCurrentAnswer(prev => prev.slice(0, -1));
-                } else {
-                    setCurrentAnswer(prev => prev + e.key);
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleGlobalKeyPress);
-
-        return () => {
-            window.removeEventListener('keydown', handleGlobalKeyPress);
-        };
-    }, [quizId]);
-
-    const fadeIn = {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.5 }
-    };
-
-    const processText = (word) => {
-        return word.trim().toLowerCase();
-    };
-
-    const handleClick = () => {
-        window.scrollTo(0, 0);
-    };
-
-    const checkAnswer = async () => {
-        if (isSubmitting) return;
-
-        if (!currentAnswer?.trim()) {
-            setResultMessage("Please provide an answer!");
+        if (!quizState.currentAnswer?.trim()) {
+            setUiState(prev => ({ ...prev, resultMessage: ERROR_MESSAGES.NO_ANSWER }));
             return;
         }
 
-        const guess = processText(currentAnswer);
-        setIsSubmitting(true);
-
         try {
-            const deviceId = authManager.getDeviceId();
-            const token = localStorage.getItem(`authToken_${deviceId}`);
+            setUiState(prev => ({ ...prev, isSubmitting: true }));
+            if (timerRef.current) clearInterval(timerRef.current);
 
-            const response = await axios.post(
-                `${API_URL}/quiz/send-answer`,
+            const data = await makeRequest('/quiz/send-answer',
                 {
                     quiz_type: 'VocabQuiz',
-                    user_answer: guess,
-                    question_id: currentQuestionId
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'X-Device-ID': deviceId,
-                    }
+                    user_answer: quizState.currentAnswer.trim().toLowerCase(),
+                    question_id: quizState.currentQuestionId,
+                    time_remaining: quizState.timeRemaining,
+                    streak: quizState.streak,
                 }
             );
 
-            const data = response.data;
-            if (data.answer_response) {
-                setResultMessage("Correct! 🎉");
-                setShowNextButton(true);
-                setShowHintButton(false);
+            if (!data) return;
+
+            if (data.answer_response && data.points) {
+                setQuizState(prev => ({
+                    ...prev,
+                    points: prev.points + data.points,
+                    streak: prev.streak + 1,
+                }));
+                setUiState(prev => ({
+                    ...prev,
+                    resultMessage: `Correct! 🎉 +${data.points} points`,
+                    showNextButton: true,
+                    showHintButton: false,
+                }));
             } else {
-                setResultMessage("Incorrect!");
-                setShowNextButton(true);
+                setQuizState(prev => ({
+                    ...prev,
+                    streak: 0,
+                    points: prev.points + data.points,
+                }));
+                setUiState(prev => ({
+                    ...prev,
+                    resultMessage: `Incorrect! ${data.points}`,
+                    showNextButton: true,
+                }));
             }
         } catch (error) {
-            console.error('Error sending answer:', error);
-            if (error.response?.status === 400 && error.response?.data?.error === 'Question already answered or not found') {
-                nextQuestion();
-            }
+            setUiState(prev => ({
+                ...prev,
+                error: ERROR_MESSAGES.NETWORK_ERROR,
+            }));
+        } finally {
+            setUiState(prev => ({ ...prev, isSubmitting: false }));
         }
-    };
+    }, [quizState, uiState.isSubmitting, makeRequest]);
 
-    const nextQuestion = async () => {
-        setLoading(true);
-
+    const nextQuestion = useCallback(async () => {
         try {
-            const deviceId = authManager.getDeviceId();
-            const token = localStorage.getItem(`authToken_${deviceId}`);
+            setUiState(prev => ({ ...prev, loading: true, error: null }));
 
-            const response = await axios.post(
-                `${API_URL}/quiz/get-next-question`,
+            const data = await makeRequest('/quiz/get-next-question',
                 {
                     quiz_type: 'VocabQuiz',
                     quiz_id: quizId
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'X-Device-ID': deviceId,
-                    }
                 }
             );
 
-            const data = response.data;
+            if (!data) {
+                throw new Error('No data received from server');
+            }
+
             if (data.all_answered) {
-                setShowResultsPage(true);
+                setUiState(prev => ({
+                    ...prev,
+                    showResultsPage: true,
+                    loading: false
+                }));
                 return;
             }
 
-            setCurrentQuestionId(data.question.question_id);
-            setHint(data.hint);
-            setCurrentQuestion(data.question.english);
-            setCurrentAnswer("");
-            setResultMessage("");
-            setShowHintButton(true);
-            setRevealAnswer(false);
-            setShowNextButton(false);
-            setIsSubmitting(false);
+            if (!data.question) {
+                throw new Error('Invalid question data received');
+            }
 
-            handleClick();
+            setQuizState(prev => ({
+                ...prev,
+                currentQuestionId: data.question.question_id,
+                currentQuestion: data.question.english,
+                hint: data.hint,
+                currentAnswer: "",
+                timeRemaining: INITIAL_TIME,
+            }));
+
+            setUiState(prev => ({
+                ...prev,
+                loading: false,
+                resultMessage: "",
+                showHintButton: true,
+                revealAnswer: false,
+                showNextButton: false,
+                isSubmitting: false,
+                error: null
+            }));
+
+            startTimer();
+
+            window.scrollTo(0, 0);
         } catch (error) {
-            console.error("Error fetching question:", error);
-            setResultMessage("Error loading question. Please try again.");
-        } finally {
-            setLoading(false);
+            // console.error('Error fetching next question:', error);
+            setUiState(prev => ({
+                ...prev,
+                loading: false,
+                error: ERROR_MESSAGES.LOAD_ERROR,
+                showHintButton: false,
+                showNextButton: false
+            }));
         }
-    };
+    }, [quizId, makeRequest, startTimer]);
 
     const handleEnterKeyPress = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (resultMessage.includes("Correct") || resultMessage.includes("Incorrect")) {
+            if (uiState.showNextButton && !uiState.loading && quizState.timeRemaining > 0) {
                 nextQuestion();
-            } else {
+            } else if (!uiState.isSubmitting && quizState.timeRemaining > 0) {
                 checkAnswer();
             }
-        } else if (e.ctrlKey) {
-            e.preventDefault();
-            setRevealAnswer(!revealAnswer);
         }
     };
 
     useEffect(() => {
-        nextQuestion();
+        const initQuiz = async () => {
+            try {
+                await nextQuestion();
+            } catch (error) {
+                setUiState(prev => ({
+                    ...prev,
+                    loading: false,
+                    error: ERROR_MESSAGES.LOAD_ERROR
+                }));
+            }
+        };
+
+        initQuiz();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center text-gray-400">
-                    <div className="animate-spin h-8 w-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-lg">Loading question...</p>
-                </div>
-            </div>
-        );
-    }
+    const renderErrorState = () => (
+        <div className="text-center text-red-500 mb-4">
+            <AlertCircle className="inline-block mr-2" size={20} />
+            {uiState.error}
+        </div>
+    );
 
-    if (showResultsPage) {
-        return <QuizResultsPage quiz_type="VocabQuiz" />;
-    }
+    const renderLoadingState = () => (
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center text-gray-400">
+                <div className="animate-spin h-8 w-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4" />
+                <p className="text-lg">Loading question...</p>
+            </div>
+        </div>
+    );
+
+    if (uiState.loading) return renderLoadingState();
+    if (uiState.showResultsPage) return <QuizResultsPage quiz_type="VocabQuiz" />;
 
     return (
-        <Container className="py-4 mt-4 max-w-4xl mx-auto" style={{ minHeight: "100vh" }}>
+        // <Container className="py-4 mt-4 max-w-4xl mx-auto" style={{ minHeight: "100vh" }}>
+        <Container className="py-4 mt-4 max-w-4xl mx-auto min-h-screen">
             <motion.div {...fadeIn}>
+                {uiState.error && renderErrorState()}
+
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold gold text-purple-400 mb-3 display-4">
                         {capitaliseWords(pageTitle)}
@@ -210,6 +304,20 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                     <p className="text-gray-300 lead">
                         Translate the following word into Arabic
                     </p>
+                </div>
+
+                <div className="flex justify-between items-center mb-3">
+                    <div>Points: <strong>{quizState.points}</strong></div>
+                    <div className="flex-grow mx-3">
+                        <ProgressBar
+                            now={(quizState.timeRemaining / INITIAL_TIME) * 100}
+                            variant={getProgressBarVariant(quizState.timeRemaining)}
+                            label={`${quizState.timeRemaining}s`}
+                            className="h-5"
+                            animated={quizState.timeRemaining <= 5}
+                        />
+                    </div>
+                    <div>Streak: <strong>{quizState.streak}</strong></div>
                 </div>
 
                 <motion.div
@@ -225,13 +333,13 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                         </Card.Header>
                         <Card.Body className="d-flex flex-column align-items-center py-5">
                             <h2 className="text-2xl mb-4 font-semibold text-center">
-                                {capitaliseWords(currentQuestion)}
+                                {capitaliseWords(quizState.currentQuestion)}
                             </h2>
 
                             <div className="w-100" style={{ maxWidth: "500px" }}>
                                 <ReactTransliterate
-                                    value={currentAnswer}
-                                    onChangeText={(text) => setCurrentAnswer(text)}
+                                    value={quizState.currentAnswer}
+                                    onChangeText={(text) => setQuizState(prev => ({ ...prev, currentAnswer: text }))}
                                     lang="ar"
                                     onKeyDown={handleEnterKeyPress}
                                     className="input-field w-100 p-3 px-4 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all"
@@ -239,11 +347,12 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                                 />
 
                                 <div className="d-flex justify-content-center gap-3 mt-4">
-                                    {showNextButton ? (
+                                    {uiState.showNextButton ? (
                                         <Button
                                             onClick={nextQuestion}
                                             className="flex-1"
                                             variant="purple"
+                                            disabled={uiState.isSubmitting || uiState.loading}
                                         >
                                             Next Question <ArrowRight className="ms-2 inline" size={16} />
                                         </Button>
@@ -252,40 +361,41 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                                             onClick={checkAnswer}
                                             className="flex-1"
                                             variant="purple"
+                                            disabled={uiState.isSubmitting}
                                         >
                                             Check Answer <CircleDot className="ms-2 inline" size={16} />
                                         </Button>
                                     )}
 
-                                    {showHintButton && (
+                                    {uiState.showHintButton && (
                                         <Button
                                             variant="outline-light"
-                                            onClick={() => setRevealAnswer(!revealAnswer)}
+                                            onClick={() => setUiState(prev => ({ ...prev, revealAnswer: !prev.revealAnswer }))}
                                             className="flex-1"
                                         >
                                             <HelpCircle className="me-2 inline" size={16} />
-                                            {revealAnswer ? 'Hide Answer' : 'Show Answer'}
+                                            {uiState.revealAnswer ? 'Hide Answer' : 'Show Answer'}
                                         </Button>
                                     )}
                                 </div>
 
-                                {resultMessage && (
+                                {uiState.resultMessage && (
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className="mt-4 p-3 rounded-lg text-center"
                                         style={{
-                                            backgroundColor: resultMessage.includes("Correct") ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)",
-                                            color: resultMessage.includes("Correct") ? "#86efac" : "#fca5a5"
+                                            backgroundColor: uiState.resultMessage.includes("Correct") ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)",
+                                            color: uiState.resultMessage.includes("Correct") ? "#86efac" : "#fca5a5"
                                         }}
                                     >
                                         <div className="lead">
-                                            {resultMessage}
+                                            {uiState.resultMessage}
                                         </div>
                                     </motion.div>
                                 )}
 
-                                {revealAnswer && (
+                                {uiState.revealAnswer && (
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -294,7 +404,7 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
                                         <p className="mb-0">
                                             <span className="lead">Answer: </span>
                                             <span className="lead-ar">
-                                                {hint}
+                                                {quizState.hint}
                                             </span>
                                         </p>
                                     </motion.div>
@@ -315,6 +425,19 @@ const WordsPracticeQuestionPage = ({ quizId, pageTitle }) => {
             </motion.div>
         </Container>
     );
+};
+
+const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5 }
+};
+
+const getProgressBarVariant = (timeRemaining) => {
+    if (timeRemaining > 20) return 'info';
+    if (timeRemaining > 10) return 'primary';
+    if (timeRemaining > 5) return 'warning';
+    return 'danger';
 };
 
 export default WordsPracticeQuestionPage;

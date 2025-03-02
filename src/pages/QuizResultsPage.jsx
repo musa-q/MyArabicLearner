@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Container, Badge, Spinner, Table, Button } from 'react-bootstrap';
 import { motion } from "framer-motion";
 import { Book, Clock, Award, ArrowLeft } from 'lucide-react';
-import { authManager, capitaliseWords } from '../utils';
+import { authManager, capitaliseWords, extractSubcategory } from '../utils';
 import { API_URL } from '../config';
 import './QuizResultsPage.css';
 
@@ -42,7 +42,7 @@ const QuizResultsPage = ({ quiz_type }) => {
     if (!dataLoaded) {
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
-                <Spinner animation="border" className="text-purple-400" />
+                <Spinner animation="border" />
             </Container>
         );
     }
@@ -55,41 +55,69 @@ const QuizResultsPage = ({ quiz_type }) => {
                 transition={{ duration: 0.6 }}
                 className="mb-4"
             >
-                <div className="d-flex justify-content-center align-items-center">
-                    <h1 className="text-4xl font-bold text-purple-400 m-0 mt-4 display-5 gold">
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                    <h1 className="text-4xl font-bold m-0 display-5 gold text-center pt-3">
                         {resultsQuizType === 'VocabQuiz'
-                            ? `${capitaliseWords(resultsDetails.category)} Quiz Results`
+                            ? `${capitaliseWords(extractSubcategory(resultsDetails.category))} Quiz Results`
                             : 'Verb Conjugation Quiz Results'}
                     </h1>
                 </div>
 
-                <div className="bg-gray-800 rounded-lg p-4 mb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-gray-900 p-4 rounded-lg text-center">
-                            <Award className="text-purple-400 mb-2" size={24} />
-                            <div className="text-purple-400 mb-2">Score</div>
-                            <Badge bg="success" className="px-3 py-2">
-                                {resultsDetails.score} / {resultsDetails.total}
-                            </Badge>
-                        </div>
-                        <div className="bg-gray-900 p-4 rounded-lg text-center">
-                            <Book className="text-purple-400 mb-2" size={24} />
-                            <div className="text-purple-400 mb-2">Category</div>
-                            <div className="lead">
-                                {resultsQuizType === 'VocabQuiz'
-                                    ? capitaliseWords(resultsDetails.category)
-                                    : 'Verb Conjugation'}
+                <div className="rounded-lg p-4 mb-4">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="p-4 rounded-lg text-center h-100">
+                                <Book className="mb-2" size={24} />
+                                <div className="mb-2">Category</div>
+                                <div className="lead">
+                                    {resultsQuizType === 'VocabQuiz'
+                                        ? capitaliseWords(resultsDetails.category)
+                                        : 'Verb Conjugation'}
+                                </div>
                             </div>
                         </div>
-                        <div className="bg-gray-900 pt-4 pb-0 rounded-lg text-center">
-                            <Clock className="text-purple-400 mb-2" size={24} />
-                            <div className="text-purple-400 mb-2">Date Completed</div>
-                            <div className="lead">
-                                {new Date(resultsDetails.date).toLocaleString('default', {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric'
-                                })}
+                        <div className="col-md-6">
+                            <div className="p-4 rounded-lg text-center h-100">
+                                <Clock className="mb-2" size={24} />
+                                <div className="mb-2">Date Completed</div>
+                                <div className="lead">
+                                    {new Date(resultsDetails.date).toLocaleString('default', {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric'
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stats-container">
+                        <div className="row mb-1">
+                            <div className="col-md-4">
+                                <div className="p-4 rounded-lg text-center h-100">
+                                    <div className="mb-2">Total Points</div>
+                                    <Badge className="px-3 py-2">
+                                        {resultsDetails.total_points}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            <div className="col-md-4">
+                                <div className="p-4 rounded-lg text-center h-100">
+                                    <Award className="mb-2" size={24} />
+                                    <div className="mb-2">Score</div>
+                                    <Badge bg="success" className="px-3 py-2">
+                                        {resultsDetails.score} / {resultsDetails.total}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            <div className="col-md-4">
+                                <div className="p-4 rounded-lg text-center h-100">
+                                    <div className="mb-2">High score</div>
+                                    <Badge className="px-3 py-2">
+                                        {resultsDetails.highest_points}
+                                    </Badge>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -101,17 +129,19 @@ const QuizResultsPage = ({ quiz_type }) => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
             >
-                <div className="bg-gray-800 rounded-lg p-4">
+                <div className="rounded-lg pb-4 px-1">
                     <Table responsive bordered hover variant="dark" className="mb-0 text-center">
-                        <thead className="bg-gray-900">
+                        <thead>
                             <tr>
-                                <th className="text-purple-400">English</th>
-                                <th className="text-purple-400">Arabic</th>
+                                <th>English</th>
+                                <th>Arabic</th>
                                 {resultsQuizType === 'VerbConjugationQuiz' && (
-                                    <th className="text-purple-400">Conjugation</th>
+                                    <th>Conjugation</th>
                                 )}
-                                <th className="text-purple-400">Your Answer</th>
-                                <th className="text-purple-400">Result</th>
+                                <th>Correct Answer</th>
+                                <th>Your Answer</th>
+                                <th>Result</th>
+                                <th>Points</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,17 +167,22 @@ const QuizResultsPage = ({ quiz_type }) => {
                                             {`${capitaliseWords(question.pronoun)}, ${capitaliseWords(question.tense)}`}
                                         </td>
                                     )}
+                                    <td className="arabic-text">{question.correct_answer}</td>
                                     <td className="arabic-text">{question.user_answer}</td>
                                     <td>
-                                        <Badge bg={question.is_correct ? 'success' : 'danger'}>
-                                            {question.is_correct ? 'Correct' : 'Incorrect'}
+                                        <div className={question.is_correct ? 'text-success' : 'text-danger'} style={{ fontSize: '1.5em' }}>
+                                            {question.is_correct ? '✓' : '✗'}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <Badge bg={question.points > 0 ? 'success' : 'danger'}>
+                                            {question.points}
                                         </Badge>
                                     </td>
                                 </motion.tr>
                             ))}
                         </tbody>
                     </Table>
-
                 </div>
             </motion.div>
         </Container>

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..decorators import require_auth
+from ..decorators import *
 from ..models import User
 
 home_bp = Blueprint('home', __name__)
@@ -15,6 +15,7 @@ def get_admin_navbar_buttons():
 
 @home_bp.route('/homepage', methods=['POST'])
 @require_auth()
+@track_activity('homepage')
 def homepage(user_id, session, *args, **kwargs):
     user = User.query.get(user_id)
     extra_buttons = None

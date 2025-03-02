@@ -1,11 +1,15 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, g
 from ..models import User, UserSession
 from ..config import Config
 import jwt as pyjwt
 from datetime import datetime
 
 def require_auth(allowed_roles=None):
+    """
+    Decorator to require authentication for a route
+    Usage: @require_auth() or @require_auth(allowed_roles=['admin'])
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -34,6 +38,10 @@ def require_auth(allowed_roles=None):
                     device_identifier=device_id,
                     is_active=True
                 ).first()
+
+                g.user_id = user.id
+                g.session = session
+                g.user = user
 
                 if not user or not session:
                     return jsonify({'error': 'Invalid session'}), 401

@@ -6,8 +6,10 @@ class VocabQuiz(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('vocab_category.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
+    total_points = db.Column(db.Integer, nullable=False)
     total_questions = db.Column(db.Integer, nullable=False)
     date_taken = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    quiz_finished = db.Column(db.Boolean, nullable=False, default=False)
 
     category = db.relationship('VocabCategory', backref=db.backref('quizzes', lazy=True))
     questions = db.relationship('VocabQuizQuestion', cascade='all, delete-orphan', backref='quiz', lazy=True)
@@ -24,6 +26,7 @@ class VocabQuizQuestion(db.Model):
     is_correct = db.Column(db.Boolean, nullable=False)
     is_answered = db.Column(db.Boolean, nullable=False)
     user_answer = db.Column(db.String, nullable=True)
+    points = db.Column(db.Integer, nullable=False)
 
     word = db.relationship('VocabWord', backref=db.backref('quiz_questions', lazy=True))
 

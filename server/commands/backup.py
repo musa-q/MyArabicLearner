@@ -7,11 +7,11 @@ from flask import current_app
 
 def register_backup_commands(app):
     @app.cli.group()
-    def db():
+    def db_backup():
         """Database commands."""
         pass
 
-    @db.command()
+    @db_backup.command()
     @with_appcontext
     def backup():
         """Backup the database."""
@@ -26,3 +26,12 @@ def register_backup_commands(app):
 
         shutil.copy2(db_path, backup_path)
         click.echo(f'Database backed up to: {backup_path}')
+
+    @db_backup.command()
+    @with_appcontext
+    def copy():
+        """Make a copy of the database for testing."""
+        db_path = current_app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+        copy_path = db_path + '.copy'
+        shutil.copy2(db_path, copy_path)
+        click.echo(f'Database copied to: {copy_path}')

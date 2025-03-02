@@ -1,12 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { BookOpen, ScrollText } from 'lucide-react';
 import { Container, Spinner, Button } from 'react-bootstrap';
-import WordsPracticePage from './WordsPracticePage';
-import VerbsPage from './VerbsPage';
 
 const QuizTypesPage = ({ onNavigate }) => {
     const [selectedQuizType, setSelectedQuizType] = useState(null);
+
+    useEffect(() => {
+        if (selectedQuizType) {
+            if (selectedQuizType === 'VocabQuiz') {
+                onNavigate('vocab-quiz');
+            } else if (selectedQuizType === 'VerbConjugationQuiz') {
+                onNavigate('verb-quiz');
+            }
+        }
+    }, [selectedQuizType, onNavigate]);
 
     const quizTypes = [
         {
@@ -30,20 +38,21 @@ const QuizTypesPage = ({ onNavigate }) => {
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gray-800 p-4 rounded-lg cursor-pointer border border-gray-700 hover:border-purple-500 mb-3"
+                className="p-4 border mb-3"
+                style={{ 'cursor': 'pointer' }}
             >
                 <div
                     onClick={() => setSelectedQuizType(quizType.id)}
                 >
                     <Container className="d-flex justify-content-start">
                         <div style={{ padding: '20px', marginRight: '10px' }}>
-                            <Icon className="text-purple-400" />
+                            <Icon />
                         </div>
                         <div>
                             <h3 className="text-xl font-semibold mb-1 display-6">
                                 {quizType.title}
                             </h3>
-                            <p className="text-gray-400 text-sm lead">
+                            <p className="lead">
                                 {quizType.description}
                             </p>
                         </div>
@@ -53,10 +62,6 @@ const QuizTypesPage = ({ onNavigate }) => {
             </motion.div>
         );
     };
-
-    if (selectedQuizType) {
-        return selectedQuizType === 'VocabQuiz' ? onNavigate('vocab-quiz') : onNavigate('verb-quiz');
-    }
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8" style={{ minHeight: "100vh" }}>

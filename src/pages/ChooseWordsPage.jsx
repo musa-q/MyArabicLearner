@@ -205,6 +205,7 @@ const ChooseWordsPage = ({ onChoose, title, setCategoryname }) => {
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                             setSelectedGroup(group);
                                         }}
+                                        style={{ cursor: 'pointer' }}
                                     >
                                         <div className="flex justify-between items-center">
                                             <div>
