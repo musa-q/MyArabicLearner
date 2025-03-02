@@ -1,0 +1,26 @@
+/* p {
+    line-height: 1.6;
+} */
+
+.table {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+
+    .table th,
+    .table td {
+        font-size: 1rem;
+    }
+
+    .table {
+        width: 100%;
+    }
+}

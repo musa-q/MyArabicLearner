@@ -1,0 +1,106 @@
+.flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px;
+}
+
+.flashcard-tile {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.65s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-tile.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-front {
+    background-color: #5b5166;
+    color: #2b2b3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-back {
+    background-color: #4a4a6a;
+    color: #f9f9fb;
+    transform: rotateY(180deg);
+}
+
+.card-title {
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.card-translit {
+    font-size: 1.1em;
+    color: #d3cdcd;
+    font-style: italic;
+}
+
+.flashcard-content.card-front .card-title {
+    color: #fff;
+}
+
+.flashcard-content.card-back .card-title {
+    color: #f1f1f5;
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.toggle-group span {
+    margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+    .toggle-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toggle-group {
+        margin-bottom: 10px;
+    }
+}

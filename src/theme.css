@@ -1,0 +1,196 @@
+/* theme.css */
+
+/* Your existing variables */
+:root[data-bs-theme="dark"] {
+    /** Dark theme primary colors */
+    --clr-primary-a0: #6d54b5;
+    --clr-primary-a10: #7e66bd;
+    --clr-primary-a20: #8f78c6;
+    --clr-primary-a30: #9f8ace;
+    --clr-primary-a40: #af9dd7;
+    --clr-primary-a50: #bfb0df;
+
+    /** Dark theme surface colors */
+    --clr-surface-a0: #212529;
+    --clr-surface-a10: #36393d;
+    --clr-surface-a20: #4c4f53;
+    --clr-surface-a30: #636669;
+    --clr-surface-a40: #7b7d80;
+    --clr-surface-a50: #949698;
+
+    /** Dark theme tonal surface colors */
+    --clr-surface-tonal-a0: #292a35;
+    --clr-surface-tonal-a10: #3d3e49;
+    --clr-surface-tonal-a20: #53535d;
+    --clr-surface-tonal-a30: #696a72;
+    --clr-surface-tonal-a40: #808188;
+    --clr-surface-tonal-a50: #98999f;
+
+    --gold-primary-a0: #d5ca6b;
+    --gold-primary-a10: #dad07c;
+    --gold-primary-a20: #e0d58c;
+    --gold-primary-a30: #e5db9c;
+    --gold-primary-a40: #eae1ad;
+    --gold-primary-a50: #eee7bd;
+
+    --gold-surface-tonal-a01: #505033;
+    --gold-surface-tonal-a0: #424236;
+    --gold-surface-tonal-a10: #555549;
+    --gold-surface-tonal-a20: #68685e;
+    --gold-surface-tonal-a30: #7c7c73;
+    --gold-surface-tonal-a40: #92927a;
+    --gold-surface-tonal-a50: #a6a69f;
+    --gold-surface-tonal-a60: #c4c44c;
+
+    /* Bootstrap overrides using your custom colors */
+    --bs-body-bg: var(--clr-surface-tonal-a0);
+    /* --bs-body-color: var(--clr-surface-a50); */
+
+    /* Primary button and element colors */
+    --bs-primary: var(--clr-primary-a0);
+    --bs-primary-rgb: 109, 84, 181;
+    /* RGB values for --clr-primary-a0 */
+    --bs-primary-bg-subtle: var(--clr-primary-a10);
+    --bs-primary-border-subtle: var(--clr-primary-a20);
+
+    /* Component specific colors */
+    --bs-card-bg: var(--clr-surface-tonal-a10);
+    --bs-card-border-color: var(--clr-surface-tonal-a20);
+    /* --bs-card-color: var(--clr-surface-a50); */
+
+    --bs-modal-bg: var(--clr-surface-tonal-a10);
+    --bs-modal-border-color: var(--clr-surface-tonal-a20);
+
+    --bs-dropdown-bg: var(--clr-surface-tonal-a10);
+    --bs-dropdown-border-color: var(--clr-surface-tonal-a20);
+    /* --bs-dropdown-link-color: var(--clr-surface-a50); */
+    --bs-dropdown-link-hover-bg: var(--clr-surface-tonal-a20);
+
+    --bs-input-bg: var(--clr-surface-tonal-a10);
+    --bs-input-border-color: var(--clr-surface-tonal-a20);
+    /* --bs-input-color: var(--clr-surface-a50); */
+    --bs-input-placeholder-color: var(--clr-surface-a30);
+
+    --bs-nav-tabs-border-color: var(--clr-surface-tonal-a20);
+    --bs-nav-tabs-link-active-bg: var(--clr-surface-tonal-a10);
+    --bs-nav-tabs-link-active-color: var(--clr-primary-a30);
+}
+
+/* Component specific styles */
+[data-bs-theme="dark"] {
+    background-color: var(--clr-surface-tonal-a0);
+}
+
+[data-bs-theme="dark"] .btn-primary {
+    background-color: var(--clr-primary-a0);
+    border-color: var(--clr-primary-a10);
+}
+
+[data-bs-theme="dark"] .btn-primary:hover {
+    background-color: var(--clr-primary-a10);
+    border-color: var(--clr-primary-a20);
+}
+
+[data-bs-theme="dark"] .btn-primary:active {
+    background-color: var(--clr-primary-a20) !important;
+    border-color: var(--clr-primary-a30) !important;
+}
+
+[data-bs-theme="dark"] .card {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .modal-content {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .form-control {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-surface-tonal-a20);
+    /* color: var(--clr-surface-a50); */
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-primary-a20);
+    box-shadow: 0 0 0 0.25rem rgba(109, 84, 181, 0.25);
+}
+
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover {
+    background-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .nav-tabs {
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .nav-tabs .nav-link.active {
+    background-color: var(--clr-surface-tonal-a10);
+    border-color: var(--clr-surface-tonal-a20);
+    color: var(--clr-primary-a30);
+}
+
+[data-bs-theme="dark"] .table {
+    /* --bs-table-color: var(--clr-surface-a50); */
+    --bs-table-bg: var(--clr-surface-tonal-a10);
+    --bs-table-border-color: var(--clr-surface-tonal-a20);
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .table tbody tr {
+    border-bottom-width: 1px !important;
+    border-bottom-color: var(--clr-surface-tonal-a20) !important;
+}
+
+[data-bs-theme="dark"] .table> :not(caption)>*>* {
+    border-bottom-width: 0 !important;
+}
+
+[data-bs-theme="dark"] .table>tbody>tr>td {
+    border-bottom-color: var(--clr-surface-tonal-a20) !important;
+}
+
+[data-bs-theme="dark"] .table>thead {
+    background-color: var(--clr-surface-tonal-a20);
+    /* color: var(--clr-surface-a50); */
+}
+
+[data-bs-theme="dark"] .table td,
+[data-bs-theme="dark"] .table th {
+    border-bottom: none !important;
+}
+
+[data-bs-theme="dark"] .table>thead th {
+    border-bottom-color: var(--clr-surface-tonal-a30);
+}
+
+[data-bs-theme="dark"] .table-striped>tbody>tr {
+    --bs-table-accent-bg: var(--clr-surface-tonal-a10);
+    --bs-table-striped-bg: var(--clr-surface-tonal-a20);
+    /* color: var(--clr-surface-a50); */
+}
+
+[data-bs-theme="dark"] .table-hover>tbody>tr:hover {
+    --bs-table-accent-bg: var(--clr-surface-tonal-a50);
+    --bs-table-hover-bg: var(--clr-primary-a20);
+    /* color: var(--clr-surface-a50); */
+}
+
+[data-bs-theme="dark"] .table-bordered {
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .table-bordered> :not(caption)>* {
+    border-color: var(--clr-surface-tonal-a20);
+}
+
+[data-bs-theme="dark"] .table-responsive {
+    border-color: var(--clr-surface-tonal-a20);
+}

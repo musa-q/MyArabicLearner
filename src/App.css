@@ -1,0 +1,44 @@
+:root {
+    --hero-background: none;
+}
+
+.main-cta-button {
+    padding: 1rem 2rem;
+    transition: all 0.3s ease;
+    border-width: 2px;
+    border-color: var(--gold-primary-a0) !important;
+    color: var(--gold-primary-a0) !important;
+}
+
+.main-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--gold-surface-tonal-a40) !important;
+    color: var(--gold-surface-tonal-a60) !important;
+    background-color: var(--gold-surface-tonal-a40) !important;
+    color: white;
+}
+
+.purple-color-a0 {
+    color: var(--clr-primary-a0) !important;
+}
+
+.purple-color-a10 {
+    color: var(--clr-primary-a10) !important;
+}
+
+.purple-color-a20 {
+    color: var(--clr-primary-a20) !important;
+}
+
+.purple-color-a30 {
+    color: var(--clr-primary-a30) !important;
+}
+
+.purple-color-a40 {
+    color: var(--clr-primary-a40) !important;
+}
+
+.purple-color-a50 {
+    color: var(--clr-primary-a50) !important;
+}

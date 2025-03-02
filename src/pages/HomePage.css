@@ -1,0 +1,357 @@
+.homepage {
+    min-height: 100vh;
+}
+
+.hero-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 2rem;
+}
+
+.hero-section {
+    padding: 1.5rem 0;
+    min-height: 100vh;
+    position: relative;
+    background-color: var(--bg-color-main);
+    overflow: hidden;
+    will-change: transform;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--hero-background);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    transition: background-image 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.hero-section>* {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: bold;
+    color: white;
+}
+
+.accent-color {
+    color: rgb(229, 229, 229);
+}
+
+.demo-section {
+    background-color: var(--clr-surface-tonal-a00);
+    padding: 2rem 1rem;
+}
+
+.demo-card {
+    background-color: var(--clr-surface-tonal-a10);
+    border: 2px solid var(--clr-surface-tonal-a20);
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+    margin: 0 0.5rem;
+}
+
+.demo-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30);
+}
+
+.demo-body {
+    padding: 1.5rem 1rem;
+}
+
+.phrase-carousel {
+    position: relative;
+}
+
+.phrase-carousel .carousel-inner {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.phrase-carousel .carousel-item {
+    padding: 0.5rem;
+}
+
+.demo-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.context-label {
+    background-color: var(--clr-primary-a20);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.transliteration {
+    color: rgb(209, 209, 209);
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+}
+
+.translation {
+    font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
+    color: #ffffff;
+    margin-bottom: 0;
+}
+
+.carousel-arrow {
+    color: whitesmoke;
+    transition: all 0.3s ease;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%;
+    color: white;
+    text-decoration: none !important;
+}
+
+.features-section {
+    background-color: var(--clr-surface-tonal-a00);
+    padding: 2rem 1rem;
+}
+
+.feature-card {
+    background-color: var(--clr-surface-tonal-a10);
+    border: 2px solid var(--clr-surface-tonal-a20);
+    border-radius: 1rem;
+    color: white;
+    height: 100%;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30)
+}
+
+.final-cta-section {
+    background-color: var(--clr-surface-tonal-a0);
+    padding: 2rem 1rem;
+}
+
+.faq-section {
+    background-color: var(--clr-surface-tonal-a10);
+    padding: 2rem 1rem;
+}
+
+.faq-card {
+    background-color: var(--clr-surface-tonal-a20);
+    border: 2px solid var(--clr-surface-tonal-a30);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    height: 100%;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: var(--clr-primary-a30);
+}
+
+.faq-question {
+    color: var(--clr-primary-a50);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+}
+
+.signup-box {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.social-proof {
+    text-align: center;
+    padding: 1rem;
+}
+
+.preply-logo {
+    height: clamp(20px, 4vw, 30px);
+}
+
+@media (max-width: 768px) {
+    .homepage {
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        min-height: auto;
+        padding: 0 1rem 1rem;
+    }
+
+    .hero-logo {
+        max-width: 150px !important;
+        margin-bottom: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    .image-section {
+        order: -1;
+        margin-bottom: 1rem;
+    }
+
+    .hero-image {
+        display: none;
+    }
+
+    .text-section {
+        text-align: center;
+        padding: 0 1rem;
+    }
+
+    .signup-box {
+        padding: 1rem 0;
+    }
+
+    .main-cta-button {
+        width: 100%;
+        margin: 0.5rem 0;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .social-proof {
+        margin-top: 2rem !important;
+        padding-top: 2rem !important;
+    }
+
+    .social-proof .d-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .social-proof p {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .preply-logo {
+        height: 25px;
+    }
+
+    .features-section .display-4,
+    .faq-section .display-4,
+    .demo-section .display-4 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .feature-card {
+        margin-bottom: 1rem;
+        padding: 1.25rem;
+    }
+
+    .feature-card h4 {
+        font-size: 1.25rem;
+    }
+
+    .faq-card {
+        margin-bottom: 1rem;
+    }
+
+    .faq-question {
+        font-size: 1.1rem;
+    }
+
+    .demo-card {
+        margin: 0;
+    }
+
+    .demo-body {
+        padding: 1rem;
+    }
+
+    .context-label {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .carousel-arrow {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-section {
+        padding: 0 1rem 2rem;
+    }
+
+    .hero-logo {
+        max-width: 90px !important;
+    }
+
+    .hero-image {
+        margin: 0 1rem;
+        max-width: 90%;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-title .gold {
+        font-size: 2.2rem;
+    }
+
+    .signup-box {
+        padding: 1rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .main-cta-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .social-proof {
+        margin-top: 3rem !important;
+    }
+
+    .preply-logo {
+        height: 28px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1199px) {
+    .hero-image {
+        margin: 0 0 1.5rem;
+    }
+
+    .hero-section {
+        padding: 2.5rem 1.5rem;
+    }
+}

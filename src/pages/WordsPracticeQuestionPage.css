@@ -1,0 +1,35 @@
+.input-field {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+    border-radius: 1rem;
+}
+
+.input-field:hover {
+    border-color: var(--main-color-light);
+    background-color: #3f3f46;
+}
+
+.input-field:focus {
+    background-color: #27272a;
+    transform: scale(1.02);
+    border-radius: 1.25rem;
+}
+
+.input-field::placeholder {
+    color: #9ca3af;
+    opacity: 0.8;
+}
+
+.input-field:focus::placeholder {
+    opacity: 0.5;
+}
+
+.progress {
+    border-radius: 8px;
+    background-color: #2d2d2d;
+}
+
+.progress-bar {
+    transition: all 1s linear;
+}

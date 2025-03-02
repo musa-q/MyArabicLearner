@@ -1,0 +1,36 @@
+.aref-ruqaa-regular {
+    font-family: "Aref Ruqaa", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.aref-ruqaa-bold {
+    font-family: "Aref Ruqaa", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.noto-kufi-regular {
+    font-family: "Noto Kufi Arabic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.noto-kufi-bold {
+    font-family: "Noto Kufi Arabic", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.gold {
+    color: var(--gold-primary-a0);
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

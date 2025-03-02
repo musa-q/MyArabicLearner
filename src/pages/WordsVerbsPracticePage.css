@@ -1,0 +1,70 @@
+.practice-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.practice-container {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+}
+
+.info-text {
+    align-items: center;
+    text-align: center;
+}
+
+.con-info {
+    padding-top: 8px;
+}
+
+#conjugation-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.bottom-section {
+    margin-right: 5%;
+    margin-left: 5%
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+#user-input {
+    font-size: largers;
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.con-form-button {
+    margin-bottom: 5px;
+}
+
+#result-message {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.show-answer-button {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#result-message {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: white;
+}
+
+#correct-answer {
+    text-align: center;
+    font-weight: bold;
+    font-size: larger;
+}

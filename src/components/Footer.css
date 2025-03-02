@@ -1,0 +1,25 @@
+.footer-bg {
+    background-color: var(--clr-surface-tonal-a10);
+}
+
+.text-purple {
+    color: var(--clr-primary-a30);
+}
+
+.hover-purple:hover {
+    color: var(--clr-primary-a50) !important;
+    transition: color 0.2s ease-in-out !important;
+}
+
+.icon:hover {
+    color: var(--clr-primary-a50);
+    transition: color 0.2s ease-in-out;
+}
+
+.text-secondary {
+    color: #b7b4c6 !important;
+}
+
+.border-secondary {
+    border-color: #ffffff !important;
+}

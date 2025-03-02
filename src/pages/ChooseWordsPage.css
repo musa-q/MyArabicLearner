@@ -1,0 +1,17 @@
+.choose-words-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.buttons-list {
+    padding-top: 30px;
+    width: 60%;
+}
+
+.button {
+    margin-bottom: 30px;
+    width: 100%;
+}
