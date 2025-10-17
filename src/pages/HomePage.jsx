@@ -180,7 +180,7 @@ const HomePage = ({ onNavigate, username }) => {
                                         <p className="mb-0 me-2 lead">Used by students and teachers worldwide on</p>
                                         <a href="https://preply.com" target="_blank" rel="noopener noreferrer">
                                             <img
-                                                src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Preply-logo.png"
+                                                src="https://images.squarespace-cdn.com/content/v1/500fab79c4aa83ca4b6cacae/4a61737a-358f-478c-9583-4c2e0da5b3ab/320x132-1.png"
                                                 alt="Preply Logo"
                                                 className="preply-logo"
                                                 style={{ height: '30px' }}
