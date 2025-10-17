@@ -1,0 +1,80 @@
+{
+    "title": "Prepositions of Time",
+    "translations": [
+        {
+            "arabic": "من",
+            "romanized": "min",
+            "english": "From (place/time/person)"
+        },
+        {
+            "arabic": "حتى",
+            "romanized": "hatta",
+            "english": "Till/until/to (purpose/end goal)"
+        },
+        {
+            "arabic": "مذ",
+            "romanized": "mudh",
+            "english": "Since"
+        },
+        {
+            "arabic": "قبل",
+            "romanized": "qabl",
+            "english": "Before"
+        },
+        {
+            "arabic": "بعد",
+            "romanized": "ba`d",
+            "english": "After"
+        },
+        {
+            "arabic": "خلال",
+            "romanized": "khilal",
+            "english": "During"
+        },
+        {
+            "arabic": "اليوم",
+            "romanized": "al-yawm",
+            "english": "Today"
+        },
+        {
+            "arabic": "بكرة",
+            "romanized": "bukra",
+            "english": "Tomorrow"
+        },
+        {
+            "arabic": "بعد بكرة",
+            "romanized": "ba`d bukra",
+            "english": "Day after tomorrow"
+        },
+        {
+            "arabic": "مبارح",
+            "romanized": "mubaariH",
+            "english": "Yesterday"
+        },
+        {
+            "arabic": "قبل مبارح",
+            "romanized": "qabl mubaariH",
+            "english": "Day before yesterday"
+        },
+        {
+            "arabic": "هسا",
+            "romanized": "hassa",
+            "english": "Now"
+        },
+        {
+            "arabic": "بكير",
+            "romanized": "bakir",
+            "english": "Early"
+        },
+        {
+            "arabic": "بعدين",
+            "romanized": "ba`dayn",
+            "english": "Afterwards"
+        },
+        {
+            "arabic": "لسا",
+            "romanized": "lissa",
+            "english": "Still/not yet"
+        }
+    ]
+}

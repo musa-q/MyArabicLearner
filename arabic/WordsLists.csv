@@ -1,0 +1,471 @@
+Common Phrases,CommonPhrases.json,
+الجاي,el-jaay,The next / upcoming
+ما بعرف,maa ba'aref,I don't know
+يمكن,yimkin,Maybe
+شو رأيك,shoo ra'ayak,What's your opinion?
+شو هاكيت,shoo hakayt,What did you say?
+ليش هيك,leesh heik,Why is it like that?
+بأفكر,baafakker,I'm thinking / considering
+شو بتحين,shoo bethyeen,What do you want?
+خليني,khaleeni,Let me ...
+ليش عملت هيك,leesh amalt heik,Why did you do it like that
+عشاني,ashaani,For me / because of me
+لا تحتم,laa thahtam,Don't care
+كل هواء,kol hawa,"Eat air (slang for ""get lost"")"
+ولا أشي,wala ishi,Nothing
+أيش في,aish fee,What's in it? / what's going on?
+تعال معي,ta'aal ma'ai,Come with me
+روح من هون,rooh min hoon,Go from here
+تحكيش معي,taHkeesh ma'ai,Don't talk to me
+من فضلك,min faḍlak,Please
+أريد,ureed,I want
+لا أفهم,la afham,I don't understand
+كيف صحتك,keef ṣiHtak,How's your health?
+,,
+Personal Pronouns,PersonalPronouns.json,
+أنا,ana,I
+إنتَ,inta,You (M)
+إنتِ,inti,You (F)
+هو,huwa,He
+هي,hiya,She
+إحنا,iHna,We
+إنتو,intu,You (PL)
+هم,humma,They
+,,
+Quantifiers,Quantifiers.json,
+واحد,waHad,One
+التنين,itneen,Both
+كل,kull,All
+بعض,ba3D,Some
+أي,ayy,Any
+أغلب,aghlab,Most
+شوي,shway,Few
+عدة,3idda,Several
+كتير,kteer,Many
+,,
+Indefinite Pronouns,IndefinitePronouns.json,
+كل شي,kull shi,Everything
+ولا شي,wala shi,Nothing
+شي,shi,Something
+اي شي,ayya shi,Anything
+كل حدا,kull waHad,Everyone
+واحد,waHd,Someone (M)
+وحدة,wHda,Someone (F)
+حدا,Hada,Someone
+أي حدا,ayy Hada,Anyone
+ما حدا,wala Hada,No one
+آخر,aakhr,Another
+,,
+Demonstrative Pronouns,DemonstrativePronouns.json,
+هاد,had,This (M)
+هاي,haay,This (F)
+هداك,hadaak,That (M)
+هديك,hadiik,That (F)
+هدول,hadool,These
+هدولاك,hadoolak,Those
+,,
+Question Words,QuestionWords.json,
+مين,meen,Who
+شو,shu,What
+متى,mta,When
+وين,ween,Where
+ليش,leesh,Why
+كيف,keef,How
+أي,ayy,Which
+لمين,lmeen,Whose
+كم,kam,How much
+كم,kam,How many
+اديش طول,addeesh Tool,How long
+كل اديش,kull addeesh,How often
+اديش بعيد,addeesh ba3eed,How far
+,,
+Greetings,Greetings.json,
+مرحبا,marHaba,Hello
+كيف حالك,keef Haalak? / keef Haalik?,How are you?
+مع السلامة,ma3 al-salaama,Goodbye (remaining person)
+خاطرك,khaTrak,Goodbye (leaving person)
+صباح الخير,SabaH el-kheer,Good morning
+صباح النور,SabaH el-noor,Good morning (reply)
+مساء الخير,masaa' el-kheer,Good evening
+مساء النور,masaa' el-noor,Good evening (reply)
+تصبح على خير,tiSbaH 3ala kheer,Good night
+أهلا وسهلا,ahlan wa sahlan,Welcome
+,,
+Polite Expressions,PoliteExpressions.json,
+لو سمحت,law samaHt,Please
+آسف,aasif / aasfa,Sorry
+شكرا,shukran,Thank you
+عفوا,3afwan,You're welcome
+عفوا,3afwan,Excuse me
+تشرفنا,tasharrafna,Nice to meet you
+,,
+Well-Wishes,WellWishes.json,
+مبروك,mabrook,Congratulations
+عيد ميلاد سعيد,3eed milaad sa3eed,Happy birthday
+يرحمك الله,yarHamuk Allah,Bless you (sneeze)
+سلامتك,salaamtak,Get well soon
+الله يسلمك,Allah yasalmak,May God keep you safe
+صحنيت,SaHteen,Bon appétit
+نعيما,na3eeman,After someone showers/haircut
+,,
+Conjunctions,Conjunctions.json,
+شوي شوي,shway shway,Slowly
+قوام,qawaam,Quickly
+كتير,katir,Very
+عالاخر,`ala l-aakhir,Totally
+بس,bass,Only
+كمان,kamaan,Also
+يمكن,yumkin,Maybe
+عشان هيك,`ashaan heek,Therefore
+,,
+Prepositions of Place,PrepositionsOfPlace.json,
+في,fi,In (place)
+على,`ala,On/to/about
+ب,bi,With/by (object)
+قدام,qiddam,In front of
+ورا,waraa,Behind
+فوق,fawq,Above/over
+تحت,taht,Below/under
+بين,bayn,Between/among
+عند,`ind,At
+داخل,dakhil,Inside
+خارج,kharij,Outside
+عبر,`abr,Through
+حول,hawl,Around
+إلى,ila,To (destination)
+نحو,nahw,Towards
+ضد,didd,Against
+هون,hawn,Here
+هناك,hunak,There
+,,
+Prepositions of Time,PrepositionsOfTime.json,
+من,min,From (place/time/person)
+حتى,hatta,Till/until/to (purpose/end goal)
+مذ,mudh,Since
+قبل,qabl,Before
+بعد,ba`d,After
+خلال,khilal,During
+اليوم,al-yawm,Today
+بكرة,bukra,Tomorrow
+بعد بكرة,ba`d bukra,Day after tomorrow
+مبارح‎,mubaariH,Yesterday
+قبل مبارح,qabl mubaariH,Day before yesterday
+هسا,hassa,Now
+بكير,bakir,Early
+بعدين,ba`dayn,Afterwards
+لسا,lissa,Still/not yet
+,,
+Prepositions of Relationship,PrepositionsOfRelationship.json,
+عن,`an,About (discussion)
+ل,li,For/to (possession/reason)
+مع,ma`a,With (person)
+ك,ka,Like/as (resemblance)
+عدا,`ada,Except for
+رغم,raghm,Despite
+بدون,bidun,Without
+هون,hawn,Here
+هناك,hunak,There
+هيك,heek,Like this
+,,
+Frequency,Frequency.json,
+دايما,daayman,Always
+عادة,3aadatan,Usually
+كثيرا,kteeran,Frequently
+غالبا,ghaliban,Often
+أحيانا,aHyaanan,Sometimes
+نادرا,naaderan,Seldom
+قلما,qallama,Rarely
+أبدا,abadan,Never
+,,
+Cardinal Numbers,CardinalNumbers.json,
+صفر,Sifr,Zero
+واحد,waaHid,One
+اثنين,ithnayn,Two
+ثلاثة,thalaatha,Three
+أربعة,arba3a,Four
+خمسة,khamsa,Five
+ستة,sitta,Six
+سبعة,sab3a,Seven
+ثمانية,thamaaniya,Eight
+تسعة,tis3a,Nine
+عشرة,3ashara,Ten
+احد عشر,iHda 3ashar,Eleven
+اثني عشر,ithna 3ashar,Twelve
+ثلاثة عشر,thalaathat 3ashar,Thirteen
+أربعة عشر,arba3at 3ashar,Fourteen
+خمسة عشر,khamsat 3ashar,Fifteen
+ستة عشر,sittat 3ashar,Sixteen
+سبعة عشر,sab3at 3ashar,Seventeen
+ثمانية عشر,thamaanyat 3ashar,Eighteen
+تسعة عشر,tis3at 3ashar,Nineteen
+عشرين,3ishreen,Twenty
+ثلاثة وعشرين,thalaatha w 3ishreen,Twenty-three
+ثلاثين,thalaatheen,Thirty
+سبعة وثلاثين,sab3a w thalaatheen,Thirty-seven
+أربعين,arba3een,Forty
+اثنين وأربعين,ithnayn w arba3een,Forty-two
+خمسين,khamseen,Fifty
+ثمانية وخمسين,thamaanya w khamseen,Fifty-eight
+ستين,sitteen,Sixty
+أربعة وستين,arba3a w sitteen,Sixty-four
+سبعين,sab3een,Seventy
+ستة وسبعين,sitta w sab3een,Seventy-six
+ثمانين,thamaaneen,Eighty
+واحد وثمانين,waaHid w thamaaneen,Eighty-one
+تسعين,tis3een,Ninety
+خمسة وتسعين,khamsa w tis3een,Ninety-five
+مية,miya,One hundred
+ألف,alf,One thousand
+مليون,milyoon,One million
+,,
+Ordinal Numbers,OrdinalNumbers.json,
+أول,awwal,First
+ثاني,thaanee,Second
+ثالث,thaalith,Third
+رابع,raabi3,Fourth
+خامس,khaamis,Fifth
+سادس,saadis,Sixth
+سابع,saabi3,Seventh
+ثامن,thaamin,Eighth
+تاسع,taasi3,Ninth
+عاشر,3aashir,Tenth
+حادي عشر,Haadi 3ashar,Eleventh
+ثاني عشر,thaanee 3ashar,Twelfth
+ثالث عشر,thaalith 3ashar,Thirteenth
+رابع عشر,raabi3 3ashar,Fourteenth
+خامس عشر,khaamis 3ashar,Fifteenth
+سادس عشر,saadis 3ashar,Sixteenth
+سابع عشر,saabi3 3ashar,Seventeenth
+ثامن عشر,thaamin 3ashar,Eighteenth
+تاسع عشر,taasi3 3ashar,Nineteenth
+عشرون,3ishroon,Twentieth
+الحادي والعشرون,il-Haadi w il-3ishroon,Twenty-first
+الثلاثون,ith-thalaathoon,Thirtieth
+الأربعون,il-arba3oon,Fortieth
+الخمسون,il-khamsoon,Fiftieth
+الستون,is-sittoon,Sixtieth
+السبعون,is-sab3oon,Seventieth
+الثمانون,ith-thamaanoon,Eightieth
+التسعون,it-tis3oon,Ninetieth
+المئة,il-mi'ah,One hundredth
+الألف,il-alf,One thousandth
+,,
+Animals and Plants,AnimalsAndPlants.json,
+كلب,kalb,Dog
+قط,QiT,Cat
+شجرة,shajara,Tree
+زهرة,zahra,Flower
+عشب,3ushb,Grass
+بقرة,baqara,Cow
+دجاجة,dajaja,Chicken
+سمك,samak,Fish
+وردة,wardeh,Rose
+شجيرة,shujeira,Bush
+طير,Tayr,Bird
+خروف,kharoof,Sheep
+معزة,ma3za,Goat
+,,
+Transportation,Transportation.json,
+سيارة,sayyara,Car
+باص,baaS,Bus
+دراجة,diraaja,Bicycle
+قطار,QiTaar,Train
+طيارة,Tayara,Airplane
+قارب,qareb,Boat
+دراجة نارية,diraaja naariyya,Motorcycle
+مترو,mitro,Subway
+تاكسي,taaksi,Taxi
+شاحنة,shaaHina,Truck
+سوق,sooq,To drive
+ركب,rkab,To ride
+غادر,ghaadir,To depart
+صل,sil,To arrive
+سافر,saafer,To travel
+راح,raaH,To go
+,,
+Days of the Week,DaysOfTheWeek.json,
+الأحد,Al-Ahad,Sunday
+الاثنين,Al-Ithnayn,Monday
+الثلاثاء,Al-Thulatha,Tuesday
+الأربعاء,Al-Arbaa,Wednesday
+الخميس,Al-Khamis,Thursday
+الجمعة,Al-Jumua,Friday
+السبت,Al-Sabt,Saturday
+أسبوع,usbuu3,Week
+,,
+Months,Months.json,
+يناير,Yanayir,January
+فبراير,Fibrayir,February
+مارس,Maris,March
+أبريل,Abril,April
+مايو,Mayu,May
+يونيو,Yunyu,June
+يوليو,Yulyu,July
+أغسطس,Agustus,August
+سبتمبر,Sabtimbir,September
+أكتوبر,Oktubar,October
+نوفمبر,Nufimbir,November
+ديسمبر,Disimbar,December
+,,
+Time,Time.json,
+ثانية,thaaniyeh,Second
+دقيقة,Daqiqa,Minute
+ساعة,saa3a,Hour
+اليوم,al-yoom,Today
+بكرة,Bukra,Tomorrow
+امبارح,Ambareh,Yesterday
+يوم,yoom,Day
+أسبوع,usbuu3,Week
+شهر,shahr,Month
+سنة,saneh,Year
+صبح,SubiH,Morning
+الظهر,Al-Dhuhr,Noon
+مسا,masaa,Evening
+ربيع,rabii3,Spring
+صيف,Sayf,Summer
+خريف,Khareef,Autumn/Fall
+شتا,shitaa,Winter
+,,
+Colours,Colours.json,
+أحمر,aHmar,Red
+برتقالي,burtuqaali,Orange
+أصفر,asfar,Yellow
+أخضر,akhdar,Green
+أزرق,azraq,Blue
+بنفسجي,banafsaji,Purple
+وردي,wardi,Pink
+بني,buni,Brown
+أسود,aswad,Black
+أبيض,abyad,White
+رمادي,ramaadi,Grey
+ذهبي,dhahabi,Gold
+فضي,fadhi,Silver
+,,
+Food and Drink,FoodAndDrink.json,
+تفاح,tuffaah,Apple
+موز,mozz,Banana
+برتقال,burtuqaal,Orange
+شوربة,shorba,Soup
+لحم بقري,laHm baqri,Beef
+دجاج,dajaaj,Chicken
+سمك,samak,Fish
+بيض,beyD,Eggs
+جبنة,jibna,Cheese
+زبادي,zabadi,Yogurt
+ماء,maa',Water
+حليب,haleeb,Milk
+شاي,shay,Tea
+قهوة,qahwa,Coffee
+خبز,khubz,Bread
+أرز,aruzz,Rice
+معكرونة,ma3karoona,Pasta
+طعام,Ta3aam,Food
+مشروب,mashroob,Beverage
+أكل,akul,To eat
+شرب,shrab,To drink
+,,
+Feelings,Feelings.json,
+سعيد,sa3eed,Happy
+حزين,Hazeen,Sad
+غاضب,ghaDib,Angry
+متحمس,muthaamis,Excited
+متوتر,mutawater,Nervous
+هادئ,haadi',Calm
+مسترخي,mustarkhi,Relaxed
+تعبان,ta3baan,Tired
+زهقان,zahqaan,Bored
+مشوش,mushawwash,Confused
+قلق,qaliq,Worried
+منزعج,munza3ij,Annoyed
+مكتئب,mukta'ib,Depressed
+خائب الأمل,khayib il-amal,Disappointed
+مضغوط,maDghooT,Stressed
+وحيد,waHeed,Lonely
+,,
+Body Parts,BodyParts.json,
+رأس,raas,Head
+عين,3ayn,Eye
+فم,fam,Mouth
+يد,yad,Hand
+ساق,saaq,Leg
+قدم,qadam,Foot
+إذن,udhun,Ear
+انف,anf,Nose
+جسم,jism,Body
+رقبة,raqabeh,Neck
+لسان,lisaan,Tongue
+وجه,wajh,Face
+زراع,dhiraa3,Arm
+شعر,sha3r,Hair
+نفس,tnaffas,To breathe
+لمس,lmis,To touch
+,,
+Weather,Weather.json,
+طقس,Taqs,Weather
+شمس,shams,Sun
+غيم,ghaym,Cloud
+مطر,matar,Rain
+ريح,reeh,Wind
+عاصفة,aasefa,Storm
+ثلج,thalj,Snow
+برق,barq,Lightning
+رعد,ra3d,Thunder
+ضباب,dibaab,Fog
+برد,barad,Hail
+دافئ,dafee,Warm
+بارد,baarid,Cold
+مبلول,mablool,Wet
+,,
+Directions,Directions.json,
+شمال,shamaal,North
+جنوب,janoob,South
+شرق,sharq,East
+غرب,gharb,West
+إلى الأمام,ila al-amaam,Forward
+إلى الوراء,ila al-waraa,Backward
+يسار,yasaar,Left
+يمين,yameen,Right
+لأعلى,la'ala,Up
+لأسفل,lasfala,Down
+قدام,qidaam,Ahead
+وراء,wara',Behind
+عبر,abur,Across
+قريب,qareeb,Near
+بعيد,ba3eed,Far
+,,
+Everyday Verbs,EverydayVerbs.json,
+مشي,mshi,To walk
+حكي,Hki,To talk
+أكل,akul,To eat
+شرب,shrab,To drink
+نام,naam,To sleep
+جري,jri,To run
+قرأ,qra,To read
+كتب,ktub,To write
+استمع,stami3,To listen
+طبخ,Tbakh,To cook
+نظف,nZif,To clean
+لعب,l3ab,To play
+عمل,3mal,To work
+درس,drus,To study
+,,
+Action Verbs,ActionVerbs.json,
+قفز,qafaza,To jump
+رقص,raqasa,To dance
+سبح,sabaḥa,To swim
+غنى,ghanā,To sing
+تحدث,taḥaddath,To speak
+ضحك,ḍaḥika,To laugh
+عانق,ʿānaqa,To hug
+طير,ṭayyara,To fly
+مشى,mashā,To walk
+دفع,dafaʿ,To push
+سحب,saḥaba,To pull
+جرى,jarā,To run
+تخطى,takhṭa,To skip
+صرخ,ṣarakh,To shout
+درس,darasa,To study
+حكى,ḥakā,To talk
+بكى,bakā,To cry
+صنع,ṣanaʿa,To make
+علم,ʿalima,To teach

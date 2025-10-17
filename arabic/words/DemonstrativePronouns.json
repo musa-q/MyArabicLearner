@@ -1,0 +1,35 @@
+{
+    "title": "Demonstrative Pronouns",
+    "translations": [
+        {
+            "arabic": "هاد",
+            "romanized": "had",
+            "english": "This (M)"
+        },
+        {
+            "arabic": "هاي",
+            "romanized": "haay",
+            "english": "This (F)"
+        },
+        {
+            "arabic": "هداك",
+            "romanized": "hadaak",
+            "english": "That (M)"
+        },
+        {
+            "arabic": "هديك",
+            "romanized": "hadiik",
+            "english": "That (F)"
+        },
+        {
+            "arabic": "هدول",
+            "romanized": "hadool",
+            "english": "These"
+        },
+        {
+            "arabic": "هدولاك",
+            "romanized": "hadoolak",
+            "english": "Those"
+        }
+    ]
+}

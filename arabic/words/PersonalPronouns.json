@@ -1,0 +1,45 @@
+{
+    "title": "Personal Pronouns",
+    "translations": [
+        {
+            "arabic": "أنا",
+            "romanized": "ana",
+            "english": "I"
+        },
+        {
+            "arabic": "إنتَ",
+            "romanized": "inta",
+            "english": "You (M)"
+        },
+        {
+            "arabic": "إنتِ",
+            "romanized": "inti",
+            "english": "You (F)"
+        },
+        {
+            "arabic": "هو",
+            "romanized": "huwa",
+            "english": "He"
+        },
+        {
+            "arabic": "هي",
+            "romanized": "hiya",
+            "english": "She"
+        },
+        {
+            "arabic": "إحنا",
+            "romanized": "iHna",
+            "english": "We"
+        },
+        {
+            "arabic": "إنتو",
+            "romanized": "intu",
+            "english": "You (PL)"
+        },
+        {
+            "arabic": "هم",
+            "romanized": "humma",
+            "english": "They"
+        }
+    ]
+}

@@ -1,0 +1,40 @@
+{
+    "title": "Well-Wishes",
+    "translations": [
+        {
+            "arabic": "مبروك",
+            "romanized": "mabrook",
+            "english": "Congratulations"
+        },
+        {
+            "arabic": "عيد ميلاد سعيد",
+            "romanized": "3eed milaad sa3eed",
+            "english": "Happy birthday"
+        },
+        {
+            "arabic": "يرحمك الله",
+            "romanized": "yarHamuk Allah",
+            "english": "Bless you (sneeze)"
+        },
+        {
+            "arabic": "سلامتك",
+            "romanized": "salaamtak",
+            "english": "Get well soon"
+        },
+        {
+            "arabic": "الله يسلمك",
+            "romanized": "Allah yasalmak",
+            "english": "May God keep you safe"
+        },
+        {
+            "arabic": "صحتين",
+            "romanized": "SaHteen",
+            "english": "Bon appétit"
+        },
+        {
+            "arabic": "نعيما",
+            "romanized": "na3eeman",
+            "english": "After someone showers/haircut"
+        }
+    ]
+}
